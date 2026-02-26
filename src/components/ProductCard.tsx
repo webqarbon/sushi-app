@@ -1,3 +1,8 @@
+"use client";
+
+import Image from "next/image";
+import { Product } from "@/types/database";
+import { useCartStore } from "@/store/cart";
 import { Plus } from "lucide-react";
 
 export default function ProductCard({ product }: { product: Product }) {
