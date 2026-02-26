@@ -74,7 +74,8 @@ export default function Hero() {
                   src={s.image} 
                   alt={s.title} 
                   fill
-                  priority={idx === 0}
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 60vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-[2000ms] ease-out"
                 />
               </div>
