@@ -36,10 +36,10 @@ export default function Header() {
                   <Phone className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" />
                 </div>
                 <div className="hidden sm:block">
-                   <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter leading-none mb-1">
-                      Щодня: з <span className="text-gray-900">10:00</span> до <span className="text-gray-900">21:30</span>
+                   <div className="text-[10px] font-bold text-gray-500 uppercase tracking-tight leading-none mb-1">
+                      Щодня: з <span className="text-gray-900 font-black">10:00</span> до <span className="text-gray-900 font-black">21:30</span>
                    </div>
-                   <Link href="tel:+380953727599" className="text-sm lg:text-base font-black text-[#1A1C1E] hover:text-orange-500 transition-colors">
+                   <Link href="tel:+380953727599" className="text-base lg:text-lg font-black text-[#1A1C1E] hover:text-orange-500 transition-colors tracking-tighter">
                       (095) 372 75 99
                    </Link>
                 </div>
