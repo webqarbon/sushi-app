@@ -32,8 +32,8 @@ export default function ChangePassword() {
   };
 
   return (
-    <div className="bg-white rounded-3xl p-5 border border-gray-100/50 shadow-sm">
-      <h3 className="text-sm font-black text-gray-900 mb-3 flex items-center gap-2">
+    <div className="bg-white rounded-3xl p-4 border border-gray-100/50 shadow-sm">
+      <h3 className="text-[13px] font-black text-gray-900 mb-2.5 flex items-center gap-2">
         <Lock className="w-4 h-4 text-gray-400" />
         Зміна пароля
       </h3>
@@ -46,7 +46,7 @@ export default function ChangePassword() {
         </div>
       )}
 
-      <form action={handleSubmit} className="flex flex-col gap-4">
+      <form action={handleSubmit} className="flex flex-col gap-2.5">
         <div>
           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Новий пароль</label>
           <input 

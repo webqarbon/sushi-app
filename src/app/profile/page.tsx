@@ -86,7 +86,7 @@ export default async function ProfilePage() {
             </div>
 
             {/* Settings Group */}
-            <div className="space-y-4 min-h-0 flex-1 overflow-y-auto custom-scrollbar">
+            <div className="space-y-4 min-h-0 flex-1 overflow-hidden">
               <ProfileSettings 
                 initialData={{
                   full_name: profile?.full_name || "",

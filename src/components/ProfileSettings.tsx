@@ -39,13 +39,13 @@ export default function ProfileSettings({ initialData }: ProfileSettingsProps) {
   };
 
   return (
-    <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100/50">
-      <h3 className="text-sm font-black text-gray-900 mb-3 flex items-center gap-2">
+    <div className="bg-white rounded-3xl p-4 shadow-sm border border-gray-100/50">
+      <h3 className="text-[13px] font-black text-gray-900 mb-2.5 flex items-center gap-2">
         <User className="w-4 h-4 text-gray-400" />
         Контактні дані
       </h3>
       
-      <form onSubmit={handleSubmit} className="space-y-3.5">
+      <form onSubmit={handleSubmit} className="space-y-2.5">
         <div>
           <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Ім&apos;я та Прізвище</label>
           <div className="relative group">
