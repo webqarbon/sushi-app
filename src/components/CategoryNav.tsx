@@ -13,15 +13,28 @@ import {
   Flame,
   LayoutGrid
 } from "lucide-react";
+import { useCategoryStore } from "@/store/category";
 import { Category } from "@/types/database";
 
 interface CategoryNavProps {
-  categories: Category[];
+  categories?: Category[];
   activeCategoryId?: string;
-  onSelect: (id: string) => void;
+  onSelect?: (id: string) => void;
+  isCompact?: boolean;
 }
 
-export default function CategoryNav({ categories, activeCategoryId, onSelect }: CategoryNavProps) {
+export default function CategoryNav({ 
+  categories: propsCategories, 
+  activeCategoryId: propsActiveId, 
+  onSelect: propsOnSelect,
+  isCompact = false
+}: CategoryNavProps) {
+  const { categories: storeCategories, activeCategoryId: storeActiveId, setActiveCategoryId: storeSetActiveId } = useCategoryStore();
+
+  const categories = propsCategories || storeCategories;
+  const activeCategoryId = propsActiveId || storeActiveId;
+  const onSelect = propsOnSelect || storeSetActiveId;
+
   // Map icons based on category slug or name
   const iconMap: Record<string, any> = {
     "sets": LayoutGrid,
@@ -38,6 +51,34 @@ export default function CategoryNav({ categories, activeCategoryId, onSelect }: 
   const sortedCategories = useMemo(() => {
     return [...categories].sort((a, b) => a.order_index - b.order_index);
   }, [categories]);
+
+  if (isCompact) {
+    return (
+      <div className="w-full overflow-x-auto hide-scrollbar flex items-center justify-center gap-1 py-1">
+        {sortedCategories.map((cat) => {
+          const Icon = iconMap[cat.slug] || Utensils;
+          const isActive = activeCategoryId === cat.id;
+
+          return (
+            <button
+              key={cat.id}
+              onClick={() => onSelect(cat.id)}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-300 shrink-0 group ${
+                isActive ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-gray-500 hover:bg-gray-100"
+              }`}
+            >
+              <Icon className={`w-3.5 h-3.5 transition-transform duration-300 ${
+                isActive ? "text-white" : "text-gray-400 group-hover:text-gray-900"
+              }`} />
+              <span className="text-[10px] font-black uppercase tracking-tight">
+                {cat.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <div className="w-full overflow-x-auto hide-scrollbar flex gap-3 py-2">
@@ -63,7 +104,7 @@ export default function CategoryNav({ categories, activeCategoryId, onSelect }: 
               }`} />
             </div>
             <span className={`text-[12px] lg:text-[13px] font-black tracking-tight mt-3 ${
-              isActive ? "text-[#1A1C1E]" : "text-gray-500"
+              isActive ? "text-[#1A1C1E] opacity-100" : "text-gray-500 opacity-60"
             }`}>
               {cat.name}
             </span>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, Share2, Sparkles, Zap, Gift } from "lucide-react";
 
 const SLIDES = [
@@ -20,6 +20,7 @@ const SLIDES = [
     title: "Новинки в меню!",
     description: "Спробуйте наші нові страви за спеціальною ціною. Тільки цього тижня.",
     image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=1000",
+    fallbackImage: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=1000",
     badge: "Скоро",
     icon: <Sparkles className="w-3.5 h-3.5" />,
     link: "/#catalog",
@@ -30,6 +31,7 @@ const SLIDES = [
     title: "Швидка доставка",
     description: "Насолоджуйтесь улюбленими стравами вже за 30-45 хвилин. Гарантуємо якість.",
     image: "https://images.unsplash.com/photo-1526367790999-0150786486a9?auto=format&fit=crop&q=80&w=1000",
+    fallbackImage: "https://images.unsplash.com/photo-1526367790999-0150786486a9?auto=format&fit=crop&q=80&w=1000",
     badge: "Швидкість",
     icon: <Zap className="w-3.5 h-3.5" />,
     link: "/#delivery",
@@ -59,16 +61,23 @@ export default function Hero() {
         
         {/* Left Side: Images */}
         <div className="w-full lg:w-3/5 relative h-[320px] lg:h-[480px] bg-[#F9FAFB] flex items-center justify-center overflow-hidden border-r border-gray-50">
-          <div className="absolute inset-0 transition-opacity duration-1000">
-            <img 
-              key={current}
-              src={slide.image} 
-              alt={slide.title} 
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2000ms] ease-out animate-in fade-in duration-700"
-              onError={(e) => {
-                if (slide.fallbackImage) (e.target as any).src = slide.fallbackImage;
-              }}
-            />
+          <div className="absolute inset-0 w-full h-full">
+            {SLIDES.map((s, idx) => (
+              <div 
+                key={idx}
+                className={`absolute inset-0 transition-opacity duration-1000 ${
+                  current === idx ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                }`}
+              >
+                <Image 
+                  src={s.image} 
+                  alt={s.title} 
+                  fill
+                  priority={idx === 0}
+                  className="object-cover group-hover:scale-105 transition-transform duration-[2000ms] ease-out"
+                />
+              </div>
+            ))}
           </div>
           
           {/* Slider Arrows */}

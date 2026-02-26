@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ShoppingCart, User, Phone, Search, Menu as MenuIcon, MapPin, ChevronDown } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import CartDrawer from "./CartDrawer";
+import CategoryNav from "./CategoryNav";
 
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -49,37 +50,35 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Center Section: Logo */}
-            <div className={`absolute left-1/2 -translate-x-1/2 transition-all duration-500 ${
-              isScrolled ? "scale-90 opacity-0 pointer-events-none" : "scale-100 opacity-100"
-            }`}>
-              <Link href="/" className="flex flex-col items-center">
-                <div className="flex items-center gap-1">
-                   <div className="w-8 h-8 md:w-10 md:h-10 bg-[#1A1C1E] rounded-full flex items-center justify-center">
-                      <div className="w-4 h-4 md:w-5 md:h-5 bg-orange-500 rounded-full animate-pulse" />
-                   </div>
-                   <div className="flex flex-col">
-                      <span className="text-xl md:text-2xl font-black tracking-tighter leading-none">FROZEN</span>
-                      <span className="text-[8px] font-black tracking-[0.3em] uppercase opacity-50 ml-1">Market</span>
-                   </div>
-                </div>
-              </Link>
+            {/* Center Section: Logo or Categories */}
+            <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center w-full max-w-[400px] lg:max-w-[600px]">
+              {/* Logo - visible when NOT scrolled */}
+              <div className={`absolute transition-all duration-500 ${
+                isScrolled ? "scale-90 opacity-0 pointer-events-none" : "scale-100 opacity-100"
+              }`}>
+                <Link href="/" className="flex flex-col items-center">
+                  <div className="flex items-center gap-1">
+                     <div className="w-8 h-8 md:w-10 md:h-10 bg-[#1A1C1E] rounded-full flex items-center justify-center">
+                        <div className="w-4 h-4 md:w-5 md:h-5 bg-orange-500 rounded-full animate-pulse" />
+                     </div>
+                     <div className="flex flex-col">
+                        <span className="text-xl md:text-2xl font-black tracking-tighter leading-none">FROZEN</span>
+                        <span className="text-[8px] font-black tracking-[0.3em] uppercase opacity-50 ml-1">Market</span>
+                     </div>
+                  </div>
+                </Link>
+              </div>
+
+              {/* Categories Navigation - visible ONLY when scrolled */}
+              <div className={`w-full transition-all duration-500 ${
+                isScrolled ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 pointer-events-none translate-y-4"
+              }`}>
+                <CategoryNav isCompact />
+              </div>
             </div>
 
-            {/* Right Section: City, Search, Cart */}
-            <div className="flex items-center justify-end gap-3 lg:gap-4 flex-1">
-              {/* City selector */}
-              <button className="hidden sm:flex items-center gap-3 bg-white px-4 h-12 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100/50 group">
-                <MapPin className="w-4 h-4 text-orange-500" />
-                <span className="text-xs font-black uppercase tracking-widest text-orange-500">Дніпро</span>
-                <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:translate-y-0.5 transition-transform" />
-              </button>
-
-              {/* Search */}
-              <button className="flex items-center justify-center bg-white w-12 h-12 rounded-2xl shadow-sm hover:shadow-md transition-all text-[#1A1C1E] border border-gray-100/50">
-                <Search className="w-4 h-4" />
-              </button>
-
+            {/* Right Section: Cart & Profile */}
+            <div className="flex items-center justify-end gap-3 flex-1">
               {/* Cart */}
               <button 
                 onClick={() => setIsCartOpen(true)}
