@@ -1,40 +1,56 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-sky-50 pt-16 pb-24 lg:pt-24 lg:pb-32">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-3xl mx-auto">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight mb-6">
-            Заморожені продукти <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-400">преміум якості</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Швидка доставка смачних заморожених страв. Отримуйте до 10% бонусів з кожної покупки та оплачуйте ними наступні замовлення!
+    <section className="container mx-auto px-4 py-8 relative group">
+      <div className="bg-white rounded-[2.5rem] overflow-hidden shadow-premium flex flex-col lg:flex-row items-center border border-white min-h-[450px]">
+        
+        {/* Left Side: Images (Mocking the slider content) */}
+        <div className="w-full lg:w-3/5 relative h-[300px] lg:h-[450px] bg-[#F9FAFB] flex items-center justify-center overflow-hidden">
+          <img 
+            src="https://ooouuetfdrnmdvmhqdji.supabase.co/storage/v1/object/public/products//hero_promo.png" 
+            alt="Подарунок за відгук" 
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as any).src = "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&q=80&w=1000";
+            }}
+          />
+          
+          {/* Slider Arrows */}
+          <button className="absolute left-6 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-2xl shadow-sm flex items-center justify-center text-gray-400 hover:text-[#1A1C1E] transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0">
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button className="absolute right-6 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-2xl shadow-sm flex items-center justify-center text-gray-400 hover:text-[#1A1C1E] transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0">
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Right Side: Content */}
+        <div className="w-full lg:w-2/5 p-8 lg:p-14 flex flex-col justify-center text-left">
+          <h2 className="text-3xl lg:text-4xl font-black text-[#1A1C1E] leading-tight mb-4">
+            Подарунок за відгук!
+          </h2>
+          <p className="text-lg text-gray-500 font-medium leading-relaxed mb-8">
+            Залишай відгук у Google та отримуй подарунок! Ми цінуємо твою думку.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link 
-              href="#catalog"
-              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
-            >
-              Перейти до каталогу
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-            <Link 
-              href="#bonuses"
-              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-blue-600 bg-white border border-blue-200 hover:bg-blue-50 hover:border-blue-300 rounded-full shadow-sm transition-all duration-200"
-            >
-              Як працюють бонуси?
-            </Link>
-          </div>
+          
+          <Link 
+            href="/#reviews"
+            className="w-fit inline-flex items-center justify-center px-10 h-16 text-sm font-black text-white bg-[#F08060] hover:bg-[#E07050] rounded-2xl shadow-lg shadow-orange-200 transition-all active:scale-95 uppercase tracking-widest gap-3"
+          >
+            Детальніше 🤩
+            <Share2 className="w-4 h-4" />
+          </Link>
         </div>
       </div>
-      
-      {/* Decorative background elements */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-200/30 blur-3xl" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-sky-200/30 blur-3xl" />
+
+      {/* Pagination Dots */}
+      <div className="flex justify-center gap-2 mt-6">
+        <div className="w-2.5 h-2.5 rounded-full bg-orange-400"></div>
+        <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>
+        <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>
+        <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>
       </div>
     </section>
   );

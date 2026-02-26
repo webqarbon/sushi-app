@@ -1,5 +1,6 @@
 import { Category, Product } from "@/types/database";
 import ProductCard from "./ProductCard";
+import CategoryNav from "./CategoryNav";
 
 interface CatalogProps {
   categories: Category[];
@@ -20,17 +21,19 @@ export default function Catalog({ categories, products }: CatalogProps) {
 
   return (
     <div className="flex flex-col gap-16">
+      <CategoryNav categories={categories} />
+
       {sortedCategories.map((category) => {
         const categoryProducts = products.filter(p => p.category_id === category.id);
         
         if (categoryProducts.length === 0) return null;
 
         return (
-          <div key={category.id} id={category.slug} className="scroll-mt-24">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 mb-6">
+          <div key={category.id} id={category.slug} className="scroll-mt-32">
+            <h2 className="text-3xl font-black tracking-widest text-[#1A1C1E] mb-10 text-center uppercase">
               {category.name}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12">
               {categoryProducts.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}

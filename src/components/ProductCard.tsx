@@ -1,24 +1,23 @@
-"use client";
-
-import Image from "next/image";
-import { Star, ShoppingCart } from "lucide-react";
-import { Product } from "@/types/database";
-import { useCartStore } from "@/store/cart";
+import { Plus } from "lucide-react";
 
 export default function ProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((state) => state.addItem);
   const bonusUah = (product.price * product.bonus_percent) / 100;
   
+  // Weights and counts are usually in description or we can mock them for the design
+  // Let's try to extract from description or use placeholder if not found
+  const weightInfo = product.description?.match(/\d+\s*(г|шт)/g)?.join(" | ") || "32 шт | 1355 г";
+
   return (
-    <div className="group flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
-      {/* Image Area with Badge */}
-      <div className="relative aspect-square bg-gray-50 overflow-hidden">
+    <div className="group flex flex-col bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-premium transition-all duration-300 border border-white p-2">
+      {/* Image Area */}
+      <div className="relative aspect-square bg-[#F9FAFB] rounded-[2rem] overflow-hidden">
         {product.image_url ? (
           <Image
             src={product.image_url}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
@@ -28,40 +27,36 @@ export default function ProductCard({ product }: { product: Product }) {
         )}
         
         {/* Bonus Badge */}
-        <div className="absolute top-3 right-3 bg-blue-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">
-          +{bonusUah.toFixed(1)} бонусів
+        <div className="absolute top-4 right-4 bg-orange-400 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
+          +{bonusUah.toFixed(0)} бонуси
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 p-5 lg:p-6">
-        {/* Rating */}
-        <div className="flex items-center gap-1.5 mb-2">
-          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-          <span className="text-sm font-semibold text-gray-700">{product.fake_rating}</span>
-          <span className="text-xs text-gray-400">({product.fake_reviews_count} відгуків)</span>
+      <div className="flex flex-col flex-1 p-6 text-center">
+        {/* Characteristics */}
+        <div className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-3">
+          {weightInfo}
         </div>
 
-        <h3 className="font-bold text-lg text-gray-900 leading-tight mb-2 line-clamp-2">
+        <h3 className="font-black text-xl text-[#1A1C1E] leading-tight mb-3 px-2 group-hover:text-orange-500 transition-colors">
           {product.name}
         </h3>
-        <p className="text-sm text-gray-500 mb-6 flex-1 line-clamp-2">
+        
+        <p className="text-sm text-gray-400 font-medium mb-6 line-clamp-2 px-4 leading-relaxed">
           {product.description}
         </p>
 
-        {/* Footer Actions */}
-        <div className="flex items-center justify-between mt-auto">
-          <div className="flex flex-col">
-            <span className="text-xl font-black text-gray-900">{product.price.toFixed(0)} ₴</span>
-          </div>
+        {/* Footer: Price and Add Button */}
+        <div className="mt-auto flex items-center justify-between bg-gray-50 rounded-3xl p-2 pl-6">
+          <span className="text-2xl font-black text-[#1A1C1E]">{product.price.toFixed(0)} ₴</span>
           
           <button
             onClick={() => addItem(product)}
-            className="flex items-center justify-center p-3 sm:px-5 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl sm:rounded-xl font-semibold transition-colors active:scale-95"
+            className="flex items-center justify-center w-12 h-12 bg-white text-[#1A1C1E] rounded-2xl shadow-sm hover:bg-orange-400 hover:text-white transition-all active:scale-90"
             aria-label="Додати в кошик"
           >
-            <ShoppingCart className="w-5 h-5 sm:hidden" />
-            <span className="hidden sm:inline">В кошик</span>
+            <Plus className="w-6 h-6" />
           </button>
         </div>
       </div>

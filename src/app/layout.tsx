@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-outfit",
 });
 
 export const metadata: Metadata = {
@@ -25,9 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uk" className="scroll-smooth">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-white text-gray-900`}>
+      <body className={`${outfit.variable} font-sans antialiased min-h-screen flex flex-col bg-[#F3F5F9] text-gray-900`}>
         <Header />
-        <main className="flex-1 shrink-0 bg-white">
+        <main className="flex-1 shrink-0">
           {children}
         </main>
       </body>
