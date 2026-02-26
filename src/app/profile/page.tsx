@@ -31,7 +31,7 @@ export default async function ProfilePage() {
     .order('created_at', { ascending: false });
 
   return (
-    <div className="container mx-auto px-4 py-8 lg:px-8 max-w-6xl min-h-0">
+    <div className="container mx-auto px-4 pt-8 pb-24 lg:px-8 max-w-6xl min-h-0">
       {/* Breadcrumb / Back Navigation */}
       <Link 
         href="/" 
@@ -86,7 +86,7 @@ export default async function ProfilePage() {
             </div>
 
             {/* Settings Group */}
-            <div className="space-y-4 min-h-0 overflow-y-auto custom-scrollbar flex-1">
+            <div className="space-y-4 min-h-0 flex-1">
               <ProfileSettings 
                 initialData={{
                   full_name: profile?.full_name || "",
