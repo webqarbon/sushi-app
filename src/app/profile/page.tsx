@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { signOut } from "@/app/actions/auth";
-import { LogOut, Gift } from "lucide-react";
+import { LogOut, Gift, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import ProfileSettings from "@/components/ProfileSettings";
 import OrderHistory from "@/components/OrderHistory";
@@ -29,7 +30,17 @@ export default async function ProfilePage() {
     .order('created_at', { ascending: false });
 
   return (
-    <div className="container mx-auto px-4 py-12 lg:px-8 max-w-5xl">
+    <div className="container mx-auto px-4 py-8 lg:px-8 max-w-5xl">
+      <Link 
+        href="/" 
+        className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 font-bold mb-8 transition-colors group"
+      >
+        <div className="p-2 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-all">
+          <ArrowLeft className="w-4 h-4" />
+        </div>
+        Назад на головну
+      </Link>
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
         <div>
           <h1 className="text-3xl font-black text-gray-900 tracking-tight">Особистий кабінет</h1>
