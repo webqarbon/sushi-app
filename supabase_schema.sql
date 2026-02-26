@@ -88,3 +88,13 @@ ON orders FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- Only service role / webhook can update orders (e.g., status) securely. 
 -- We won't allow simple users to UPDATE orders, protecting payment statuses from being tampered with.
+
+-- 5. Bonus Management Functions
+CREATE OR REPLACE FUNCTION deduct_bonuses(user_id_val UUID, amount_val NUMERIC)
+RETURNS void AS $$
+BEGIN
+  UPDATE profiles
+  SET bonus_balance = bonus_balance - amount_val
+  WHERE id = user_id_val;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

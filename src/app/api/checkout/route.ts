@@ -42,6 +42,19 @@ export async function POST(req: Request) {
 
     if (orderError) throw orderError;
 
+    // 2.5 Deduct bonuses from user profile if used
+    if (user && bonusesUsed > 0) {
+      const { error: bonusError } = await supabaseAdmin.rpc('deduct_bonuses', {
+        user_id_val: user.id,
+        amount_val: bonusesUsed
+      });
+      
+      if (bonusError) {
+        console.error("Bonus deduction error:", bonusError);
+        // Note: We don't throw here to not break the order flow, but it's better to ensure this RPC exists
+      }
+    }
+
     // 3. Process based on payment method
     if (paymentMethod === "mono") {
       // Flow A: MonoBank Payment
