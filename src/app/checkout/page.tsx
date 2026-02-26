@@ -99,7 +99,10 @@ export default function CheckoutPage() {
     setIsCityDropdownOpen(true);
     
     if (typingTimeout) clearTimeout(typingTimeout);
-    setTypingTimeout(setTimeout(() => searchCities(val), 500));
+    const timeout = setTimeout(() => {
+      searchCities(val);
+    }, 400); // 400ms delay is usually optimal for NP API
+    setTypingTimeout(timeout);
   };
 
   const handleCitySelect = (city: NPCity) => {

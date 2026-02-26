@@ -31,62 +31,62 @@ export default async function ProfilePage() {
     .order('created_at', { ascending: false });
 
   return (
-    <div className="container mx-auto px-4 py-10 lg:px-8 max-w-6xl">
+    <div className="container mx-auto px-4 py-8 lg:px-8 max-w-6xl min-h-0">
       {/* Breadcrumb / Back Navigation */}
       <Link 
         href="/" 
-        className="inline-flex items-center gap-2.5 text-gray-400 hover:text-gray-900 font-bold mb-10 transition-all group"
+        className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-900 font-bold mb-6 transition-all group text-sm"
       >
-        <div className="p-2.5 bg-white rounded-2xl shadow-sm group-hover:shadow-md transition-all border border-gray-100/50">
-          <ArrowLeft className="w-4 h-4" />
+        <div className="p-2 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-all border border-gray-100/50">
+          <ArrowLeft className="w-3.5 h-3.5" />
         </div>
         Назад на головну
       </Link>
 
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
         <div>
-          <h1 className="text-4xl font-black text-gray-900 tracking-tight mb-2">Особистий кабінет</h1>
-          <p className="text-lg text-gray-500 font-medium tracking-tight">Вітаємо, {profile?.full_name || user.email}!</p>
+          <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-1">Особистий кабінет</h1>
+          <p className="text-base text-gray-500 font-medium tracking-tight">Вітаємо, {profile?.full_name || user.email}!</p>
         </div>
         <form action={signOut}>
-          <button className="flex items-center px-6 py-3 text-red-500 bg-red-50/50 hover:bg-red-50 font-bold rounded-2xl transition-all active:scale-95 border border-red-100/50">
-            <LogOut className="w-4 h-4 mr-2.5" />
-            Вийти з акаунту
+          <button className="flex items-center px-5 py-2.5 text-red-500 bg-red-50/50 hover:bg-red-50 font-bold rounded-xl text-sm transition-all active:scale-95 border border-red-100/50">
+            <LogOut className="w-3.5 h-3.5 mr-2" />
+            Вийти
           </button>
         </form>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Column: Loyalty & Settings */}
-        <div className="lg:col-span-4 flex flex-col gap-8">
+        <div className="lg:col-span-4 flex flex-col gap-6">
             {/* Bonus Card */}
-            <div className="bg-gradient-to-br from-blue-600 via-blue-500 to-sky-400 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-blue-500/30 relative overflow-hidden group">
+            <div className="bg-gradient-to-br from-blue-600 via-blue-500 to-sky-400 rounded-[2rem] p-8 text-white shadow-xl shadow-blue-500/20 relative overflow-hidden group">
               <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-white/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
               
-              <div className="flex items-center gap-3 mb-8 bg-white/15 w-fit px-5 py-2 rounded-full border border-white/20 backdrop-blur-sm">
-                <Gift className="w-4 h-4" />
-                <span className="font-bold text-xs tracking-widest uppercase">Бонусна програма</span>
+              <div className="flex items-center gap-2.5 mb-6 bg-white/15 w-fit px-4 py-1.5 rounded-full border border-white/20 backdrop-blur-sm">
+                <Gift className="w-3.5 h-3.5" />
+                <span className="font-bold text-[10px] tracking-widest uppercase">Бонусна програма</span>
               </div>
               
-              <div className="flex items-end gap-2 mb-2">
-                <span className="text-7xl font-black leading-none">{profile?.bonus_balance ?? 0}</span>
-                <span className="text-2xl font-black mb-1 opacity-80">₴</span>
+              <div className="flex items-end gap-1.5 mb-1.5">
+                <span className="text-5xl font-black leading-none">{profile?.bonus_balance ?? 0}</span>
+                <span className="text-xl font-black mb-1 opacity-80">₴</span>
               </div>
               
-              <div className="text-blue-50 font-medium opacity-90 mb-6">Доступно до списання</div>
+              <div className="text-blue-50 text-sm font-medium opacity-90 mb-6">Доступно до списання</div>
 
               {profile?.frozen_bonuses > 0 && (
-                <div className="bg-white/10 rounded-[1.5rem] p-5 border border-white/20 backdrop-blur-md">
-                  <div className="text-2xl font-black mb-1">{profile.frozen_bonuses} ₴</div>
-                  <div className="text-[10px] text-blue-100 font-black uppercase tracking-widest opacity-80">В обробці (заморожено)</div>
+                <div className="bg-white/10 rounded-[1.25rem] p-4 border border-white/20 backdrop-blur-md">
+                  <div className="text-xl font-black mb-0.5">{profile.frozen_bonuses} ₴</div>
+                  <div className="text-[9px] text-blue-100 font-black uppercase tracking-widest opacity-80">В обробці (заморожено)</div>
                 </div>
               )}
             </div>
 
             {/* Settings Group */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <ProfileSettings 
                 initialData={{
                   full_name: profile?.full_name || "",
