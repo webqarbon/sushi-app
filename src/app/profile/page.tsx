@@ -60,7 +60,7 @@ export default async function ProfilePage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Column: Loyalty & Settings */}
-        <div className="lg:col-span-4 flex flex-col gap-6 lg:h-[735px]">
+        <div className="lg:col-span-4 flex flex-col gap-6 lg:h-[735px] overflow-hidden">
             {/* Bonus Card */}
             <div className="bg-gradient-to-br from-blue-600 via-blue-500 to-sky-400 rounded-3xl p-6 text-white shadow-xl shadow-blue-500/20 relative overflow-hidden group shrink-0">
               <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-white/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
@@ -86,7 +86,7 @@ export default async function ProfilePage() {
             </div>
 
             {/* Settings Group */}
-            <div className="space-y-4 min-h-0 flex-1">
+            <div className="space-y-4 min-h-0 flex-1 overflow-y-auto custom-scrollbar">
               <ProfileSettings 
                 initialData={{
                   full_name: profile?.full_name || "",
@@ -98,7 +98,7 @@ export default async function ProfilePage() {
         </div>
 
         {/* Right Column: Order history */}
-        <div className="lg:col-span-8 lg:h-[735px]">
+        <div className="lg:col-span-8 lg:h-[735px] overflow-hidden">
           <OrderHistory initialOrders={orders || []} userId={user.id} />
         </div>
 
