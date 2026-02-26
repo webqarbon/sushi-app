@@ -9,8 +9,8 @@ const SLIDES = [
   {
     title: "Подарунок за відгук!",
     description: "Залишай відгук у Google та отримуй смачний подарунок до наступного замовлення!",
-    image: "https://ooouuetfdrnmdvmhqdji.supabase.co/storage/v1/object/public/products//hero_promo.png",
-    fallbackImage: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&q=80&w=1000",
+    image: "/images/hero/slide1.png",
+    fallbackImage: "/images/hero/slide1.png",
     badge: "Акція тижня",
     icon: <Gift className="w-3.5 h-3.5" />,
     link: "/#reviews",
@@ -20,8 +20,8 @@ const SLIDES = [
   {
     title: "Новинки в меню!",
     description: "Спробуйте наші нові страви за спеціальною ціною. Тільки цього тижня.",
-    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=1000",
-    fallbackImage: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=1000",
+    image: "/images/hero/slide2.png",
+    fallbackImage: "/images/hero/slide2.png",
     badge: "Скоро",
     icon: <Sparkles className="w-3.5 h-3.5" />,
     link: "/#catalog",
@@ -31,8 +31,8 @@ const SLIDES = [
   {
     title: "Швидка доставка",
     description: "Насолоджуйтесь улюбленими стравами вже за 30-45 хвилин. Гарантуємо якість.",
-    image: "https://images.unsplash.com/photo-1526367790999-0150786486a9?auto=format&fit=crop&q=80&w=1000",
-    fallbackImage: "https://images.unsplash.com/photo-1526367790999-0150786486a9?auto=format&fit=crop&q=80&w=1000",
+    image: "/images/hero/slide3.png",
+    fallbackImage: "/images/hero/slide3.png",
     badge: "Швидкість",
     icon: <Zap className="w-3.5 h-3.5" />,
     link: "/#delivery",
