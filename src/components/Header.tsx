@@ -11,9 +11,15 @@ export default function Header() {
   const items = useCartStore((state) => state.items);
   const cartItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
+  const navLinks = [
+    { name: "Каталог", href: "/#catalog" },
+    { name: "Про нас", href: "/#about" },
+    { name: "Контакти", href: "/#consultation" },
+    { name: "FAQ", href: "/#faq" },
+  ];
+
   return (
     <>
-export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const items = useCartStore((state) => state.items);
   const cartItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
