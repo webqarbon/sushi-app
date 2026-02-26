@@ -49,10 +49,10 @@ export default function CategoryNav({ categories, activeCategoryId, onSelect }: 
           <button
             key={cat.id}
             onClick={() => onSelect(cat.id)}
-            className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl transition-all duration-300 shrink-0 whitespace-nowrap group ${
+            className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl transition-all duration-300 shrink-0 whitespace-nowrap group border ${
               isActive 
                 ? "bg-white text-orange-500 shadow-premium border-transparent" 
-                : "bg-white/50 text-gray-500 hover:bg-white hover:text-[#1A1C1E] shadow-sm border border-gray-100/50"
+                : "bg-white/50 text-gray-500 hover:bg-white hover:text-[#1A1C1E] shadow-sm border-gray-100/50"
             }`}
           >
             <div className={`p-2 rounded-xl transition-colors duration-300 ${
@@ -67,9 +67,11 @@ export default function CategoryNav({ categories, activeCategoryId, onSelect }: 
             }`}>
               {cat.name}
             </span>
-            {isActive && (
-              <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-lg shadow-orange-500/50 animate-pulse" />
-            )}
+            
+            {/* Stable indicator dot to prevent layout shift */}
+            <div className={`w-1.5 h-1.5 rounded-full bg-orange-500 shadow-lg shadow-orange-500/50 transition-all duration-300 ${
+              isActive ? "opacity-100 scale-100 animate-pulse" : "opacity-0 scale-0"
+            }`} />
           </button>
         );
       })}
