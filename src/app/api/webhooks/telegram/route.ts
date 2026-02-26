@@ -53,6 +53,15 @@ export async function POST(req: Request) {
 
           console.log("Telegram Webhook: Order updated to paid");
 
+          // Finalize bonuses: Confirm Frozen -> Spent
+          if (order.user_id && order.bonuses_used > 0) {
+            await supabaseAdmin.rpc('confirm_bonuses', {
+              user_id_val: order.user_id,
+              amount_val: order.bonuses_used
+            });
+            console.log(`Confirmed ${order.bonuses_used} bonuses for user ${order.user_id}`);
+          }
+
           // Update message in Telegram
           const clientName = order.delivery_data?.name || "Клієнт";
           const total = order.total_price || 0;
@@ -60,8 +69,17 @@ export async function POST(req: Request) {
           await editTelegramMessage(chatId, messageId, `✅ *Замовлення ПІДТВЕРДЖЕНО*\n\nID: \`${orderId}\`\nКлієнт: ${clientName}\nСума: ${total} ₴\nСтатус: ОПЛАЧЕНО`);
           await answerCallbackQuery(callbackQueryId, "Замовлення підтверджено!");
         } else {
-          // Cancel flow
+          // Cancel flow: Return Frozen -> Balance
           console.log("Telegram Webhook: Cancelling order");
+          
+          if (order.user_id && order.bonuses_used > 0) {
+            await supabaseAdmin.rpc('cancel_bonuses', {
+              user_id_val: order.user_id,
+              amount_val: order.bonuses_used
+            });
+            console.log(`Returned ${order.bonuses_used} bonuses to user ${order.user_id}`);
+          }
+
           await editTelegramMessage(chatId, messageId, `❌ *Замовлення СКАСОВАНО*\n\nID: \`${orderId}\``);
           await answerCallbackQuery(callbackQueryId, "Замовлення скасовано");
         }

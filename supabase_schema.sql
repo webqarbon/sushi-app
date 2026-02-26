@@ -6,8 +6,47 @@ CREATE TABLE profiles (
   id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
   full_name TEXT,
   phone TEXT,
-  bonus_balance NUMERIC DEFAULT 0
+  bonus_balance NUMERIC DEFAULT 0,
+  frozen_bonuses NUMERIC DEFAULT 0
 );
+
+-- ... (RLS and trigger remain same)
+
+-- 5. Bonus Management Functions
+
+-- Freeze bonuses (move from balance to frozen)
+CREATE OR REPLACE FUNCTION freeze_bonuses(user_id_val UUID, amount_val NUMERIC)
+RETURNS void AS $$
+BEGIN
+  UPDATE profiles
+  SET 
+    bonus_balance = bonus_balance - amount_val,
+    frozen_bonuses = frozen_bonuses + amount_val
+  WHERE id = user_id_val;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Confirm bonuses (remove from frozen permanently)
+CREATE OR REPLACE FUNCTION confirm_bonuses(user_id_val UUID, amount_val NUMERIC)
+RETURNS void AS $$
+BEGIN
+  UPDATE profiles
+  SET frozen_bonuses = frozen_bonuses - amount_val
+  WHERE id = user_id_val;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Cancel bonuses (move from frozen back to balance)
+CREATE OR REPLACE FUNCTION cancel_bonuses(user_id_val UUID, amount_val NUMERIC)
+RETURNS void AS $$
+BEGIN
+  UPDATE profiles
+  SET 
+    bonus_balance = bonus_balance + amount_val,
+    frozen_bonuses = frozen_bonuses - amount_val
+  WHERE id = user_id_val;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Turn on RLS for Profiles
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;

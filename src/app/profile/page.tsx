@@ -55,7 +55,14 @@ export default async function ProfilePage() {
               <div className="text-5xl font-black mb-1">
                 {profile?.bonus_balance ?? 0}
               </div>
-              <div className="text-blue-100 font-medium opacity-90">Доступно до списання (₴)</div>
+              <div className="text-blue-100 font-medium opacity-90 mb-4">Доступно до списання (₴)</div>
+
+              {profile?.frozen_bonuses > 0 && (
+                <div className="bg-white/10 rounded-2xl p-4 border border-white/20">
+                  <div className="text-2xl font-bold">{profile.frozen_bonuses}</div>
+                  <div className="text-xs text-blue-100 font-medium opacity-80 uppercase tracking-wider">Заморожено (в обробці)</div>
+                </div>
+              )}
             </div>
 
             {/* User details settings form */}

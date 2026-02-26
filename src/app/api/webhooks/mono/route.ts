@@ -62,6 +62,16 @@ export async function POST(req: Request) {
 
     // Give bonuses if linked to known user
     if (order.user_id) {
+       // 1. Confirm Frozen Bonuses
+       if (order.bonuses_used > 0) {
+         await supabaseAdmin.rpc('confirm_bonuses', {
+           user_id_val: order.user_id,
+           amount_val: order.bonuses_used
+         });
+         console.log(`Confirmed ${order.bonuses_used} frozen bonuses for user ${order.user_id}`);
+       }
+
+       // 2. Add New Earned Bonuses
        const { data: profile } = await supabaseAdmin
          .from("profiles")
          .select("bonus_balance")
