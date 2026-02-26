@@ -16,9 +16,13 @@ export async function POST(req: Request) {
       const chatId = message.chat.id;
       const messageId = message.message_id;
 
+      console.log(`Telegram Webhook: Received callback ${data} from chat ${chatId}`);
+
       if (data.startsWith("confirm_") || data.startsWith("cancel_")) {
         const action = data.startsWith("confirm_") ? "confirm" : "cancel";
-        const orderId = data.replace(`${action}_`, "");
+        const orderId = data.replace(`${action}_`, "").trim();
+
+        console.log(`Telegram Webhook: Action=${action}, OrderID=${orderId}`);
 
         // Find Order
         const { data: order, error: fetchError } = await supabaseAdmin
@@ -28,9 +32,12 @@ export async function POST(req: Request) {
           .single();
 
         if (fetchError || !order) {
+          console.error("Telegram Webhook: Order not found or fetch error:", fetchError);
           await answerCallbackQuery(callbackQueryId, "Помилка: замовлення не знайдено");
           return NextResponse.json({ ok: true });
         }
+
+        console.log("Telegram Webhook: Order found:", order.id);
 
         if (action === "confirm") {
           // Update order status
@@ -39,13 +46,22 @@ export async function POST(req: Request) {
             .update({ payment_status: "paid" })
             .eq("id", orderId);
 
-          if (updateError) throw updateError;
+          if (updateError) {
+            console.error("Telegram Webhook: Update error:", updateError);
+            throw updateError;
+          }
+
+          console.log("Telegram Webhook: Order updated to paid");
 
           // Update message in Telegram
-          await editTelegramMessage(chatId, messageId, `✅ *Замовлення ПІДТВЕРДЖЕНО*\n\nID: \`${orderId}\`\nКлієнт: ${order.delivery_data.name}\nСума: ${order.total_price} ₴\nСтатус: ОПЛАЧЕНО`);
+          const clientName = order.delivery_data?.name || "Клієнт";
+          const total = order.total_price || 0;
+
+          await editTelegramMessage(chatId, messageId, `✅ *Замовлення ПІДТВЕРДЖЕНО*\n\nID: \`${orderId}\`\nКлієнт: ${clientName}\nСума: ${total} ₴\nСтатус: ОПЛАЧЕНО`);
           await answerCallbackQuery(callbackQueryId, "Замовлення підтверджено!");
         } else {
           // Cancel flow
+          console.log("Telegram Webhook: Cancelling order");
           await editTelegramMessage(chatId, messageId, `❌ *Замовлення СКАСОВАНО*\n\nID: \`${orderId}\``);
           await answerCallbackQuery(callbackQueryId, "Замовлення скасовано");
         }
