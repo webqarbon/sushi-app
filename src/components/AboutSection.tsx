@@ -27,7 +27,7 @@ const features = [
 
 export default function AboutSection() {
   return (
-    <section className="w-full mb-24">
+    <section className="w-full mb-24" id="about">
       <div className="bg-white rounded-[3rem] p-10 lg:p-20 shadow-premium border border-gray-100/50 relative overflow-hidden">
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-50" />
