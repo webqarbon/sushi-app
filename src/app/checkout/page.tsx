@@ -385,17 +385,18 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="flex flex-wrap gap-2">
-                    {[25, 60, 75].map((amount) => (
+                    {[25, 60, 75].map((percent) => (
                       <button
-                        key={amount}
+                        key={percent}
                         type="button"
                         onClick={() => {
-                          const val = Math.min(amount, userBonusBalance, subtotal);
+                          const amountFromPercent = Math.floor((subtotal * percent) / 100);
+                          const val = Math.min(amountFromPercent, userBonusBalance, subtotal);
                           setFormData({ ...formData, bonusesUsed: val });
                         }}
                         className="px-4 py-2 bg-white border border-blue-100 text-blue-600 font-bold rounded-xl hover:bg-blue-600 hover:text-white transition-all text-sm shadow-sm"
                       >
-                        {amount} ₴
+                        {percent}%
                       </button>
                     ))}
                     <button
