@@ -21,13 +21,56 @@ export async function POST(req: Request) {
     const supabase = await createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
 
+    // 2.1 Fetch actual product data from DB to prevent price tampering
+    const productIds = items.map((i: any) => i.product.id);
+    const { data: dbProducts, error: dbError } = await supabaseAdmin
+      .from("products")
+      .select("id, price, bonus_percent")
+      .in("id", productIds);
+
+    if (dbError || !dbProducts) throw new Error("Failed to verify product prices");
+
+    // 2.2 Recalculate total on server
+    let serverTotal = 0;
+    const validatedItems = items.map((cartItem: any) => {
+      const dbProduct = dbProducts.find(p => p.id === cartItem.product.id);
+      if (!dbProduct) throw new Error(`Product not found: ${cartItem.product.id}`);
+      
+      const subtotal = Number(dbProduct.price) * cartItem.quantity;
+      serverTotal += subtotal;
+      
+      return {
+        ...cartItem,
+        product: {
+          ...cartItem.product,
+          price: Number(dbProduct.price),
+          bonus_percent: Number(dbProduct.bonus_percent)
+        }
+      };
+    });
+
+    // 2.3 Check bonuses if user is logged in
+    let finalBonusesUsed = 0;
+    if (user && bonusesUsed > 0) {
+      const { data: profile } = await supabaseAdmin
+        .from("profiles")
+        .select("bonus_balance")
+        .eq("id", user.id)
+        .single();
+      
+      const maxAvailable = Number(profile?.bonus_balance || 0);
+      finalBonusesUsed = Math.min(bonusesUsed, maxAvailable, serverTotal); 
+    }
+
+    const finalTotalPrice = serverTotal - finalBonusesUsed;
+
     const { data: order, error: orderError } = await supabaseAdmin
       .from("orders")
       .insert({
-        user_id: user?.id || null, // Now correctly associates with the user!
-        items_json: items,
-        total_price,
-        bonuses_used: bonusesUsed,
+        user_id: user?.id || null,
+        items_json: validatedItems,
+        total_price: finalTotalPrice,
+        bonuses_used: finalBonusesUsed,
         payment_status: paymentMethod === "mono" ? "pending" : "awaiting_check",
         payment_method: paymentMethod,
         delivery_data: { 
@@ -43,10 +86,10 @@ export async function POST(req: Request) {
     if (orderError) throw orderError;
 
     // 2.5 Freeze bonuses from user profile if used
-    if (user && bonusesUsed > 0) {
+    if (user && finalBonusesUsed > 0) {
       const { error: bonusError } = await supabaseAdmin.rpc('freeze_bonuses', {
         user_id_val: user.id,
-        amount_val: bonusesUsed
+        amount_val: finalBonusesUsed
       });
       
       if (bonusError) {
@@ -59,15 +102,15 @@ export async function POST(req: Request) {
       // Flow A: MonoBank Payment
       // Request mono invoice
       const monoReqBody = {
-        amount: total_price * 100, // in kopecks
+        amount: Math.round(finalTotalPrice * 100), // in kopecks
         ccy: 980,
         merchantPaymInfo: {
           reference: order.id,
-          destination: "Оплата замовлення FROZEN",
-          basketOrder: items.map((i: { quantity: number; product: { name: string; price: number; image_url: string } }) => ({
+          destination: "Оплата замовлення SUSHI ICONS",
+          basketOrder: validatedItems.map((i: any) => ({
             name: i.product.name,
             qty: i.quantity,
-            sum: (i.product.price * i.quantity) * 100,
+            sum: Math.round((i.product.price * i.quantity) * 100),
             icon: i.product.image_url,
             unit: "шт.",
           })),
@@ -104,8 +147,8 @@ export async function POST(req: Request) {
 ID: \`${order.id}\`
 Клієнт: ${name} (${phone})
 Доставка: ${cityName}, ${branchName}
-Сума до оплати: *${total_price} ₴*
-Використано бонусів: ${bonusesUsed} ₴
+Сума до оплати: *${finalTotalPrice} ₴*
+Використано бонусів: ${finalBonusesUsed} ₴
 
 *Очікує ручної перевірки оплати!*`;
 

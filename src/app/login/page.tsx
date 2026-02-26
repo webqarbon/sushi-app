@@ -104,6 +104,7 @@ function LoginForm() {
             name="email"
             required
             type="email" 
+            autoComplete="email"
             placeholder="name@example.com"
             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium"
           />
@@ -127,6 +128,7 @@ function LoginForm() {
               name="password"
               required={!isForgot}
               type="password" 
+              autoComplete={isLogin ? "current-password" : "new-password"}
               placeholder="••••••••"
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium"
             />

@@ -100,7 +100,7 @@ export default function OrderHistory({ initialOrders, userId }: OrderHistoryProp
                       </span>
                   </div>
                   <div className="text-sm text-gray-500 font-medium flex items-center gap-2">
-                    <span>
+                    <span suppressHydrationWarning>
                       {new Date(order.created_at).toLocaleDateString('uk-UA', { 
                         day: '2-digit', 
                         month: '2-digit', 

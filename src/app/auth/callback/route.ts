@@ -9,9 +9,9 @@ export async function GET(request: Request) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      return NextResponse.redirect(`${origin}/profile`)
+      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/profile`)
     }
   }
 
-  return NextResponse.redirect(`${origin}/login?error=Не вдалося увійти через Google`)
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/login?error=Не вдалося увійти через Google`)
 }

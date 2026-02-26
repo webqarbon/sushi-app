@@ -1,15 +1,61 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import crypto from "crypto";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+// Monobank Public Key for signature verification
+// In production, it's better to fetch this from https://api.monobank.ua/api/merchant/pubkey 
+// but for stability we can use the known key or fetch it once.
+let monoPubKey: string | null = null;
+
+async function getMonoPubKey() {
+  if (monoPubKey) return monoPubKey;
+  try {
+    const res = await fetch("https://api.monobank.ua/api/merchant/pubkey", {
+      headers: { "X-Token": process.env.MONOBANK_API_KEY! }
+    });
+    const data = await res.json();
+    monoPubKey = data.key;
+    return monoPubKey;
+  } catch (e) {
+    console.error("Failed to fetch Monobank Public Key", e);
+    return null;
+  }
+}
+
 export async function POST(req: Request) {
   try {
-    const data = await req.json();
-    const payload = data.data || data; // Handle both flat and nested formats
+    const bodyText = await req.text();
+    const signature = req.headers.get("x-sign");
+
+    if (!signature) {
+      console.error("Monobank Webhook: Missing X-Sign header");
+      return NextResponse.json({ error: "No signature" }, { status: 400 });
+    }
+
+    // 1. Verify Signature
+    const pubKey = await getMonoPubKey();
+    if (pubKey) {
+      const verify = crypto.createVerify("sha256");
+      verify.update(bodyText);
+      const isVerified = verify.verify(
+        `-----BEGIN PUBLIC KEY-----\n${pubKey}\n-----END PUBLIC KEY-----`,
+        signature,
+        "base64"
+      );
+
+      if (!isVerified) {
+        console.error("Monobank Webhook: Signature verification failed");
+        return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
+      }
+    }
+
+    const data = JSON.parse(bodyText);
+    const payload = data.data || data; 
     console.log("Processing Monobank Payload:", JSON.stringify(payload, null, 2));
 
     // Only accept status 'success'
