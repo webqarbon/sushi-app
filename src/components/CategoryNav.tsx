@@ -40,7 +40,7 @@ export default function CategoryNav({ categories, activeCategoryId, onSelect }: 
   }, [categories]);
 
   return (
-    <div className="w-full overflow-x-auto custom-scrollbar flex gap-3 pb-4">
+    <div className="w-full overflow-x-auto hide-scrollbar flex gap-3 pb-4">
       {sortedCategories.map((cat) => {
         const Icon = iconMap[cat.slug] || Utensils;
         const isActive = activeCategoryId === cat.id;
