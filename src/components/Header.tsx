@@ -2,24 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, User, Phone, MapPin, Search, Menu as MenuIcon, ChevronDown } from "lucide-react";
+import { ShoppingCart, User, Phone } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import CartDrawer from "./CartDrawer";
 
 export default function Header() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const items = useCartStore((state) => state.items);
-  const cartItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
-
-  const navLinks = [
-    { name: "Каталог", href: "/#catalog" },
-    { name: "Про нас", href: "/#about" },
-    { name: "Контакти", href: "/#consultation" },
-    { name: "FAQ", href: "/#faq" },
-  ];
-
-  return (
-    <>
   const [isCartOpen, setIsCartOpen] = useState(false);
   const items = useCartStore((state) => state.items);
   const cartItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
