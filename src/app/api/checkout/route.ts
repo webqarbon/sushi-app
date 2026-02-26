@@ -1,0 +1,128 @@
+import { NextResponse } from "next/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
+import { createClient as createServerClient } from "@/utils/supabase/server";
+
+// Init Supabase admin client here since we need to bypass RLS for secure order creation/bonus assigning
+const supabaseAdmin = createAdminClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { items, name, phone, cityName, cityRef, branchName, branchRef, bonusesUsed, paymentMethod, total_price } = body;
+
+    // 1. Validate inputs
+    if (!items?.length) return NextResponse.json({ error: "Empty cart" }, { status: 400 });
+
+    // 2. Create Order in DB
+    // Try to get authenticated user session securely
+    const supabase = await createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from("orders")
+      .insert({
+        user_id: user?.id || null, // Now correctly associates with the user!
+        items_json: items,
+        total_price,
+        bonuses_used: bonusesUsed,
+        payment_status: paymentMethod === "mono" ? "pending" : "awaiting_check",
+        payment_method: paymentMethod,
+        delivery_data: { 
+          name, 
+          phone, 
+          city: cityName || cityRef, 
+          branch: branchName || branchRef 
+        }
+      })
+      .select()
+      .single();
+
+    if (orderError) throw orderError;
+
+    // 3. Process based on payment method
+    if (paymentMethod === "mono") {
+      // Flow A: MonoBank Payment
+      // Request mono invoice
+      const monoReqBody = {
+        amount: total_price * 100, // in kopecks
+        ccy: 980,
+        merchantPaymInfo: {
+          reference: order.id,
+          destination: "Оплата замовлення FROZEN",
+          basketOrder: items.map((i: { quantity: number; product: { name: string; price: number; image_url: string } }) => ({
+            name: i.product.name,
+            qty: i.quantity,
+            sum: (i.product.price * i.quantity) * 100,
+            icon: i.product.image_url,
+            unit: "шт.",
+          })),
+        },
+        redirectUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
+        webHookUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/api/webhooks/mono`,
+      };
+
+      // Real MonoBank Request
+      const monoRes = await fetch("https://api.monobank.ua/api/merchant/invoice/create", {
+        method: "POST",
+        headers: { 
+          "X-Token": process.env.MONOBANK_API_KEY!,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(monoReqBody),
+      });
+
+      if (!monoRes.ok) {
+        const errText = await monoRes.text();
+        console.error("MonoBank API Error:", errText, "Status:", monoRes.status);
+        throw new Error(`MonoBank: ${errText || "Не вдалося створити рахунок"}`);
+      }
+
+      const monoData = await monoRes.json();
+      return NextResponse.json({ url: monoData.pageUrl });
+    } else {
+      // Flow B: Manual Details Payment (Telegram Admin)
+      const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+      const ADMIN_ID = process.env.ADMIN_TELEGRAM_ID;
+
+      if (BOT_TOKEN && ADMIN_ID) {
+        const messageText = `🔵 *Нове замовлення (Реквізити)*
+ID: \`${order.id}\`
+Клієнт: ${name} (${phone})
+Доставка: ${cityName}, ${branchName}
+Сума до оплати: *${total_price} ₴*
+Використано бонусів: ${bonusesUsed} ₴
+
+*Очікує ручної перевірки оплати!*`;
+
+        const keyboard = {
+          inline_keyboard: [
+            [
+              { text: "✅ ПІДТВЕРДИТИ ОПЛАТУ", callback_data: `confirm_${order.id}` },
+              { text: "❌ СКАСУВАТИ", callback_data: `cancel_${order.id}` }
+            ]
+          ]
+        };
+
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: ADMIN_ID,
+            text: messageText,
+            parse_mode: "Markdown",
+            reply_markup: keyboard
+          })
+        });
+      }
+
+      return NextResponse.json({ success: true, orderId: order.id });
+    }
+
+  } catch (err: unknown) {
+    console.error("Checkout Error:", err);
+    return NextResponse.json({ error: (err as Error).message || "Unknown error" }, { status: 500 });
+  }
+}
