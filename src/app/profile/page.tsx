@@ -5,6 +5,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import ProfileSettings from "@/components/ProfileSettings";
 import OrderHistory from "@/components/OrderHistory";
+import ChangePassword from "@/components/ChangePassword";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -83,6 +84,9 @@ export default async function ProfilePage() {
                 phone: profile?.phone || "",
               }} 
             />
+
+            {/* Change Password */}
+            <ChangePassword />
         </div>
 
         {/* Right Side: Order history */}

@@ -51,3 +51,36 @@ export async function signOut() {
   await supabase.auth.signOut();
   redirect("/");
 }
+
+export async function forgotPassword(formData: FormData) {
+  const supabase = await createClient();
+  const email = formData.get("email") as string;
+  const origin = formData.get("origin") as string;
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=/reset-password`,
+  });
+
+  if (error) {
+    console.error("Reset Password Error:", error);
+    return { error: "Не вдалося надіслати лист для скидання пароля" };
+  }
+
+  return { success: "Лист для скидання пароля надіслано на вашу пошту" };
+}
+
+export async function updatePassword(formData: FormData) {
+  const supabase = await createClient();
+  const password = formData.get("password") as string;
+
+  const { error } = await supabase.auth.updateUser({
+    password: password,
+  });
+
+  if (error) {
+    console.error("Update Password Error:", error);
+    return { error: "Не вдалося оновити пароль" };
+  }
+
+  return { success: "Пароль успішно оновлено" };
+}
