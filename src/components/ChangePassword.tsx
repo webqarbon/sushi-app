@@ -5,7 +5,6 @@ import { updatePassword } from "@/app/actions/auth";
 import { Lock } from "lucide-react";
 
 export default function ChangePassword() {
-  const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -27,31 +26,13 @@ export default function ChangePassword() {
       setMessage({ type: "error", text: res.error as string });
     } else if (res.success) {
       setMessage({ type: "success", text: res.success as string });
-      // Reset form or close after success
-      setTimeout(() => {
-        setIsOpen(false);
-        setMessage(null);
-      }, 2000);
+      // Reset form fields would be nice but not strictly required by user
     }
     setLoading(false);
   };
 
-  if (!isOpen) {
-    return (
-      <button 
-        onClick={() => setIsOpen(true)}
-        className="w-full flex items-center justify-center gap-3 p-4 bg-white hover:bg-gray-50 text-gray-700 font-black rounded-2xl border border-gray-100 shadow-sm transition-all active:scale-[0.98] group text-sm"
-      >
-        <div className="p-1.5 bg-gray-50 rounded-lg group-hover:bg-white transition-colors">
-          <Lock className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-500" />
-        </div>
-        Змінити пароль
-      </button>
-    );
-  }
-
   return (
-    <div className="bg-white rounded-[1.5rem] p-5 border border-gray-100/50 shadow-sm animate-in fade-in zoom-in duration-300">
+    <div className="bg-white rounded-[1.5rem] p-5 border border-gray-100/50 shadow-sm">
       <h3 className="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
         <Lock className="w-4 h-4 text-gray-400" />
         Зміна пароля
@@ -90,22 +71,13 @@ export default function ChangePassword() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-2 pt-1">
-          <button 
-            type="button"
-            onClick={() => setIsOpen(false)}
-            className="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-500 font-bold rounded-xl transition-all border border-gray-100 text-[11px] uppercase tracking-wider"
-          >
-            Скасувати
-          </button>
-          <button 
-            type="submit"
-            disabled={loading}
-            className="p-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl shadow-md transition-all active:scale-95 disabled:opacity-50 text-[11px] uppercase tracking-wider"
-          >
-            {loading ? "..." : "Оновити"}
-          </button>
-        </div>
+        <button 
+          type="submit"
+          disabled={loading}
+          className="w-full p-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl shadow-md transition-all active:scale-95 disabled:opacity-50 text-[11px] uppercase tracking-wider"
+        >
+          {loading ? "..." : "Оновити пароль"}
+        </button>
       </form>
     </div>
   );
