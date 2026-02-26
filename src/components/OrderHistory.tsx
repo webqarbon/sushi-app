@@ -77,7 +77,7 @@ export default function OrderHistory({ initialOrders, userId }: OrderHistoryProp
            <p className="font-medium">Ви ще не зробили жодного замовлення.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
+        <div className="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar max-h-[600px]">
           {orders.map((order) => (
             <div key={order.id} className="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden transition-all duration-200">
               <div 
@@ -100,7 +100,15 @@ export default function OrderHistory({ initialOrders, userId }: OrderHistoryProp
                       </span>
                   </div>
                   <div className="text-sm text-gray-500 font-medium flex items-center gap-2">
-                    <span>{new Date(order.created_at).toLocaleDateString('uk-UA')}</span>
+                    <span>
+                      {new Date(order.created_at).toLocaleDateString('uk-UA', { 
+                        day: '2-digit', 
+                        month: '2-digit', 
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
                     <span>•</span>
                     <span>{order.items_json.length} позицій</span>
                   </div>
