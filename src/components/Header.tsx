@@ -20,13 +20,13 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-[#F3F5F9]/80 backdrop-blur-md py-3">
+      <header className="sticky top-0 z-40 w-full bg-[#F3F5F9]/80 backdrop-blur-md py-1.5">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between">
             
             {/* Left side: Phone */}
-            <Link href="tel:+380953727599" className="flex items-center justify-center bg-white w-12 h-12 lg:w-14 lg:h-14 rounded-2xl shadow-sm hover:shadow-md transition-all text-[#1A1C1E] group">
-              <Phone className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
+            <Link href="tel:+380953727599" className="flex items-center justify-center bg-white w-10 h-10 lg:w-11 lg:h-11 rounded-xl shadow-sm hover:shadow-md transition-all text-[#1A1C1E] group">
+              <Phone className="w-4 h-4 group-hover:text-blue-600 transition-colors" />
             </Link>
 
             {/* Center Navigation: Links */}
@@ -35,7 +35,7 @@ export default function Header() {
                 <Link 
                   key={link.name} 
                   href={link.href}
-                  className="text-[11px] font-black uppercase tracking-widest text-gray-500 hover:text-blue-600 transition-all relative group py-2"
+                  className="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-blue-600 transition-all relative group py-1"
                 >
                   {link.name}
                   <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-blue-600 transition-all group-hover:w-full rounded-full"></span>
@@ -44,10 +44,10 @@ export default function Header() {
             </nav>
 
             {/* Right side: Cart & Profile */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <button 
                 onClick={() => setIsCartOpen(true)}
-                className="flex items-center gap-3 bg-white px-4 lg:px-6 h-12 lg:h-14 rounded-2xl shadow-sm hover:shadow-md transition-all font-black"
+                className="flex items-center gap-2 bg-white px-3 lg:px-5 h-10 lg:h-11 rounded-xl shadow-sm hover:shadow-md transition-all font-black"
               >
                 <div className="relative">
                   <ShoppingCart className="w-5 h-5 text-[#1A1C1E]" />
@@ -57,11 +57,11 @@ export default function Header() {
                     </span>
                   )}
                 </div>
-                <span className="hidden sm:block text-gray-900 text-sm">Кошик</span>
+                <span className="hidden sm:block text-gray-900 text-xs">Кошик</span>
               </button>
 
-              <Link href="/profile" className="flex items-center justify-center bg-white w-12 h-12 lg:w-14 lg:h-14 rounded-2xl shadow-sm hover:shadow-md transition-all text-[#1A1C1E] group">
-                <User className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
+              <Link href="/profile" className="flex items-center justify-center bg-white w-10 h-10 lg:w-11 lg:h-11 rounded-xl shadow-sm hover:shadow-md transition-all text-[#1A1C1E] group">
+                <User className="w-4 h-4 group-hover:text-blue-600 transition-colors" />
               </Link>
             </div>
 
