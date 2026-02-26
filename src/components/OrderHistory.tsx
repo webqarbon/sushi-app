@@ -77,9 +77,9 @@ export default function OrderHistory({ initialOrders, userId }: OrderHistoryProp
            <p className="font-medium">Ви ще не зробили жодного замовлення.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar max-h-[600px]">
+        <div className="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar max-h-[500px] min-h-0">
           {orders.map((order) => (
-            <div key={order.id} className="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden transition-all duration-200">
+            <div key={order.id} className="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden transition-all duration-200 shrink-0">
               <div 
                 onClick={() => toggleExpand(order.id)}
                 className="p-5 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center cursor-pointer hover:bg-gray-100/50 transition-colors"

@@ -18,9 +18,10 @@ import { Category } from "@/types/database";
 interface CategoryNavProps {
   categories: Category[];
   activeCategoryId?: string;
+  onSelect: (id: string) => void;
 }
 
-export default function CategoryNav({ categories, activeCategoryId }: CategoryNavProps) {
+export default function CategoryNav({ categories, activeCategoryId, onSelect }: CategoryNavProps) {
   // Map icons based on category slug or name
   const iconMap: Record<string, any> = {
     "sets": LayoutGrid,
@@ -39,16 +40,16 @@ export default function CategoryNav({ categories, activeCategoryId }: CategoryNa
   }, [categories]);
 
   return (
-    <div className="w-full overflow-x-auto custom-scrollbar flex gap-3 pb-4 mb-8">
+    <div className="w-full overflow-x-auto custom-scrollbar flex gap-3 pb-4">
       {sortedCategories.map((cat) => {
         const Icon = iconMap[cat.slug] || Utensils;
         const isActive = activeCategoryId === cat.id;
 
         return (
-          <a
+          <button
             key={cat.id}
-            href={`#${cat.slug}`}
-            className={`flex flex-col items-center justify-center min-w-[100px] h-[110px] rounded-3xl transition-all duration-300 border-2 ${
+            onClick={() => onSelect(cat.id)}
+            className={`flex flex-col items-center justify-center min-w-[100px] h-[110px] rounded-3xl transition-all duration-300 border-2 shrink-0 ${
               isActive 
                 ? "bg-white border-orange-400 shadow-md scale-105" 
                 : "bg-white border-white shadow-sm hover:shadow-md"
@@ -60,7 +61,7 @@ export default function CategoryNav({ categories, activeCategoryId }: CategoryNa
             <span className={`text-[11px] font-black uppercase tracking-tight ${isActive ? "text-orange-500" : "text-[#1A1C1E]"}`}>
               {cat.name}
             </span>
-          </a>
+          </button>
         );
       })}
     </div>
