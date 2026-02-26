@@ -57,7 +57,7 @@ export default async function ProfilePage() {
         </form>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left Column: Loyalty & Settings */}
         <div className="lg:col-span-4 flex flex-col gap-6 lg:h-[735px] overflow-hidden">

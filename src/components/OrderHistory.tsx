@@ -65,19 +65,19 @@ export default function OrderHistory({ initialOrders, userId }: OrderHistoryProp
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col h-full lg:max-h-[735px] overflow-hidden">
+    <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col h-full lg:h-[735px] overflow-hidden">
       <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3 shrink-0">
         <History className="w-5 h-5 text-gray-400" />
         Історія замовлень
       </h2>
 
       {(!orders || orders.length === 0) ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
+        <div className="flex flex-col items-center justify-center flex-1 text-center text-gray-500">
            <History className="w-16 h-16 text-gray-200 mb-4" />
            <p className="font-medium">Ви ще не зробили жодного замовлення.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar max-h-[585px] min-h-0">
+        <div className="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar flex-1 min-h-0">
           {orders.map((order) => (
             <div key={order.id} className="bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden transition-all duration-200 shrink-0">
               <div 
