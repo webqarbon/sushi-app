@@ -22,7 +22,7 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
   return (
     <div className="flex flex-col gap-12 pb-32">
       {/* 1. Category Navigation - Fixed under header */}
-      <div className="sticky top-[56px] z-30 bg-[#F3F5F9]/90 backdrop-blur-xl py-3 border-b border-gray-100/50">
+      <div className="sticky top-[72px] lg:top-[80px] z-30 bg-[#F3F5F9]/80 backdrop-blur-xl py-6 md:py-8 border-b border-gray-100/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <CategoryNav 
             categories={categories} 

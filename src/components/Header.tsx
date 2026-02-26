@@ -1,67 +1,98 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingCart, User, Phone } from "lucide-react";
+import { ShoppingCart, User, Phone, Search, Menu as MenuIcon, MapPin, ChevronDown } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import CartDrawer from "./CartDrawer";
 
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const items = useCartStore((state) => state.items);
   const cartItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
-  const navLinks = [
-    { name: "Каталог", href: "/#catalog" },
-    { name: "Про нас", href: "/#about" },
-    { name: "Контакти", href: "/#consultation" },
-    { name: "FAQ", href: "/#faq" },
-  ];
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-[#F3F5F9]/80 backdrop-blur-md py-1.5">
+      <header className={`sticky top-0 z-40 w-full transition-all duration-500 ${
+        isScrolled ? "bg-white/95 backdrop-blur-md shadow-md py-2" : "bg-[#F3F5F9] py-4"
+      }`}>
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between">
+          <div className="relative flex items-center justify-between">
             
-            {/* Left side: Phone */}
-            <Link href="tel:+380953727599" className="flex items-center justify-center bg-white w-10 h-10 lg:w-11 lg:h-11 rounded-xl shadow-sm hover:shadow-md transition-all text-[#1A1C1E] group">
-              <Phone className="w-4 h-4 group-hover:text-blue-600 transition-colors" />
-            </Link>
-
-            {/* Center Navigation: Links */}
-            <nav className="hidden md:flex items-center gap-8 lg:gap-12">
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  href={link.href}
-                  className="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-blue-600 transition-all relative group py-1"
-                >
-                  {link.name}
-                  <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-blue-600 transition-all group-hover:w-full rounded-full"></span>
-                </Link>
-              ))}
-            </nav>
-
-            {/* Right side: Cart & Profile */}
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={() => setIsCartOpen(true)}
-                className="flex items-center gap-2 bg-white px-3 lg:px-5 h-10 lg:h-11 rounded-xl shadow-sm hover:shadow-md transition-all font-black"
-              >
-                <div className="relative">
-                  <ShoppingCart className="w-5 h-5 text-[#1A1C1E]" />
-                  {cartItemCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center animate-in zoom-in">
-                      {cartItemCount}
-                    </span>
-                  )}
-                </div>
-                <span className="hidden sm:block text-gray-900 text-xs">Кошик</span>
+            {/* Left Section: Menu & Contacts */}
+            <div className="flex items-center gap-4 flex-1">
+              <button className="flex flex-col items-center justify-center bg-white h-12 w-20 lg:w-24 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100/50 group">
+                 <span className="text-[10px] font-black uppercase tracking-widest text-[#1A1C1E]">Меню</span>
               </button>
 
-              <Link href="/profile" className="flex items-center justify-center bg-white w-10 h-10 lg:w-11 lg:h-11 rounded-xl shadow-sm hover:shadow-md transition-all text-[#1A1C1E] group">
-                <User className="w-4 h-4 group-hover:text-blue-600 transition-colors" />
+              <div className="hidden lg:flex items-center gap-4 border-l border-gray-200 pl-4">
+                <div className="bg-white p-2.5 rounded-xl shadow-sm border border-gray-50 group hover:shadow-md transition-all">
+                  <Phone className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" />
+                </div>
+                <div>
+                   <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter leading-none mb-1">
+                      Щодня: з <span className="text-gray-900">10:00</span> до <span className="text-gray-900">21:30</span>
+                   </div>
+                   <Link href="tel:+380953727599" className="text-sm lg:text-base font-black text-[#1A1C1E] hover:text-orange-500 transition-colors">
+                      (095) 372 75 99
+                   </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Center Section: Logo */}
+            <div className={`absolute left-1/2 -translate-x-1/2 transition-all duration-500 ${
+              isScrolled ? "scale-90 opacity-0 pointer-events-none" : "scale-100 opacity-100"
+            }`}>
+              <Link href="/" className="flex flex-col items-center">
+                <div className="flex items-center gap-1">
+                   <div className="w-8 h-8 md:w-10 md:h-10 bg-[#1A1C1E] rounded-full flex items-center justify-center">
+                      <div className="w-4 h-4 md:w-5 md:h-5 bg-orange-500 rounded-full animate-pulse" />
+                   </div>
+                   <div className="flex flex-col">
+                      <span className="text-xl md:text-2xl font-black tracking-tighter leading-none">FROZEN</span>
+                      <span className="text-[8px] font-black tracking-[0.3em] uppercase opacity-50 ml-1">Market</span>
+                   </div>
+                </div>
+              </Link>
+            </div>
+
+            {/* Right Section: City, Search, Cart */}
+            <div className="flex items-center justify-end gap-3 lg:gap-4 flex-1">
+              {/* City selector */}
+              <button className="hidden sm:flex items-center gap-3 bg-white px-4 h-12 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100/50 group">
+                <MapPin className="w-4 h-4 text-orange-500" />
+                <span className="text-xs font-black uppercase tracking-widest text-orange-500">Дніпро</span>
+                <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:translate-y-0.5 transition-transform" />
+              </button>
+
+              {/* Search */}
+              <button className="flex items-center justify-center bg-white w-12 h-12 rounded-2xl shadow-sm hover:shadow-md transition-all text-[#1A1C1E] border border-gray-100/50">
+                <Search className="w-4 h-4" />
+              </button>
+
+              {/* Cart */}
+              <button 
+                onClick={() => setIsCartOpen(true)}
+                className="flex items-center gap-3 bg-white px-5 h-12 rounded-2xl shadow-sm hover:shadow-md transition-all font-black border border-gray-100/50 relative"
+              >
+                <ShoppingCart className="w-4 h-4 text-[#1A1C1E]" />
+                <span className="text-sm text-gray-900">{cartItemCount}</span>
+                {cartItemCount > 0 && (
+                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-orange-500 rounded-full animate-ping" />
+                )}
+              </button>
+
+              {/* Profile */}
+              <Link href="/profile" className="flex items-center justify-center bg-[#1A1C1E] w-12 h-12 rounded-2xl shadow-sm hover:shadow-md transition-all text-white hover:bg-black">
+                <User className="w-4 h-4" />
               </Link>
             </div>
 

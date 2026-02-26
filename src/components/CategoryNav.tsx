@@ -26,8 +26,8 @@ export default function CategoryNav({ categories, activeCategoryId, onSelect }: 
   const iconMap: Record<string, any> = {
     "sets": LayoutGrid,
     "rolls": Utensils,
-    "sushi": Beef, // Approximate for sushi
-    "shaurma": Beef, // Approximate
+    "sushi": Beef,
+    "shaurma": Beef,
     "wok": Flame,
     "soups": Soup,
     "snacks": Pizza,
@@ -40,7 +40,7 @@ export default function CategoryNav({ categories, activeCategoryId, onSelect }: 
   }, [categories]);
 
   return (
-    <div className="w-full overflow-x-auto hide-scrollbar flex gap-4 pb-2">
+    <div className="w-full overflow-x-auto hide-scrollbar flex gap-3 py-2">
       {sortedCategories.map((cat) => {
         const Icon = iconMap[cat.slug] || Utensils;
         const isActive = activeCategoryId === cat.id;
@@ -49,29 +49,24 @@ export default function CategoryNav({ categories, activeCategoryId, onSelect }: 
           <button
             key={cat.id}
             onClick={() => onSelect(cat.id)}
-            className={`flex items-center gap-2.5 px-5 py-2.5 rounded-xl transition-all duration-300 shrink-0 whitespace-nowrap group border ${
+            className={`flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] h-[100px] lg:h-[120px] rounded-3xl transition-all duration-300 shrink-0 group border ${
               isActive 
-                ? "bg-white text-orange-500 shadow-premium border-transparent" 
-                : "bg-white/50 text-gray-500 hover:bg-white hover:text-[#1A1C1E] shadow-sm border-gray-100/50"
+                ? "bg-white text-orange-500 shadow-xl shadow-orange-500/10 border-orange-100" 
+                : "bg-white/50 text-gray-500 hover:bg-white hover:text-[#1A1C1E] shadow-sm border-gray-100/50 hover:shadow-md"
             }`}
           >
-            <div className={`p-2 rounded-xl transition-colors duration-300 ${
-              isActive ? "bg-orange-50" : "bg-gray-100 group-hover:bg-gray-50"
+            <div className={`p-2.5 rounded-2xl transition-all duration-500 ${
+              isActive ? "bg-orange-50 scale-110" : "bg-gray-50 group-hover:bg-gray-100 group-hover:scale-105"
             }`}>
-              <Icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${
+              <Icon className={`w-6 h-6 lg:w-7 lg:h-7 transition-colors duration-300 ${
                 isActive ? "text-orange-500" : "text-gray-400 group-hover:text-[#1A1C1E]"
               }`} />
             </div>
-            <span className={`text-[13px] font-black tracking-tight ${
-              isActive ? "text-[#1A1C1E]" : ""
+            <span className={`text-[12px] lg:text-[13px] font-black tracking-tight mt-3 ${
+              isActive ? "text-[#1A1C1E]" : "text-gray-500"
             }`}>
               {cat.name}
             </span>
-            
-            {/* Stable indicator dot to prevent layout shift */}
-            <div className={`w-1.5 h-1.5 rounded-full bg-orange-500 shadow-lg shadow-orange-500/50 transition-all duration-300 ${
-              isActive ? "opacity-100 scale-100 animate-pulse" : "opacity-0 scale-0"
-            }`} />
           </button>
         );
       })}
