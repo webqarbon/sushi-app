@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ShoppingCart, User, Phone, Search, Menu as MenuIcon, MapPin, ChevronDown } from "lucide-react";
