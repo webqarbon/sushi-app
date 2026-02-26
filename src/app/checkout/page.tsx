@@ -370,17 +370,45 @@ export default function CheckoutPage() {
                   Використати бонуси
                   <span className="text-sm font-medium text-blue-700/80 mb-3">Доступно: {userBonusBalance} ₴ (1 бонус = 1 ₴)</span>
                 </label>
-                <div className="relative">
-                  <input 
-                    type="number" 
-                    min={0}
-                    max={userBonusBalance}
-                    value={formData.bonusesUsed || ""}
-                    onChange={handleBonusChange}
-                    className="w-full sm:w-1/2 bg-white border border-blue-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-black text-blue-900"
-                    placeholder="0"
-                  />
-                  <span className="absolute left-[calc(50%-2rem)] sm:left-auto sm:right-auto sm:ml-[-2rem] top-3.5 font-black text-blue-900 pointer-events-none hidden sm:inline-block">₴</span>
+                <div className="flex flex-col gap-4">
+                  <div className="relative">
+                    <input 
+                      type="number" 
+                      min={0}
+                      max={userBonusBalance}
+                      value={formData.bonusesUsed || ""}
+                      onChange={handleBonusChange}
+                      className="w-full sm:w-1/2 bg-white border border-blue-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-black text-blue-900"
+                      placeholder="0"
+                    />
+                    <span className="absolute left-[calc(50%-2rem)] sm:left-auto sm:right-auto sm:ml-[-2rem] top-3.5 font-black text-blue-900 pointer-events-none hidden sm:inline-block">₴</span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {[25, 60, 75].map((amount) => (
+                      <button
+                        key={amount}
+                        type="button"
+                        onClick={() => {
+                          const val = Math.min(amount, userBonusBalance, subtotal);
+                          setFormData({ ...formData, bonusesUsed: val });
+                        }}
+                        className="px-4 py-2 bg-white border border-blue-100 text-blue-600 font-bold rounded-xl hover:bg-blue-600 hover:text-white transition-all text-sm shadow-sm"
+                      >
+                        {amount} ₴
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const val = Math.min(userBonusBalance, subtotal);
+                        setFormData({ ...formData, bonusesUsed: val });
+                      }}
+                      className="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all text-sm shadow-sm"
+                    >
+                      Списати всі
+                    </button>
+                  </div>
                 </div>
               </div>
 
