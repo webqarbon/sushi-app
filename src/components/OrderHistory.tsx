@@ -65,7 +65,7 @@ export default function OrderHistory({ initialOrders, userId }: OrderHistoryProp
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col h-full max-h-[735px]">
+    <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col h-full lg:max-h-[735px] overflow-hidden">
       <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3 shrink-0">
         <History className="w-5 h-5 text-gray-400" />
         Історія замовлень

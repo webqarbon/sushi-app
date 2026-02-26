@@ -39,8 +39,8 @@ export default function ProfileSettings({ initialData }: ProfileSettingsProps) {
   };
 
   return (
-    <div className="bg-white rounded-[1.5rem] p-5 shadow-sm border border-gray-100/50">
-      <h3 className="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+    <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100/50">
+      <h3 className="text-sm font-black text-gray-900 mb-3 flex items-center gap-2">
         <User className="w-4 h-4 text-gray-400" />
         Контактні дані
       </h3>
@@ -55,7 +55,7 @@ export default function ProfileSettings({ initialData }: ProfileSettingsProps) {
               placeholder="Тарас Шевченко"
               value={formData.full_name}
               onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-              className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-10 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 focus:bg-white transition-all font-bold text-gray-900 text-sm"
+              className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 focus:bg-white transition-all font-bold text-gray-900 text-sm"
             />
           </div>
         </div>
@@ -69,7 +69,7 @@ export default function ProfileSettings({ initialData }: ProfileSettingsProps) {
               placeholder="+380"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-10 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 focus:bg-white transition-all font-bold text-gray-900 text-sm"
+              className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 focus:bg-white transition-all font-bold text-gray-900 text-sm"
             />
           </div>
         </div>

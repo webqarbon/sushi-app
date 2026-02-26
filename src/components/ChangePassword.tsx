@@ -32,8 +32,8 @@ export default function ChangePassword() {
   };
 
   return (
-    <div className="bg-white rounded-[1.5rem] p-5 border border-gray-100/50 shadow-sm">
-      <h3 className="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+    <div className="bg-white rounded-3xl p-5 border border-gray-100/50 shadow-sm">
+      <h3 className="text-sm font-black text-gray-900 mb-3 flex items-center gap-2">
         <Lock className="w-4 h-4 text-gray-400" />
         Зміна пароля
       </h3>
@@ -55,7 +55,7 @@ export default function ChangePassword() {
             type="password" 
             autoComplete="new-password"
             placeholder="••••••••"
-            className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 focus:bg-white transition-all font-bold text-gray-900 text-sm"
+            className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 focus:bg-white transition-all font-bold text-gray-900 text-sm"
           />
         </div>
 
@@ -67,7 +67,7 @@ export default function ChangePassword() {
             type="password" 
             autoComplete="new-password"
             placeholder="••••••••"
-            className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 focus:bg-white transition-all font-bold text-gray-900 text-sm"
+            className="w-full bg-gray-50/50 border border-gray-100 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 focus:bg-white transition-all font-bold text-gray-900 text-sm"
           />
         </div>
 
