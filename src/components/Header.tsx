@@ -15,7 +15,7 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 400);
+      setIsScrolled(window.scrollY > 150);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -29,17 +29,13 @@ export default function Header() {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="relative flex items-center justify-between">
             
-            {/* Left Section: Menu & Contacts */}
+            {/* Left Section: Contacts */}
             <div className="flex items-center gap-4 flex-1">
-              <button className="flex flex-col items-center justify-center bg-white h-12 w-20 lg:w-24 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100/50 group">
-                 <span className="text-[10px] font-black uppercase tracking-widest text-[#1A1C1E]">Меню</span>
-              </button>
-
-              <div className="hidden lg:flex items-center gap-4 border-l border-gray-200 pl-4">
+              <div className="flex items-center gap-4 border-gray-200">
                 <div className="bg-white p-2.5 rounded-xl shadow-sm border border-gray-50 group hover:shadow-md transition-all">
                   <Phone className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" />
                 </div>
-                <div>
+                <div className="hidden sm:block">
                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter leading-none mb-1">
                       Щодня: з <span className="text-gray-900">10:00</span> до <span className="text-gray-900">21:30</span>
                    </div>

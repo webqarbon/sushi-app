@@ -27,7 +27,7 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
     }
 
     const handleScroll = () => {
-      setIsHeaderCategoriesVisible(window.scrollY > 400); // Approximate height where categories reach header
+      setIsHeaderCategoriesVisible(window.scrollY > 150); // Approximate height where categories reach header
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);

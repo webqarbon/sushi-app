@@ -90,20 +90,20 @@ export default function CategoryNav({
           <button
             key={cat.id}
             onClick={() => onSelect(cat.id)}
-            className={`flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] h-[100px] lg:h-[120px] rounded-3xl transition-all duration-300 shrink-0 group border ${
+            className={`flex flex-col items-center justify-center min-w-[85px] lg:min-w-[100px] h-[85px] lg:h-[100px] rounded-3xl transition-all duration-300 shrink-0 group border ${
               isActive 
                 ? "bg-white text-orange-500 shadow-xl shadow-orange-500/10 border-orange-100" 
                 : "bg-white/50 text-gray-500 hover:bg-white hover:text-[#1A1C1E] shadow-sm border-gray-100/50 hover:shadow-md"
             }`}
           >
-            <div className={`p-2.5 rounded-2xl transition-all duration-500 ${
+            <div className={`p-2 rounded-2xl transition-all duration-500 ${
               isActive ? "bg-orange-50 scale-110" : "bg-gray-50 group-hover:bg-gray-100 group-hover:scale-105"
             }`}>
-              <Icon className={`w-6 h-6 lg:w-7 lg:h-7 transition-colors duration-300 ${
+              <Icon className={`w-5 h-5 lg:w-6 lg:h-6 transition-colors duration-300 ${
                 isActive ? "text-orange-500" : "text-gray-400 group-hover:text-[#1A1C1E]"
               }`} />
             </div>
-            <span className={`text-[12px] lg:text-[13px] font-black tracking-tight mt-3 ${
+            <span className={`text-[11px] lg:text-[12px] font-black tracking-tight mt-2 ${
               isActive ? "text-[#1A1C1E] opacity-100" : "text-gray-500 opacity-60"
             }`}>
               {cat.name}
