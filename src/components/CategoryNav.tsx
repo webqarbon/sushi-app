@@ -40,7 +40,7 @@ export default function CategoryNav({ categories, activeCategoryId, onSelect }: 
   }, [categories]);
 
   return (
-    <div className="w-full overflow-x-auto hide-scrollbar flex gap-3 pb-4">
+    <div className="w-full overflow-x-auto hide-scrollbar flex gap-4 pb-2">
       {sortedCategories.map((cat) => {
         const Icon = iconMap[cat.slug] || Utensils;
         const isActive = activeCategoryId === cat.id;
@@ -49,18 +49,27 @@ export default function CategoryNav({ categories, activeCategoryId, onSelect }: 
           <button
             key={cat.id}
             onClick={() => onSelect(cat.id)}
-            className={`flex flex-col items-center justify-center min-w-[100px] h-[110px] rounded-3xl transition-all duration-300 border-2 shrink-0 ${
+            className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl transition-all duration-300 shrink-0 whitespace-nowrap group ${
               isActive 
-                ? "bg-white border-orange-400 shadow-md scale-105" 
-                : "bg-white border-white shadow-sm hover:shadow-md"
+                ? "bg-white text-orange-500 shadow-premium border-transparent" 
+                : "bg-white/50 text-gray-500 hover:bg-white hover:text-[#1A1C1E] shadow-sm border border-gray-100/50"
             }`}
           >
-            <div className={`p-3 rounded-2xl mb-2 ${isActive ? "bg-orange-50" : "bg-gray-50"}`}>
-              <Icon className={`w-6 h-6 ${isActive ? "text-orange-500" : "text-[#1A1C1E]"}`} />
+            <div className={`p-2 rounded-xl transition-colors duration-300 ${
+              isActive ? "bg-orange-50" : "bg-gray-100 group-hover:bg-gray-50"
+            }`}>
+              <Icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${
+                isActive ? "text-orange-500" : "text-gray-400 group-hover:text-[#1A1C1E]"
+              }`} />
             </div>
-            <span className={`text-[11px] font-black uppercase tracking-tight ${isActive ? "text-orange-500" : "text-[#1A1C1E]"}`}>
+            <span className={`text-[13px] font-black tracking-tight ${
+              isActive ? "text-[#1A1C1E]" : ""
+            }`}>
               {cat.name}
             </span>
+            {isActive && (
+              <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-lg shadow-orange-500/50 animate-pulse" />
+            )}
           </button>
         );
       })}

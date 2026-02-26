@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Category, Product } from "@/types/database";
 import CategoryNav from "./CategoryNav";
 import Hero from "./Hero";
 import Catalog from "./Catalog";
+import AboutSection from "./AboutSection";
+import ContactForm from "./ContactForm";
+import FAQSection from "./FAQSection";
+import { Category, Product } from "@/types/database";
 
 interface HomeContentProps {
   categories: Category[];
@@ -42,6 +45,13 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
           activeCategoryId={activeCategoryId}
         />
       </section>
+
+      {/* 4. About & Info Sections */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
+        <AboutSection />
+        <ContactForm />
+        <FAQSection />
+      </div>
     </div>
   );
 }
