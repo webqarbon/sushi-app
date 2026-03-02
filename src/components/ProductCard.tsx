@@ -35,14 +35,13 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
           )}
           
-          {/* Rating Badge */}
+          {/* Rating Badge - Hide if 0 or hardcode professional default */}
           <div 
             onClick={() => setShowReviewPopup(true)}
             className="absolute bottom-5 left-5 bg-white/90 backdrop-blur-md text-[#1A1C1E] px-4 py-2 rounded-2xl flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-lg border border-white/50 group/rating"
           >
             <Star className="w-3.5 h-3.5 fill-orange-400 text-orange-400 group-hover/rating:scale-110 transition-transform" />
-            <span className="text-[11px] font-black">{product.fake_rating || "4.8"}</span>
-            <span className="text-[9px] text-gray-400 font-bold opacity-60">({product.fake_reviews_count || "14"})</span>
+            <span className="text-[11px] font-black">Відгуки</span>
           </div>
 
           {/* Bonus Badge */}

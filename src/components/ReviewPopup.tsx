@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, X, MessageSquare, Sparkles } from "lucide-react";
+import { Star, X, MessageSquare, ArrowRight } from "lucide-react";
 import { submitReview } from "@/app/actions/review";
 
 interface ReviewPopupProps {
@@ -71,7 +71,7 @@ export default function ReviewPopup({ productId, productName, onClose }: ReviewP
               ))}
             </div>
             <div className="text-xl font-black text-orange-500 tracking-tight">
-                {rating === 5 ? "Чудово! 🔥" : rating === 4 ? "Дуже добре 👍" : rating === 3 ? "Непогано 🙂" : rating === 2 ? "Могло бути краще 😕" : "Погано 🛑"}
+                {rating === 5 ? "Відмінно" : rating === 4 ? "Добре" : rating === 3 ? "Задовільно" : rating === 2 ? "Могло бути краще" : "Погано"}
             </div>
           </div>
 
@@ -99,8 +99,8 @@ export default function ReviewPopup({ productId, productName, onClose }: ReviewP
           >
             {isSubmitting ? <span className="animate-spin rounded-full h-5 w-5 border-2 border-gray-400 border-t-white" /> : (
                 <>
-                    Перевірити та опублікувати
-                    <Sparkles className="w-5 h-5 text-orange-400 group-hover:text-white transition-colors" />
+                    Надіслати відгук
+                    <ArrowRight className="w-5 h-5 text-orange-400 group-hover:text-white transition-colors" />
                 </>
             )}
           </button>

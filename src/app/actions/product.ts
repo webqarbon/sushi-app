@@ -27,13 +27,23 @@ export async function createProduct(formData: FormData) {
   
   const name = formData.get('name') as string;
   const price = parseFloat(formData.get('price') as string);
+  const cost_price = parseFloat(formData.get('cost_price') as string) || 0;
+  const bonus_percent = parseFloat(formData.get('bonus_percent') as string) || 5;
   const image_url = formData.get('image_url') as string;
   const description = formData.get('description') as string;
   const category_id = formData.get('category_id') as string;
 
   const { error } = await supabase
     .from('products')
-    .insert({ name, price, image_url, description, category_id });
+    .insert({ 
+      name, 
+      price, 
+      cost_price, 
+      bonus_percent, 
+      image_url, 
+      description, 
+      category_id 
+    });
 
   if (error) throw new Error(error.message);
 
@@ -48,13 +58,23 @@ export async function updateProduct(formData: FormData) {
   const id = formData.get('id') as string;
   const name = formData.get('name') as string;
   const price = parseFloat(formData.get('price') as string);
+  const cost_price = parseFloat(formData.get('cost_price') as string) || 0;
+  const bonus_percent = parseFloat(formData.get('bonus_percent') as string) || 5;
   const image_url = formData.get('image_url') as string;
   const description = formData.get('description') as string;
   const category_id = formData.get('category_id') as string;
 
   const { error } = await supabase
     .from('products')
-    .update({ name, price, image_url, description, category_id })
+    .update({ 
+      name, 
+      price, 
+      cost_price, 
+      bonus_percent, 
+      image_url, 
+      description, 
+      category_id 
+    })
     .eq('id', id);
 
   if (error) {

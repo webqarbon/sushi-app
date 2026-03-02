@@ -91,10 +91,9 @@ CREATE TABLE products (
   name TEXT NOT NULL,
   description TEXT,
   price NUMERIC NOT NULL,
+  cost_price NUMERIC DEFAULT 0,
   image_url TEXT,
-  bonus_percent NUMERIC DEFAULT 5.0,
-  fake_rating NUMERIC DEFAULT 4.8,
-  fake_reviews_count INTEGER DEFAULT 120
+  bonus_percent NUMERIC DEFAULT 5.0
 );
 
 -- Products are public
