@@ -118,10 +118,10 @@ export default function Search() {
                     </div>
                     <div className="flex items-center gap-3 mt-0.5">
                       <span className="text-xs font-black text-gray-900">{product.price} ₴</span>
-                      {product.average_rating > 0 && (
+                      {(product.average_rating || 0) > 0 && (
                         <div className="flex items-center gap-1">
                           <Star className="w-2.5 h-2.5 fill-orange-400 text-orange-400" />
-                          <span className="text-[10px] font-bold text-gray-400">{product.average_rating.toFixed(1)}</span>
+                          <span className="text-[10px] font-bold text-gray-400">{(product.average_rating as number).toFixed(1)}</span>
                         </div>
                       )}
                     </div>
