@@ -6,6 +6,8 @@ import { useCartStore } from "@/store/cart";
 import { Plus, Star, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import ReviewPopup from "./ReviewPopup";
+import { createClient } from "@/utils/supabase/client";
+import { toast } from "react-hot-toast";
 
 export default function ProductCard({ product }: { product: Product }) {
   const [showReviewPopup, setShowReviewPopup] = useState(false);
@@ -37,7 +39,14 @@ export default function ProductCard({ product }: { product: Product }) {
           
           {/* Rating Badge */}
           <div 
-            onClick={() => setShowReviewPopup(true)}
+            onClick={async () => {
+              const supabase = createClient();
+              const { data: { user } } = await supabase.auth.getUser();
+              if (!user) {
+                return toast.error("Ви повинні увійти, щоб залишити відгук");
+              }
+              setShowReviewPopup(true);
+            }}
             className="absolute bottom-5 left-5 bg-white/90 backdrop-blur-md text-[#1A1C1E] px-4 py-2 rounded-2xl flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-lg border border-white/50 group/rating"
           >
             <Star className={`w-3.5 h-3.5 ${product.average_rating > 0 ? "fill-orange-400 text-orange-400" : "text-gray-300"} group-hover/rating:scale-110 transition-transform`} />
