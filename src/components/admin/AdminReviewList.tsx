@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Star, CheckCircle, XCircle, Clock, Trash2, Search, Filter, MessageCircle, ArrowRight } from "lucide-react";
 import { approveReview, rejectReview } from "@/app/actions/review";
+import { toast } from "react-hot-toast";
 
 interface Review {
   id: string;
@@ -91,11 +92,11 @@ export default function AdminReviewList({ initialReviews }: { initialReviews: Re
 
 function ReviewCard({ review }: { review: Review }) {
     const handleApprove = async () => {
-        try { await approveReview(review.id); alert('Review Approved!'); } catch (err: any) { alert(err.message); }
+        try { await approveReview(review.id); toast.success('✅ Відгук схвалено!'); } catch (err: any) { toast.error(err.message); }
     };
 
     const handleReject = async () => {
-        try { await rejectReview(review.id); alert('Review Rejected!'); } catch (err: any) { alert(err.message); }
+        try { await rejectReview(review.id); toast.success('❌ Відгук відхилено'); } catch (err: any) { toast.error(err.message); }
     };
 
     return (

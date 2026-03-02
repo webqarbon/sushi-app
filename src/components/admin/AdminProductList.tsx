@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import { Search, Filter, Edit2, Trash2, X, Link as LinkIcon, Camera, Upload, Plus, ChevronRight, Hash, Percent, DollarSign, Package } from "lucide-react";
 import { updateProduct, deleteProduct, createProduct, uploadProductImage } from "@/app/actions/product";
+import { toast } from "react-hot-toast";
 
 interface Product {
   id: string;
@@ -46,13 +47,25 @@ export default function AdminProductList({
   }, [products, search, selectedCategory]);
 
   const handleDelete = async (id: string, name: string) => {
-    if (confirm(`Ви впевнені, що хочете видалити ${name}?`)) {
-      try {
-        await deleteProduct(id);
-      } catch (err: any) {
-        alert(err.message);
-      }
-    }
+    toast(
+      (t) => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ fontWeight: 800, fontSize: 14 }}>Видалити "{name}"?</div>
+          <div style={{ fontSize: 12, color: '#64748b' }}>Цю дію не можна скасувати</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              onClick={async () => { toast.dismiss(t.id); try { await deleteProduct(id); toast.success('Товар видалено'); } catch (err: any) { toast.error(err.message); } }}
+              style={{ flex: 1, background: '#ef4444', color: '#fff', border: 'none', borderRadius: 12, padding: '8px 16px', fontWeight: 800, cursor: 'pointer', fontSize: 12 }}
+            >Видалити</button>
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              style={{ flex: 1, background: '#f1f5f9', color: '#334155', border: 'none', borderRadius: 12, padding: '8px 16px', fontWeight: 800, cursor: 'pointer', fontSize: 12 }}
+            >Скасувати</button>
+          </div>
+        </div>
+      ),
+      { duration: Infinity }
+    );
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean) => {
@@ -67,9 +80,9 @@ export default function AdminProductList({
         const input = document.getElementById(isEdit ? 'edit-image-url' : 'new-image-url') as HTMLInputElement;
         if (input) input.value = url;
       }
-      alert('Зображення успішно завантажено!');
+      toast.success('Зображення завантажено!');
     } catch (err: any) {
-      alert('Помилка: ' + err.message);
+      toast.error('Помилка: ' + err.message);
     } finally {
       setIsUploading(false);
     }
@@ -198,9 +211,9 @@ export default function AdminProductList({
                 else await createProduct(formData);
                 setEditingProduct(null);
                 setIsAddingNew(false);
-                alert('Зміни успішно збережено!');
+                toast.success('Зміни успішно збережено!');
               } catch (err: any) {
-                alert('Помилка: ' + err.message);
+                toast.error('Помилка: ' + err.message);
               }
             }} className="p-10 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
               {editingProduct && <input type="hidden" name="id" value={editingProduct.id} />}

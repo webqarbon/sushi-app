@@ -9,15 +9,16 @@ export async function submitReview(productId: string, rating: number, comment: s
 
   if (!user) throw new Error("Ви повинні увійти, щоб залишити відгук");
 
-  const { error } = await supabase.from('reviews').insert({
+  const { data: insertedReview, error } = await supabase.from('reviews').insert({
     product_id: productId,
     user_id: user.id,
     rating,
     comment,
     status: 'pending' // Default to pending
-  });
+  }).select('id').single();
 
   if (error) throw new Error(error.message);
+  const reviewId = insertedReview?.id;
 
   // Notify Admin via Telegram
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -44,8 +45,8 @@ export async function submitReview(productId: string, rating: number, comment: s
           reply_markup: {
               inline_keyboard: [
                   [
-                      { text: "✅ Схвалити", url: `${process.env.NEXT_PUBLIC_SITE_URL}/admin/reviews` },
-                      { text: "❌ Відхилити", url: `${process.env.NEXT_PUBLIC_SITE_URL}/admin/reviews` }
+                      { text: "✅ Схвалити", callback_data: `approve_review_${reviewId}` },
+                      { text: "❌ Відхилити", callback_data: `reject_review_${reviewId}` }
                   ]
               ]
           }

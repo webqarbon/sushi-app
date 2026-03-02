@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { updateProfile } from "@/app/actions/profile";
 import { User, Phone, Check, Loader2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 interface ProfileSettingsProps {
   initialData: {
@@ -29,10 +30,10 @@ export default function ProfileSettings({ initialData }: ProfileSettingsProps) {
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
       } else {
-        alert("Помилка при збереженні: " + result.error);
+        toast.error('Помилка при збереженні: ' + result.error);
       }
     } catch (error) {
-      alert("Виникла помилка під час збереження");
+      toast.error('Виникла помилка під час збереження');
     } finally {
       setIsSubmitting(false);
     }

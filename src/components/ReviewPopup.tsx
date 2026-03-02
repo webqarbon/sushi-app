@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Star, X, MessageSquare, ArrowRight } from "lucide-react";
 import { submitReview } from "@/app/actions/review";
+import { toast } from "react-hot-toast";
 
 interface ReviewPopupProps {
   productId: string;
@@ -17,15 +18,15 @@ export default function ReviewPopup({ productId, productName, onClose }: ReviewP
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (rating < 1) return alert("Будь ласка, оберіть рейтинг");
+    if (rating < 1) return toast.error("Будь ласка, оберіть рейтинг");
 
     setIsSubmitting(true);
     try {
       await submitReview(productId, rating, comment);
-      alert("Відгук надіслано на перевірку адміністратору. Дякуємо!");
+      toast.success("Відгук надіслано на перевірку адміністратору. Дякуємо!");
       onClose();
     } catch (err: any) {
-      alert("Помилка: " + err.message);
+      toast.error("Помилка: " + err.message);
     } finally {
       setIsSubmitting(false);
     }

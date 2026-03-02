@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { revalidatePath } from "next/cache";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -112,6 +113,70 @@ export async function POST(req: Request) {
           await editTelegramMessage(chatId, messageId, `❌ *Замовлення СКАСОВАНО*\n\nID: \`${orderId}\``);
           await answerCallbackQuery(callbackQueryId, "Замовлення скасовано");
         }
+      }
+
+      // Handle Review Actions
+      if (data.startsWith("approve_review_") || data.startsWith("reject_review_")) {
+        const isApprove = data.startsWith("approve_review_");
+        const reviewId = data.replace(isApprove ? "approve_review_" : "reject_review_", "").trim();
+
+        // Find Review
+        const { data: review, error: reviewError } = await supabaseAdmin
+          .from("reviews")
+          .select("*, products(name)")
+          .eq("id", reviewId)
+          .single();
+
+        if (reviewError || !review) {
+          await answerCallbackQuery(callbackQueryId, "Помилка: відгук не знайдено");
+          return NextResponse.json({ ok: true });
+        }
+
+        const newStatus = isApprove ? "approved" : "rejected";
+        const { error: updateError } = await supabaseAdmin
+          .from("reviews")
+          .update({ status: newStatus })
+          .eq("id", reviewId);
+
+        if (updateError) {
+          await answerCallbackQuery(callbackQueryId, "Помилка оновлення");
+          return NextResponse.json({ ok: true });
+        }
+
+        // Recalculate product rating
+        const { data: approvedReviews } = await supabaseAdmin
+          .from("reviews")
+          .select("rating")
+          .eq("product_id", review.product_id)
+          .eq("status", "approved");
+
+        if (approvedReviews) {
+          const count = approvedReviews.length;
+          const avg = count > 0
+            ? approvedReviews.reduce((sum: number, r: any) => sum + r.rating, 0) / count
+            : 0;
+          await supabaseAdmin
+            .from("products")
+            .update({ average_rating: parseFloat(avg.toFixed(1)), reviews_count: count })
+            .eq("id", review.product_id);
+        }
+
+        revalidatePath("/");
+        revalidatePath("/admin/reviews");
+
+        const productName = review.products?.name || "Товар";
+        const statusIcon = isApprove ? "✅" : "❌";
+        const statusText = isApprove ? "СХВАЛЕНО" : "ВІДХИЛЕНО";
+
+        await editTelegramMessage(
+          chatId,
+          messageId,
+          `${statusIcon} *Відгук ${statusText}*\n\nТовар: ${productName}\nРейтинг: ${'\u2605'.repeat(review.rating)}${'\u2606'.repeat(5 - review.rating)}\nТекст: _"${review.comment}"_`
+        );
+        await answerCallbackQuery(
+          callbackQueryId,
+          isApprove ? "Відгук схвалено!" : "Відгук відхилено"
+        );
       }
     }
 

@@ -5,6 +5,7 @@ import { useCartStore } from "@/store/cart";
 import { ArrowLeft, Info, Truck, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -203,7 +204,7 @@ export default function CheckoutPage() {
       }
     } catch (error: unknown) {
       console.error("Checkout Error:", error);
-      alert("Виникла помилка під час оформлення замовлення");
+      toast.error('Виникла помилка під час оформлення замовлення');
     } finally {
       // We don't necessarily want to set isSubmitting(false) if we are redirecting away,
       // but it's safe to keep it here if the logic above returns correctly.

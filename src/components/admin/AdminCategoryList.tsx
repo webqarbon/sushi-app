@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Search, Edit2, Trash2, X, Plus, Hash, ChevronRight } from "lucide-react";
 import { createCategory, updateCategory, deleteCategory } from "@/app/actions/category";
+import { toast } from "react-hot-toast";
 import slugify from "slugify";
 
 interface Category {
@@ -22,14 +23,25 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
   );
 
   const handleDelete = async (id: string, name: string) => {
-    if (confirm(`Ви впевнені, що хочете видалити категорію "${name}"? Це може вплинути на товари в цій категорії.`)) {
-      try {
-        await deleteCategory(id);
-        alert('Category deleted!');
-      } catch (err: any) {
-        alert(err.message);
-      }
-    }
+    toast(
+      (t) => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ fontWeight: 800, fontSize: 14 }}>Видалити "{name}"?</div>
+          <div style={{ fontSize: 12, color: '#64748b' }}>Може вплинути на товари в цій категорії</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              onClick={async () => { toast.dismiss(t.id); try { await deleteCategory(id); toast.success('Категорію видалено'); } catch (err: any) { toast.error(err.message); } }}
+              style={{ flex: 1, background: '#ef4444', color: '#fff', border: 'none', borderRadius: 12, padding: '8px 16px', fontWeight: 800, cursor: 'pointer', fontSize: 12 }}
+            >Видалити</button>
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              style={{ flex: 1, background: '#f1f5f9', color: '#334155', border: 'none', borderRadius: 12, padding: '8px 16px', fontWeight: 800, cursor: 'pointer', fontSize: 12 }}
+            >Скасувати</button>
+          </div>
+        </div>
+      ),
+      { duration: Infinity }
+    );
   };
 
   return (
