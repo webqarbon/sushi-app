@@ -250,24 +250,24 @@ export default function CheckoutPage() {
           <h1 className="text-3xl font-black text-gray-900 tracking-tight">Оформлення замовлення</h1>
 
           {!isLoggedIn && (
-            <div className="bg-gradient-to-br from-[#1A1C1E] to-[#2D3135] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-gray-400/20 group animate-in slide-in-from-top-4 duration-700">
+            <div className="bg-white rounded-[2.5rem] p-8 text-[#1A1C1E] relative overflow-hidden shadow-xl shadow-gray-200/50 border border-gray-100 group animate-in slide-in-from-top-4 duration-700">
                {/* Decorative background elements */}
-               <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/3" />
-               <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/5 blur-[80px] rounded-full translate-y-1/3 -translate-x-1/4" />
+               <div className="absolute top-0 right-0 w-64 h-64 bg-orange-400/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/3" />
+               <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-400/5 blur-[80px] rounded-full translate-y-1/3 -translate-x-1/4" />
                
                <div className="relative flex flex-col md:flex-row items-center gap-8">
                   <div className="flex-shrink-0 relative">
                      <div className="w-20 h-20 bg-orange-500 rounded-3xl flex items-center justify-center rotate-6 group-hover:rotate-0 transition-transform duration-500 shadow-lg shadow-orange-500/20 relative z-10">
                         <Gift className="w-10 h-10 text-white" />
                      </div>
-                     <div className="absolute -top-2 -right-2 w-10 h-10 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center -rotate-12 group-hover:rotate-0 transition-transform duration-500 delay-75">
-                        <Star className="w-5 h-5 text-orange-400 fill-orange-400" />
+                     <div className="absolute -top-2 -right-2 w-10 h-10 bg-[#1A1C1E]/5 backdrop-blur-md rounded-2xl flex items-center justify-center -rotate-12 group-hover:rotate-0 transition-transform duration-500 delay-75">
+                        <Star className="w-5 h-5 text-orange-500 fill-orange-500" />
                      </div>
                   </div>
                   
                   <div className="flex-1 text-center md:text-left">
-                     <h2 className="text-2xl font-black mb-2 uppercase tracking-tight">Не втрачайте <span className="text-orange-500">{potentialBonuses.toFixed(0)} ₴</span> бонусами!</h2>
-                     <p className="text-gray-400 font-medium text-sm leading-relaxed max-w-md">
+                     <h2 className="text-2xl font-black mb-2 uppercase tracking-tight text-[#1A1C1E]">Не втрачайте <span className="text-orange-500">{potentialBonuses.toFixed(0)} ₴</span> бонусами!</h2>
+                     <p className="text-gray-500 font-medium text-sm leading-relaxed max-w-md">
                         За це замовлення ви можете отримати кешбек на бонусний баланс. Авторизуйтесь, щоб ми нарахували їх вам.
                      </p>
                   </div>
@@ -275,13 +275,13 @@ export default function CheckoutPage() {
                   <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
                      <Link 
                         href="/auth?mode=login" 
-                        className="px-8 py-4 bg-white text-[#1A1C1E] rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all text-center active:scale-95 shadow-xl shadow-white/5"
+                        className="px-8 py-4 bg-[#1A1C1E] text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-orange-500 transition-all text-center active:scale-95 shadow-xl shadow-black/5"
                      >
                         Увійти
                      </Link>
                      <Link 
                         href="/auth?mode=register" 
-                        className="px-8 py-4 bg-white/10 backdrop-blur-md text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white/20 transition-all text-center border border-white/10 active:scale-95"
+                        className="px-8 py-4 bg-gray-50 text-[#1A1C1E] rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all text-center border border-gray-200 active:scale-95"
                      >
                         Реєстрація
                      </Link>
