@@ -47,8 +47,10 @@ export async function updateSession(request: NextRequest) {
     }
 
     // Checking if user is admin (using user_metadata as a simple check)
-    // In production, you'd ideally use a 'role' column in profiles or custom claims
-    const isAdmin = user.user_metadata?.role === 'admin' || user.email === 'death@gmail.com'; // Adding a fallback for the owner
+    const isAdmin = 
+        user.user_metadata?.role === 'admin' || 
+        user.email === 'death@gmail.com' ||
+        user.email === 'frozen_admin_2026@frozen-market.ua'; 
     
     if (!isAdmin) {
         const url = request.nextUrl.clone()
