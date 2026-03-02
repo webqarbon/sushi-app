@@ -38,5 +38,24 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Protect Admin routes
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    if (!user) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/login'
+        return NextResponse.redirect(url)
+    }
+
+    // Checking if user is admin (using user_metadata as a simple check)
+    // In production, you'd ideally use a 'role' column in profiles or custom claims
+    const isAdmin = user.user_metadata?.role === 'admin' || user.email === 'death@gmail.com'; // Adding a fallback for the owner
+    
+    if (!isAdmin) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/'
+        return NextResponse.redirect(url)
+    }
+  }
+
   return supabaseResponse
 }
