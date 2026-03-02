@@ -2,24 +2,46 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingCart, User, Phone, Search, Menu as MenuIcon, MapPin, ChevronDown } from "lucide-react";
+import { ShoppingCart, User, Phone, Search, Menu as MenuIcon, MapPin, ChevronDown, LayoutDashboard } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import CartDrawer from "./CartDrawer";
 import CategoryNav from "./CategoryNav";
+import { createClient } from "@/utils/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const items = useCartStore((state) => state.items);
   const cartItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
+    const supabase = createClient();
+    
+    // Initial user check
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 75);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      subscription.unsubscribe();
+    };
   }, []);
+
+  const isAdmin = user?.user_metadata?.role === 'admin' || 
+                  user?.email === 'death@gmail.com' || 
+                  user?.email === 'frozen_admin_2026@frozen-market.ua';
 
   return (
     <>
@@ -75,6 +97,17 @@ export default function Header() {
 
             {/* Right Section: Cart & Profile */}
             <div className="flex items-center justify-end gap-3 flex-1">
+              {/* Admin Button */}
+              {isAdmin && (
+                <Link 
+                  href="/admin/products" 
+                  className="flex items-center gap-2 bg-orange-500 text-white px-4 h-12 rounded-2xl shadow-lg shadow-orange-500/20 hover:scale-105 transition-all font-black text-xs uppercase tracking-tight"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span className="hidden xl:inline">Dashboard</span>
+                </Link>
+              )}
+
               {/* Cart */}
               <button 
                 onClick={() => setIsCartOpen(true)}
