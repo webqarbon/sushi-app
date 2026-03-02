@@ -49,9 +49,9 @@ export default function ProductCard({ product }: { product: Product }) {
             }}
             className="absolute bottom-5 left-5 bg-white/90 backdrop-blur-md text-[#1A1C1E] px-4 py-2 rounded-2xl flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-95 transition-all shadow-lg border border-white/50 group/rating"
           >
-            <Star className={`w-3.5 h-3.5 ${product.average_rating > 0 ? "fill-orange-400 text-orange-400" : "text-gray-300"} group-hover/rating:scale-110 transition-transform`} />
+            <Star className={`w-3.5 h-3.5 ${(product.average_rating || 0) > 0 ? "fill-orange-400 text-orange-400" : "text-gray-300"} group-hover/rating:scale-110 transition-transform`} />
             <span className="text-[11px] font-black">
-              {product.average_rating > 0 ? product.average_rating.toFixed(1) : "5.0"}
+              {(product.average_rating || 0) > 0 ? (product.average_rating as number).toFixed(1) : "5.0"}
             </span>
             <span className="text-[9px] font-bold text-gray-400 border-l border-gray-200 pl-2">
               {product.reviews_count || 0}
