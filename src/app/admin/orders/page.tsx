@@ -1,18 +1,23 @@
+import { createClient } from "@/utils/supabase/server";
 import { ShoppingBag, Search, Filter, Calendar, Clock, MapPin, Phone, User, CheckCircle, XCircle } from "lucide-react";
 
-export default function AdminOrders() {
-  const orders = [
-    { id: "8920", customer: "Олексій Іванов", email: "oleksii@example.com", phone: "+380 95 372 75 99", total: 1240, status: "pending", date: "02.03.2026", time: "14:20", items: 4 },
-    { id: "8919", customer: "Олена Петренко", email: "olena@example.com", phone: "+380 67 111 22 33", total: 850, status: "completed", date: "02.03.2026", time: "12:15", items: 2 },
-    { id: "8918", customer: "Іван Кравченко", email: "ivan@example.com", phone: "+380 50 444 55 66", total: 2100, status: "cancelled", date: "01.03.2026", time: "20:45", items: 7 },
-  ];
+export default async function AdminOrders() {
+  const supabase = await createClient();
+
+  const { data: orders } = await supabase
+    .from("orders")
+    .select("*, profiles(full_name)")
+    .order("created_at", { ascending: false });
+
+  const today = new Date().toLocaleDateString('uk-UA');
+  const todayOrders = orders?.filter(o => new Date(o.created_at).toLocaleDateString('uk-UA') === today).length || 0;
 
   return (
     <div className="space-y-12">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
           <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase">Orders</h1>
-          <p className="text-slate-500 font-medium tracking-tight">View and manage customer orders ({orders.length} today).</p>
+          <p className="text-slate-500 font-medium tracking-tight">View and manage customer orders ({todayOrders} today).</p>
         </div>
         <div className="flex gap-4">
             <button className="flex items-center gap-2 px-6 py-3 bg-white text-slate-900 font-black text-xs uppercase tracking-widest rounded-2xl border border-slate-200 shadow-sm hover:translate-y-[-2px] transition-all duration-300">
@@ -39,27 +44,29 @@ export default function AdminOrders() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {orders.map((order) => (
+              {orders?.map((order: any) => (
                 <tr key={order.id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-10 py-6">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center border border-slate-100 group-hover:bg-orange-50 group-hover:border-orange-100 transition-colors">
                             <ShoppingBag className="w-5 h-5 group-hover:text-orange-500" />
                         </div>
-                        <div className="font-black text-slate-900 text-base">#{order.id}</div>
+                        <div className="font-black text-slate-900 text-base">#{order.id.slice(0, 8)}</div>
                     </div>
                   </td>
                   <td className="px-10 py-6">
                     <div className="space-y-1">
-                        <div className="font-black text-slate-900 text-base">{order.customer}</div>
+                        <div className="font-black text-slate-900 text-base">{order.profiles?.full_name || "Гість"}</div>
                         <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                           <Clock className="w-3 h-3" /> {order.date} | {order.time}
+                           <Clock className="w-3 h-3" /> {new Date(order.created_at).toLocaleDateString('uk-UA')} | {new Date(order.created_at).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
                         </div>
                     </div>
                   </td>
                   <td className="px-10 py-6">
-                    <div className="font-black text-slate-900 text-lg tracking-tight">₴ {order.total}</div>
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{order.items} items</div>
+                    <div className="font-black text-slate-900 text-lg tracking-tight">₴ {order.total_price}</div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                      {JSON.parse(JSON.stringify(order.items || [])).length} items
+                    </div>
                   </td>
                   <td className="px-10 py-6">
                     <span className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${
@@ -78,6 +85,13 @@ export default function AdminOrders() {
                   </td>
                 </tr>
               ))}
+              {(!orders || orders.length === 0) && (
+                <tr>
+                  <td colSpan={5} className="px-10 py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">
+                    Замовлень поки немає
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -85,3 +99,4 @@ export default function AdminOrders() {
     </div>
   );
 }
+
