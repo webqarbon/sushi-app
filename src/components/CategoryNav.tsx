@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { 
   Beef, 
   Soup, 
@@ -45,6 +45,30 @@ export default function CategoryNav({
   isCompact = false
 }: CategoryNavProps) {
   const { categories: storeCategories, activeCategoryId: storeActiveId, setActiveCategoryId: storeSetActiveId } = useCategoryStore();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 5);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
+    }
+  };
+
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (el) {
+      checkScroll();
+      el.addEventListener('scroll', checkScroll);
+      window.addEventListener('resize', checkScroll);
+      return () => {
+        el.removeEventListener('scroll', checkScroll);
+        window.removeEventListener('resize', checkScroll);
+      };
+    }
+  }, [propsCategories, storeCategories]);
 
   const categories = propsCategories || storeCategories;
   const activeCategoryId = propsActiveId || storeActiveId;
@@ -85,29 +109,36 @@ export default function CategoryNav({
     return [...categories].sort((a, b) => a.order_index - b.order_index);
   }, [categories]);
 
-  const scrollRef = useMemo(() => {
-    return (dir: 'left' | 'right') => {
-      const el = document.getElementById('compact-nav-scroll');
-      if (el) {
-        const scrollAmount = 200;
-        el.scrollBy({ left: dir === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
-      }
-    };
-  }, []);
+  const handleScroll = (dir: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const el = scrollContainerRef.current;
+      const firstChild = el.firstElementChild as HTMLElement;
+      // Get item width + gap. Main gap is 12px (gap-3), Compact gap is 4px (gap-1)
+      const gap = isCompact ? 4 : 12;
+      const scrollAmount = firstChild ? firstChild.offsetWidth + gap : (isCompact ? 150 : 300);
+      
+      el.scrollBy({ 
+        left: dir === 'left' ? -scrollAmount : scrollAmount, 
+        behavior: 'smooth' 
+      });
+    }
+  };
 
   if (isCompact) {
     return (
-      <div className="w-full relative group/nav flex items-center">
+      <div className="w-full relative flex items-center">
         {/* Left Scroll Button */}
-        <button 
-          onClick={() => scrollRef('left')}
-          className="absolute left-0 z-10 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-gray-100 opacity-0 group-hover/nav:opacity-100 transition-opacity -ml-4 hover:scale-110 active:scale-95"
-        >
-          <ChevronLeft className="w-4 h-4 text-gray-400" />
-        </button>
+        {canScrollLeft && (
+          <button 
+            onClick={() => handleScroll('left')}
+            className="absolute left-0 z-20 w-8 h-8 flex items-center justify-center bg-white/95 backdrop-blur-sm rounded-full shadow-lg border border-gray-100 -ml-2 hover:scale-110 active:scale-95 transition-all animate-in fade-in zoom-in duration-300"
+          >
+            <ChevronLeft className="w-4 h-4 text-gray-900" />
+          </button>
+        )}
 
         <div 
-          id="compact-nav-scroll"
+          ref={scrollContainerRef}
           className="flex items-center gap-1 overflow-x-auto hide-scrollbar scroll-smooth px-2 w-full"
         >
           {sortedCategories.map((cat) => {
@@ -134,42 +165,36 @@ export default function CategoryNav({
         </div>
         
         {/* Right Scroll Button */}
-        <button 
-          onClick={() => scrollRef('right')}
-          className="absolute right-0 z-10 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-gray-100 opacity-0 group-hover/nav:opacity-100 transition-opacity -mr-4 hover:scale-110 active:scale-95"
-        >
-          <ChevronRight className="w-4 h-4 text-gray-400" />
-        </button>
+        {canScrollRight && (
+          <button 
+            onClick={() => handleScroll('right')}
+            className="absolute right-0 z-20 w-8 h-8 flex items-center justify-center bg-white/95 backdrop-blur-sm rounded-full shadow-lg border border-gray-100 -mr-2 hover:scale-110 active:scale-95 transition-all animate-in fade-in zoom-in duration-300"
+          >
+            <ChevronRight className="w-4 h-4 text-gray-900" />
+          </button>
+        )}
 
         {/* Scroll Masks */}
-        <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white via-white/50 to-transparent pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white via-white/50 to-transparent pointer-events-none" />
+        {canScrollLeft && <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white via-white/40 to-transparent pointer-events-none z-10" />}
+        {canScrollRight && <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white via-white/40 to-transparent pointer-events-none z-10" />}
       </div>
     );
   }
 
-  const mainScrollRef = useMemo(() => {
-    return (dir: 'left' | 'right') => {
-      const el = document.getElementById('main-nav-scroll');
-      if (el) {
-        const scrollAmount = 350;
-        el.scrollBy({ left: dir === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
-      }
-    };
-  }, []);
-
   return (
     <div className="w-full relative group flex items-center">
       {/* Left Scroll Button */}
-      <button 
-        onClick={() => mainScrollRef('left')}
-        className="absolute -left-4 z-10 w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-lg border border-gray-100 opacity-0 group-hover:opacity-100 transition-all hover:scale-110 active:scale-95 text-gray-400 hover:text-orange-500"
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </button>
+      {canScrollLeft && (
+        <button 
+          onClick={() => handleScroll('left')}
+          className="absolute -left-5 z-20 w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-2xl border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in slide-in-from-right-2 duration-300 ring-4 ring-white"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+      )}
 
       <div 
-        id="main-nav-scroll"
+        ref={scrollContainerRef}
         className="w-full overflow-x-auto hide-scrollbar flex gap-3 py-6 px-4 scroll-smooth"
       >
         {sortedCategories.map((cat) => {
@@ -180,10 +205,10 @@ export default function CategoryNav({
             <button
               key={cat.id}
               onClick={() => onSelect(cat.id)}
-              className={`flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] h-[100px] lg:h-[120px] rounded-3xl transition-all duration-300 shrink-0 group border ${
+              className={`flex flex-col items-center justify-center min-w-[110px] lg:min-w-[130px] h-[110px] lg:h-[130px] rounded-[2.5rem] transition-all duration-300 shrink-0 group border-2 ${
                 isActive 
-                  ? "bg-white text-orange-500 shadow-2xl shadow-orange-500/15 border-orange-100 ring-4 ring-orange-500/5" 
-                  : "bg-white/50 text-gray-500 hover:bg-white hover:text-[#1A1C1E] shadow-sm border-gray-100/50 hover:shadow-xl hover:shadow-slate-200/50"
+                  ? "bg-white text-orange-500 shadow-2xl shadow-orange-500/15 border-orange-100 ring-8 ring-orange-500/5 translate-y-[-4px]" 
+                  : "bg-white/50 text-gray-500 hover:bg-white hover:text-[#1A1C1E] shadow-sm border-gray-100/50 hover:shadow-xl hover:shadow-slate-200/50 hover:translate-y-[-2px]"
               }`}
             >
               <div className={`p-3 rounded-2xl transition-all duration-500 ${
@@ -193,7 +218,7 @@ export default function CategoryNav({
                   isActive ? "text-orange-500" : "text-gray-400 group-hover:text-[#1A1C1E]"
                 }`} />
               </div>
-              <span className={`text-[11px] lg:text-[13px] font-black tracking-tight mt-2 px-2 text-center leading-tight ${
+              <span className={`text-[10px] lg:text-[12px] font-black tracking-tight mt-2 px-2 text-center uppercase leading-tight ${
                 isActive ? "text-[#1A1C1E] opacity-100" : "text-gray-500 opacity-60"
               }`}>
                 {cat.name}
@@ -204,16 +229,18 @@ export default function CategoryNav({
       </div>
 
       {/* Right Scroll Button */}
-      <button 
-        onClick={() => mainScrollRef('right')}
-        className="absolute -right-4 z-10 w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-lg border border-gray-100 opacity-0 group-hover:opacity-100 transition-all hover:scale-110 active:scale-95 text-gray-400 hover:text-orange-500"
-      >
-        <ChevronRight className="w-5 h-5" />
-      </button>
+      {canScrollRight && (
+        <button 
+          onClick={() => handleScroll('right')}
+          className="absolute -right-5 z-20 w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-2xl border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in slide-in-from-left-2 duration-300 ring-4 ring-white"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+      )}
 
       {/* Scroll Masks */}
-      <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#F3F5F9] via-[#F3F5F9]/20 to-transparent pointer-events-none z-[1]" />
-      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#F3F5F9] via-[#F3F5F9]/20 to-transparent pointer-events-none z-[1]" />
+      {canScrollLeft && <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#F3F5F9] via-[#F3F5F9]/40 to-transparent pointer-events-none z-10" />}
+      {canScrollRight && <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#F3F5F9] via-[#F3F5F9]/40 to-transparent pointer-events-none z-10" />}
     </div>
   );
 }
