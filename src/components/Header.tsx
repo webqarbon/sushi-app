@@ -49,83 +49,82 @@ export default function Header() {
         isScrolled ? "bg-white/95 backdrop-blur-md shadow-md py-2" : "bg-[#F3F5F9] py-4"
       }`}>
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="relative flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4 h-16 lg:h-20 transition-all duration-300">
             
-            {/* Left Section: Contacts */}
-            <div className="flex items-center gap-4 flex-1">
-              <div className="flex items-center gap-4 border-gray-200">
-                <div className="bg-white p-2.5 rounded-xl shadow-sm border border-gray-50 group hover:shadow-md transition-all">
-                  <Phone className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" />
-                </div>
-                <div className="hidden sm:block">
-                   <div className="text-[10px] font-bold text-gray-500 uppercase tracking-tight leading-none mb-1">
-                      Щодня: з <span className="text-gray-900 font-black">10:00</span> до <span className="text-gray-900 font-black">21:30</span>
-                   </div>
-                   <Link href="tel:+380953727599" className="text-base lg:text-lg font-black text-[#1A1C1E] hover:text-orange-500 transition-colors tracking-tighter">
+            {/* Left Section: Logo */}
+            <div className="shrink-0 flex items-center">
+               <Link href="/" className="group flex items-center gap-3">
+                  <div className={`transition-all duration-500 rounded-full flex items-center justify-center p-1 border-2 border-[#1A1C1E]/5 group-hover:border-orange-500/20 ${
+                    isScrolled ? "bg-[#1A1C1E] w-10 h-10 shadow-lg" : "bg-white w-12 h-12 lg:w-14 lg:h-14 shadow-sm"
+                  }`}>
+                    <div className="w-5 h-5 bg-orange-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(249,115,22,0.5)]" />
+                  </div>
+                  <div className={`flex flex-col transition-all duration-500 ${isScrolled ? "hidden sm:flex" : "flex"}`}>
+                    <span className={`font-black tracking-tighter leading-none transition-all text-[#1A1C1E] group-hover:text-orange-500 ${isScrolled ? "text-xl" : "text-2xl md:text-3xl"}`}>
+                      FROZEN
+                    </span>
+                    {!isScrolled && (
+                      <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-30 ml-1 mt-1">Market</span>
+                    )}
+                  </div>
+               </Link>
+            </div>
+
+            {/* Middle Section: Navigation (Only on scroll) */}
+            <div className={`flex-1 min-w-0 transition-opacity duration-300 flex items-center px-2 lg:px-6 ${
+              isScrolled ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}>
+              <div className="w-full">
+                  <CategoryNav isCompact />
+              </div>
+            </div>
+
+            {/* Right Section: Actions */}
+            <div className="flex items-center justify-end gap-2 lg:gap-4 shrink-0">
+              {/* Desktop Contacts - visible when NOT scrolled */}
+              {!isScrolled && (
+                <div className="hidden xl:flex flex-col items-end border-r border-gray-100 pr-4 mr-2">
+                   <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1 opacity-60 italic">Замовити:</span>
+                   <Link href="tel:+380953727599" className="text-base font-black text-[#1A1C1E] hover:text-orange-500 transition-colors tracking-tighter">
                       (095) 372 75 99
                    </Link>
                 </div>
-              </div>
-            </div>
+              )}
 
-            {/* Center Section: Logo or Categories */}
-            <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center w-full max-w-[400px] lg:max-w-[600px]">
-              {/* Logo - visible when NOT scrolled */}
-              <div className={`absolute transition-all duration-500 ${
-                isScrolled ? "scale-90 opacity-0 pointer-events-none" : "scale-100 opacity-100"
-              }`}>
-                <Link href="/" className="flex flex-col items-center">
-                  <div className="flex items-center gap-1">
-                     <div className="w-8 h-8 md:w-10 md:h-10 bg-[#1A1C1E] rounded-full flex items-center justify-center">
-                        <div className="w-4 h-4 md:w-5 md:h-5 bg-orange-500 rounded-full animate-pulse" />
-                     </div>
-                     <div className="flex flex-col">
-                        <span className="text-xl md:text-2xl font-black tracking-tighter leading-none">FROZEN</span>
-                        <span className="text-[8px] font-black tracking-[0.3em] uppercase opacity-50 ml-1">Market</span>
-                     </div>
-                  </div>
-                </Link>
-              </div>
-
-              {/* Categories Navigation - visible ONLY when scrolled */}
-              <div className={`w-full transition-all duration-500 ${
-                isScrolled ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 pointer-events-none translate-y-4"
-              }`}>
-                <CategoryNav isCompact />
-              </div>
-            </div>
-
-            {/* Right Section: Cart & Profile */}
-            <div className="flex items-center justify-end gap-3 flex-1">
-              {/* Admin Button */}
+              {/* Admin Access */}
               {isAdmin && (
                 <Link 
-                  href="/admin/products" 
-                  className="flex items-center gap-2 bg-orange-500 text-white px-4 h-12 rounded-2xl shadow-lg shadow-orange-500/20 hover:scale-105 transition-all font-black text-xs uppercase tracking-tight"
+                  href="/admin" 
+                  className={`flex items-center gap-2 bg-slate-900 text-white rounded-2xl shadow-xl shadow-slate-900/10 hover:bg-orange-500 hover:scale-[1.03] active:scale-95 transition-all font-black text-[10px] uppercase tracking-wider py-4 ${
+                    isScrolled ? "px-4" : "px-6"
+                  }`}
                 >
-                  <LayoutDashboard className="w-4 h-4" />
-                  <span className="hidden xl:inline">Dashboard</span>
+                  <LayoutDashboard className="w-3.5 h-3.5 text-orange-400" />
+                  <span className={`${isScrolled ? "hidden lg:inline" : "inline"}`}>Адмін-панель</span>
                 </Link>
               )}
 
               {/* Cart */}
               <button 
                 onClick={() => setIsCartOpen(true)}
-                className="flex items-center gap-3 bg-white px-5 h-12 rounded-2xl shadow-sm hover:shadow-md transition-all font-black border border-gray-100/50 relative"
+                className={`flex items-center bg-white rounded-2xl shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all font-black border border-gray-50/50 relative px-5 h-12 lg:h-14 gap-3 group`}
               >
-                <ShoppingCart className="w-4 h-4 text-[#1A1C1E]" />
-                <span className="text-sm text-gray-900">{cartItemCount}</span>
-                {cartItemCount > 0 && (
-                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-orange-500 rounded-full animate-ping" />
-                )}
+                <div className="relative">
+                    <ShoppingCart className="w-4 h-4 lg:w-5 lg:h-5 text-[#1A1C1E] group-hover:scale-110 transition-transform" />
+                    {cartItemCount > 0 && (
+                        <span className="absolute -top-3 -right-3 min-w-[20px] h-5 px-1 bg-orange-500 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-orange-500/50 border-2 border-white">
+                            {cartItemCount}
+                        </span>
+                    )}
+                </div>
+                <span className="hidden sm:inline text-xs lg:text-sm text-gray-900 uppercase tracking-[0.1em]">Кошик</span>
               </button>
 
               {/* Profile */}
-              <Link href="/profile" className="flex items-center justify-center bg-[#1A1C1E] w-12 h-12 rounded-2xl shadow-sm hover:shadow-md transition-all text-white hover:bg-black">
-                <User className="w-4 h-4" />
+              <Link href="/profile" className="flex items-center justify-center bg-gray-50/50 w-12 h-12 lg:w-14 lg:h-14 rounded-2xl shadow-inner border border-gray-100/50 hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all group overflow-hidden">
+                <User className="w-4 h-4 lg:w-5 lg:h-5 text-[#1A1C1E] transition-transform group-hover:scale-110" />
               </Link>
             </div>
-
           </div>
         </div>
       </header>

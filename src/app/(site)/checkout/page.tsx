@@ -158,10 +158,12 @@ export default function CheckoutPage() {
     fetchProfile();
   });
 
+  const maxBonusesAllowed = Math.floor(subtotal * 0.5);
+
   const handleBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val = parseFloat(e.target.value) || 0;
-    if (val > userBonusBalance) val = userBonusBalance;
-    if (val > subtotal) val = subtotal;
+    const limit = Math.min(userBonusBalance, maxBonusesAllowed);
+    if (val > limit) val = limit;
     setFormData({ ...formData, bonusesUsed: val });
   };
 
@@ -170,20 +172,22 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
-      // 1. Post to Server Action or API route here.
-      // Wait for 1s to simulate network request
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      // Final validation before submit
+      const finalLimit = Math.min(userBonusBalance, maxBonusesAllowed);
+      const safeBonuses = Math.min(formData.bonusesUsed, finalLimit);
+
+// ... logic for submit
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items,
           ...formData,
-          total_price: total
+          bonusesUsed: safeBonuses,
+          total_price: subtotal - safeBonuses
         }),
       });
-
+      
       const data = await res.json();
       
       if (data.url) {
@@ -368,36 +372,42 @@ export default function CheckoutPage() {
               </div>
 
               {/* Loyalty System */}
-              <div className="mb-8 p-5 bg-blue-50/50 border border-blue-100 rounded-2xl">
-                <label className="flex flex-col mb-1 font-bold text-blue-900">
+              <div className="mb-8 p-6 bg-blue-50/50 border border-blue-100 rounded-[2rem]">
+                <label className="flex flex-col mb-1 font-black text-blue-900 uppercase text-xs tracking-widest pl-1">
                   Використати бонуси
-                  <span className="text-sm font-medium text-blue-700/80 mb-3">Доступно: {userBonusBalance} ₴ (1 бонус = 1 ₴)</span>
+                  <span className="text-[10px] font-bold text-blue-500/80 mt-1 lowercase tracking-normal">
+                    Доступно: {userBonusBalance} ₴ (можна списати до 50% від суми)
+                  </span>
                 </label>
-                <div className="flex flex-col gap-4">
-                  <div className="relative">
+                <div className="flex flex-col gap-5 mt-4">
+                  <div className="relative group max-w-[240px]">
+                    <div className="absolute left-5 top-1/2 -translate-y-1/2 font-black text-blue-900/40 text-sm">₴</div>
                     <input 
                       type="number" 
                       min={0}
-                      max={userBonusBalance}
+                      max={Math.min(userBonusBalance, maxBonusesAllowed)}
                       value={formData.bonusesUsed || ""}
                       onChange={handleBonusChange}
-                      className="w-full sm:w-1/2 bg-white border border-blue-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-black text-blue-900"
+                      className="w-full bg-white border border-blue-200 rounded-2xl pl-10 pr-5 py-4 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-black text-blue-900 shadow-inner"
                       placeholder="0"
                     />
-                    <span className="absolute left-[calc(50%-2rem)] sm:left-auto sm:right-auto sm:ml-[-2rem] top-3.5 font-black text-blue-900 pointer-events-none hidden sm:inline-block">₴</span>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
-                    {[25, 60, 75].map((percent) => (
+                  <div className="flex flex-wrap gap-3">
+                    {[25, 50].map((percent) => (
                       <button
                         key={percent}
                         type="button"
                         onClick={() => {
                           const amountFromPercent = Math.floor((subtotal * percent) / 100);
-                          const val = Math.min(amountFromPercent, userBonusBalance, subtotal);
+                          const val = Math.min(amountFromPercent, userBonusBalance, maxBonusesAllowed);
                           setFormData({ ...formData, bonusesUsed: val });
                         }}
-                        className="px-4 py-2 bg-white border border-blue-100 text-blue-600 font-bold rounded-xl hover:bg-blue-600 hover:text-white transition-all text-sm shadow-sm"
+                        className={`px-6 py-3 border-2 transition-all text-xs font-black uppercase tracking-widest rounded-2xl shadow-sm ${
+                            formData.bonusesUsed === Math.min(Math.floor((subtotal * percent) / 100), userBonusBalance, maxBonusesAllowed) && formData.bonusesUsed > 0
+                            ? "bg-blue-600 border-blue-600 text-white"
+                            : "bg-white border-blue-100 text-blue-600 hover:border-blue-300"
+                        }`}
                       >
                         {percent}%
                       </button>
@@ -405,14 +415,20 @@ export default function CheckoutPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        const val = Math.min(userBonusBalance, subtotal);
+                        const val = Math.min(userBonusBalance, maxBonusesAllowed);
                         setFormData({ ...formData, bonusesUsed: val });
                       }}
-                      className="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all text-sm shadow-sm"
+                      className="px-6 py-3 bg-blue-900 text-white font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-black transition-all shadow-md active:scale-95"
                     >
-                      Списати всі
+                      Максимум (50%)
                     </button>
                   </div>
+                  
+                  {formData.bonusesUsed > 0 && (
+                      <p className="text-[10px] font-bold text-blue-400 italic">
+                        * Ви економите {formData.bonusesUsed.toFixed(0)} ₴ за рахунок бонусів
+                      </p>
+                  )}
                 </div>
               </div>
 

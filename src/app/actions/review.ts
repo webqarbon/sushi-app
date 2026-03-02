@@ -62,14 +62,65 @@ export async function submitReview(productId: string, rating: number, comment: s
 
 export async function approveReview(reviewId: string) {
     const supabase = await createClient();
+    
+    // 1. Get the review info first
+    const { data: review } = await supabase.from('reviews').select('product_id').eq('id', reviewId).single();
+    
+    // 2. Update status
     const { error } = await supabase.from('reviews').update({ status: 'approved' }).eq('id', reviewId);
     if (error) throw new Error(error.message);
+
+    // 3. Recalculate rating for that product
+    if (review?.product_id) {
+        await recalculateProductRating(review.product_id);
+    }
+    
     revalidatePath('/');
+    revalidatePath('/admin/reviews');
 }
 
 export async function rejectReview(reviewId: string) {
     const supabase = await createClient();
+    
+    // 1. Get the review info first
+    const { data: review } = await supabase.from('reviews').select('product_id').eq('id', reviewId).single();
+    
+    // 2. Update status
     const { error } = await supabase.from('reviews').update({ status: 'rejected' }).eq('id', reviewId);
     if (error) throw new Error(error.message);
+
+    // 3. Recalculate rating (in case it was previously approved)
+    if (review?.product_id) {
+        await recalculateProductRating(review.product_id);
+    }
+    
     revalidatePath('/');
+    revalidatePath('/admin/reviews');
+}
+
+async function recalculateProductRating(productId: string) {
+    const supabase = await createClient();
+    
+    // Get all approved reviews for this product
+    const { data: approvedReviews } = await supabase
+        .from('reviews')
+        .select('rating')
+        .eq('product_id', productId)
+        .eq('status', 'approved');
+
+    if (!approvedReviews) return;
+
+    const count = approvedReviews.length;
+    const avg = count > 0 
+        ? approvedReviews.reduce((sum, r) => sum + r.rating, 0) / count 
+        : 0;
+
+    // Update the product table
+    await supabase
+        .from('products')
+        .update({ 
+            average_rating: parseFloat(avg.toFixed(1)),
+            reviews_count: count 
+        })
+        .eq('id', productId);
 }

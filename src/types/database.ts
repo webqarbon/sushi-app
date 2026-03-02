@@ -14,6 +14,8 @@ export type Product = {
   cost_price: number;
   image_url: string;
   bonus_percent: number;
+  average_rating: number;
+  reviews_count: number;
 };
 
 export type Review = {
