@@ -41,7 +41,7 @@ export default function Header() {
 
   const isAdmin = user?.user_metadata?.role === 'admin' || 
                   user?.email === 'death@gmail.com' || 
-                  user?.email === 'frozen_admin_2026@frozen-market.ua';
+                  user?.email === 'frozen_admin_2026@frozen-market.ua'; // Hardcoded for now as it's a client component, or I can pass it from a layout
 
   return (
     <>

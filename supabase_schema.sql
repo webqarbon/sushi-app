@@ -128,12 +128,25 @@ ON orders FOR INSERT WITH CHECK (auth.uid() = user_id);
 -- Only service role / webhook can update orders (e.g., status) securely. 
 -- We won't allow simple users to UPDATE orders, protecting payment statuses from being tampered with.
 
--- 5. Bonus Management Functions
-CREATE OR REPLACE FUNCTION deduct_bonuses(user_id_val UUID, amount_val NUMERIC)
-RETURNS void AS $$
-BEGIN
-  UPDATE profiles
-  SET bonus_balance = bonus_balance - amount_val
-  WHERE id = user_id_val;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- 6. Create Reviews Table
+CREATE TABLE reviews (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT,
+  status TEXT CHECK (status IN ('pending', 'approved', 'rejected')) DEFAULT 'pending',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Reviews RLS
+ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Reviews are public viewable if approved" ON reviews FOR SELECT USING (status = 'approved');
+CREATE POLICY "Users can insert their own reviews" ON reviews FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- 7. Storage Bucket for Products (Run in Supabase Dashboard or via API if enabled)
+-- Note: Assuming bucket 'product-images' exists. 
+-- Policies for public reading and authenticated upload:
+-- INSERT INTO storage.buckets (id, name, public) VALUES ('product-images', 'product-images', true);
+-- CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = 'product-images');
+-- CREATE POLICY "Admin Upload" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'product-images' AND (auth.uid() IN (SELECT id FROM profiles WHERE user_metadata->>'role' = 'admin')));

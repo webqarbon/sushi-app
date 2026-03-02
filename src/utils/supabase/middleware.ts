@@ -50,7 +50,7 @@ export async function updateSession(request: NextRequest) {
     const isAdmin = 
         user.user_metadata?.role === 'admin' || 
         user.email === 'death@gmail.com' ||
-        user.email === 'frozen_admin_2026@frozen-market.ua'; 
+        user.email === process.env.ADMIN_USER_EMAIL; 
     
     if (!isAdmin) {
         const url = request.nextUrl.clone()
