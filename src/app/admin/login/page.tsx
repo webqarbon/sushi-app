@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { Lock, Mail, Loader2, ShieldCheck, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -13,6 +13,24 @@ export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    // If user is already logged in as admin, send them to dashboard
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const isAdmin = 
+           user.user_metadata?.role === 'admin' || 
+           user.email === 'death@gmail.com' ||
+           user.email === 'frozen_admin_2026@frozen-market.ua';
+        
+        if (isAdmin) {
+          router.push("/admin");
+        }
+      }
+    };
+    checkUser();
+  }, [supabase, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

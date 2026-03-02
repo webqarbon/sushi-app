@@ -44,6 +44,11 @@ export default function AdminLayout({
     { href: "/admin/orders", label: "Замовлення", icon: ShoppingBag },
   ];
 
+  // Professional fix: If we are on the login page, don't show the admin shell at all
+  if (pathname === '/admin/login') {
+    return <div className="min-h-screen bg-[#F8FAFC]">{children}</div>;
+  }
+
   return (
     <div className="flex min-h-screen bg-[#F8FAFC] font-sans text-slate-900 scroll-smooth overflow-x-hidden">
       {/* Mobile Sidebar Overlay */}
