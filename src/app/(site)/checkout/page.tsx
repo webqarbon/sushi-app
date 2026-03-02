@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useCartStore } from "@/store/cart";
-import { ArrowLeft, Info, Truck, CreditCard } from "lucide-react";
+import { ArrowLeft, Info, Truck, CreditCard, Gift, User as UserIcon, Star } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
@@ -12,6 +12,7 @@ export default function CheckoutPage() {
   const { items, clearCart } = useCartStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userBonusBalance, setUserBonusBalance] = useState<number>(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -140,6 +141,7 @@ export default function CheckoutPage() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
+        setIsLoggedIn(true);
         const { data: profile } = await supabase
           .from("profiles")
           .select("bonus_balance, full_name, phone")
@@ -154,6 +156,8 @@ export default function CheckoutPage() {
             phone: profile.phone || prev.phone,
           }));
         }
+      } else {
+        setIsLoggedIn(false);
       }
     };
     fetchProfile();
@@ -167,6 +171,11 @@ export default function CheckoutPage() {
     if (val > limit) val = limit;
     setFormData({ ...formData, bonusesUsed: val });
   };
+
+  const potentialBonuses = items.reduce((acc, item) => {
+    const bonus = (item.product.price * (item.product.bonus_percent || 0)) / 100;
+    return acc + (bonus * item.quantity);
+  }, 0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -239,6 +248,47 @@ export default function CheckoutPage() {
         {/* Left Column: Form */}
         <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-10">
           <h1 className="text-3xl font-black text-gray-900 tracking-tight">Оформлення замовлення</h1>
+
+          {!isLoggedIn && (
+            <div className="bg-gradient-to-br from-[#1A1C1E] to-[#2D3135] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-gray-400/20 group animate-in slide-in-from-top-4 duration-700">
+               {/* Decorative background elements */}
+               <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/3" />
+               <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/5 blur-[80px] rounded-full translate-y-1/3 -translate-x-1/4" />
+               
+               <div className="relative flex flex-col md:flex-row items-center gap-8">
+                  <div className="flex-shrink-0 relative">
+                     <div className="w-20 h-20 bg-orange-500 rounded-3xl flex items-center justify-center rotate-6 group-hover:rotate-0 transition-transform duration-500 shadow-lg shadow-orange-500/20 relative z-10">
+                        <Gift className="w-10 h-10 text-white" />
+                     </div>
+                     <div className="absolute -top-2 -right-2 w-10 h-10 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center -rotate-12 group-hover:rotate-0 transition-transform duration-500 delay-75">
+                        <Star className="w-5 h-5 text-orange-400 fill-orange-400" />
+                     </div>
+                  </div>
+                  
+                  <div className="flex-1 text-center md:text-left">
+                     <h2 className="text-2xl font-black mb-2 uppercase tracking-tight">Не втрачайте <span className="text-orange-500">{potentialBonuses.toFixed(0)} ₴</span> бонусами!</h2>
+                     <p className="text-gray-400 font-medium text-sm leading-relaxed max-w-md">
+                        За це замовлення ви можете отримати кешбек на бонусний баланс. Авторизуйтесь, щоб ми нарахували їх вам.
+                     </p>
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                     <Link 
+                        href="/auth?mode=login" 
+                        className="px-8 py-4 bg-white text-[#1A1C1E] rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all text-center active:scale-95 shadow-xl shadow-white/5"
+                     >
+                        Увійти
+                     </Link>
+                     <Link 
+                        href="/auth?mode=register" 
+                        className="px-8 py-4 bg-white/10 backdrop-blur-md text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white/20 transition-all text-center border border-white/10 active:scale-95"
+                     >
+                        Реєстрація
+                     </Link>
+                  </div>
+               </div>
+            </div>
+          )}
 
           <form id="checkout-form" onSubmit={handleSubmit} className="flex flex-col gap-10">
             {/* Contact Details */}
