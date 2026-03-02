@@ -112,13 +112,34 @@ export default function CategoryNav({
   const handleScroll = (dir: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const el = scrollContainerRef.current;
-      const firstChild = el.firstElementChild as HTMLElement;
-      // Get item width + gap. Main gap is 12px (gap-3), Compact gap is 4px (gap-1)
-      const gap = isCompact ? 4 : 12;
-      const scrollAmount = firstChild ? firstChild.offsetWidth + gap : (isCompact ? 150 : 300);
+      const children = Array.from(el.children) as HTMLElement[];
+      if (children.length === 0) return;
+
+      const currentScroll = el.scrollLeft;
+      const containerWidth = el.clientWidth;
       
-      el.scrollBy({ 
-        left: dir === 'left' ? -scrollAmount : scrollAmount, 
+      let targetScroll = currentScroll;
+      const tolerance = 20; // small buffer to detect "current" item effectively
+
+      if (dir === 'right') {
+        const nextItem = children.find(child => child.offsetLeft > currentScroll + tolerance);
+        if (nextItem) {
+          // Subtract a small amount to keep some of the previous gap/padding visible for context
+          targetScroll = nextItem.offsetLeft - (isCompact ? 12 : 24);
+        } else {
+          targetScroll = el.scrollWidth - containerWidth;
+        }
+      } else {
+        const prevItem = [...children].reverse().find(child => child.offsetLeft < currentScroll - tolerance);
+        if (prevItem) {
+          targetScroll = prevItem.offsetLeft - (isCompact ? 12 : 24);
+        } else {
+          targetScroll = 0;
+        }
+      }
+
+      el.scrollTo({ 
+        left: Math.max(0, targetScroll), 
         behavior: 'smooth' 
       });
     }
