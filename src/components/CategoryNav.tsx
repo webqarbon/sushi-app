@@ -11,7 +11,20 @@ import {
   Utensils, 
   Container,
   Flame,
-  LayoutGrid
+  LayoutGrid,
+  Fish,
+  Milk,
+  Box,
+  ShoppingBag,
+  Gem,
+  Cpu,
+  Waves,
+  Hammer,
+  Grape,
+  Zap,
+  Star,
+  Settings,
+  MoreHorizontal
 } from "lucide-react";
 import { useCategoryStore } from "@/store/category";
 import { Category } from "@/types/database";
@@ -46,6 +59,24 @@ export default function CategoryNav({
     "snacks": Pizza,
     "desserts": Donut,
     "drinks": GlassWater,
+    "ikra": Fish,
+    "boroshno": Grape,
+    "kosmetika": Gem,
+    "makaronni-vyroby": Soup,
+    "nozhi-kukhonni": Hammer,
+    "ovocheva-konservatsiya": Apple,
+    "odnorazovyy-posud": Container,
+    "panirovalni-sukhari": Flame,
+    "podarunkovi-paketi": ShoppingBag,
+    "posud-dlya-sushi": Container,
+    "produkti-dlya-sushi": Utensils,
+    "ryba-ta-moreprodukty": Fish,
+    "roslynne-moloko": Milk,
+    "syry": Milk,
+    "sousy": GlassWater,
+    "spetsiyi-ta-prypravy": Flame,
+    "susheni-ovochi": Apple,
+    "tekhnika": Cpu
   };
 
   const sortedCategories = useMemo(() => {
