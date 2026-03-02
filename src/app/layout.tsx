@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -22,11 +20,7 @@ export default function RootLayout({
   return (
     <html lang="uk" className="scroll-smooth">
       <body className={`${outfit.variable} font-sans antialiased min-h-screen flex flex-col bg-[#F3F5F9] text-gray-900`}>
-        <Header />
-        <main className="flex-1 shrink-0">
-          {children}
-        </main>
-        <Footer />
+        {children}
       </body>
     </html>
   );

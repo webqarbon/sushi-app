@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Edit2, Trash2, X, Plus, Hash } from "lucide-react";
+import { Search, Edit2, Trash2, X, Plus, Hash, ChevronRight } from "lucide-react";
 import { createCategory, updateCategory, deleteCategory } from "@/app/actions/category";
 import slugify from "slugify";
 
@@ -25,7 +25,7 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
     if (confirm(`Ви впевнені, що хочете видалити категорію "${name}"? Це може вплинути на товари в цій категорії.`)) {
       try {
         await deleteCategory(id);
-        alert('Категорію видалено!');
+        alert('Category deleted!');
       } catch (err: any) {
         alert(err.message);
       }
@@ -33,74 +33,87 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
   };
 
   return (
-    <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100/50 overflow-hidden">
-      {/* Actions */}
-      <div className="p-8 border-b border-gray-50 flex flex-col md:flex-row items-center justify-between gap-6 bg-gray-50/30">
-        <div className="relative group flex-1 max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
-          <input
-            type="text"
-            placeholder="Шукати категорію..."
-            className="w-full pl-12 pr-4 py-3.5 bg-white rounded-2xl border border-gray-100 focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 transition-all font-bold text-sm shadow-sm"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+    <div className="space-y-12">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase">Categories</h1>
+          <p className="text-slate-500 font-medium tracking-tight">Organize your products with categories ({filteredCategories.length} total)</p>
         </div>
-
         <button 
           onClick={() => setIsAddingNew(true)}
-          className="w-full md:w-auto bg-[#1A1C1E] text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all flex items-center justify-center gap-3 shadow-lg hover:translate-y-[-2px] active:translate-y-0"
+          className="flex items-center gap-2 px-10 py-4 bg-slate-900 text-white font-black text-xs uppercase tracking-widest rounded-3xl shadow-xl shadow-slate-900/20 hover:scale-105 transition-all duration-500 active:scale-95 group"
         >
-          <Plus className="w-4 h-4 text-orange-500" />
-          <span>Нова категорія</span>
+          <Plus className="w-5 h-5 text-orange-500 group-hover:rotate-90 transition-transform" />
+          New Category
         </button>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 border-b border-gray-50 bg-gray-50/20">
-              <th className="px-8 py-5">Назва</th>
-              <th className="px-8 py-5">Slug (URL)</th>
-              <th className="px-8 py-5 text-right">Управління</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
-            {filteredCategories.map((c) => (
-              <tr key={c.id} className="hover:bg-orange-500/[0.02] transition-colors group">
-                <td className="px-8 py-5">
-                  <div className="font-black text-[#1A1C1E] text-base group-hover:text-orange-500 transition-colors uppercase tracking-tight">{c.name}</div>
-                </td>
-                <td className="px-8 py-5">
-                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-100 text-gray-500 text-[11px] font-bold">
-                    <Hash className="w-3 h-3" />
-                    {c.slug}
-                  </span>
-                </td>
-                <td className="px-8 py-5 text-right">
-                  <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                    <button 
-                      onClick={() => setEditingCategory(c)}
-                      className="p-3.5 rounded-2xl bg-white text-gray-400 hover:text-orange-500 hover:shadow-lg transition-all border border-gray-50"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(c.id, c.name)}
-                      className="p-3.5 rounded-2xl bg-white text-gray-400 hover:text-red-500 hover:shadow-lg transition-all border border-gray-50"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </td>
+      {/* List Container */}
+      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+        <div className="p-8 border-b border-slate-50 flex items-center bg-slate-50/30">
+            <div className="relative group w-full max-w-md">
+                <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
+                <input
+                    type="text"
+                    placeholder="Search categories..."
+                    className="w-full pl-16 pr-6 py-4 bg-white rounded-2xl border border-slate-100 focus:ring-4 focus:ring-orange-500/10 transition-all font-bold text-sm shadow-sm"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+            </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 border-b border-slate-50 bg-slate-50/20">
+                <th className="px-10 py-6">Category Name</th>
+                <th className="px-10 py-6">Slug (URL Index)</th>
+                <th className="px-10 py-6 text-right">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {filteredCategories.map((c) => (
+                <tr key={c.id} className="hover:bg-slate-50/50 transition-colors group">
+                  <td className="px-10 py-6">
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 group-hover:bg-orange-50 transition-colors">
+                            <LayoutGrid className="w-4 h-4 text-slate-400 group-hover:text-orange-500" />
+                        </div>
+                        <div className="font-black text-slate-900 text-lg uppercase tracking-tight">{c.name}</div>
+                    </div>
+                  </td>
+                  <td className="px-10 py-6">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900/5 text-slate-500 text-[11px] font-black uppercase tracking-widest shadow-inner">
+                      <Hash className="w-3.5 h-3.5 text-orange-400" />
+                      {c.slug}
+                    </span>
+                  </td>
+                  <td className="px-10 py-6 text-right">
+                    <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                      <button 
+                        onClick={() => setEditingCategory(c)}
+                        className="p-3.5 rounded-2xl bg-white text-slate-400 hover:text-orange-500 hover:shadow-xl hover:shadow-orange-500/10 transition-all border border-slate-100 shadow-sm"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(c.id, c.name)}
+                        className="p-3.5 rounded-2xl bg-white text-slate-400 hover:text-red-500 hover:shadow-xl hover:shadow-red-500/10 transition-all border border-slate-100 shadow-sm"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {/* Add New Category Modal */}
+      {/* Modals are kept similar but refined */}
       {isAddingNew && (
         <CategoryModal 
           onClose={() => setIsAddingNew(false)} 
@@ -108,11 +121,10 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
             await createCategory(name, slug);
             setIsAddingNew(false);
           }}
-          title="Створити категорію"
+          title="Create Category"
         />
       )}
 
-      {/* Edit Category Modal */}
       {editingCategory && (
         <CategoryModal 
           onClose={() => setEditingCategory(null)} 
@@ -121,12 +133,16 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
             await updateCategory(editingCategory.id, name, slug);
             setEditingCategory(null);
           }}
-          title="Редагувати категорію"
+          title="Edit Category"
         />
       )}
     </div>
   );
 }
+
+const LayoutGrid = ({ className }: { className: string }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+);
 
 function CategoryModal({ onClose, initialData, onSubmit, title }: any) {
   const [name, setName] = useState(initialData?.name || "");
@@ -140,36 +156,39 @@ function CategoryModal({ onClose, initialData, onSubmit, title }: any) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A1C1E]/40 backdrop-blur-md">
-      <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl relative overflow-hidden border border-white/20">
-        <div className="p-10 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
-          <h3 className="text-2xl font-black tracking-tighter uppercase leading-none">{title}</h3>
-          <button onClick={onClose} className="p-4 bg-white rounded-2xl text-gray-400 border border-gray-100"><X className="w-5 h-5" /></button>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-xl animate-in fade-in duration-300">
+      <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-premium relative overflow-hidden animate-in zoom-in-95 duration-500 border border-white/20">
+        <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <h3 className="text-3xl font-black tracking-tighter uppercase leading-none">{title}</h3>
+          <button onClick={onClose} className="p-4 bg-white rounded-2xl text-slate-400 border border-slate-100 hover:text-slate-900 transition-all"><X className="w-6 h-6" /></button>
         </div>
-        <div className="p-10 space-y-8">
+        <div className="p-10 space-y-10">
           <div className="space-y-4">
-            <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest pl-1">Назва категорії</label>
+            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Category Name</label>
             <input
-              className="w-full px-6 py-5 bg-gray-50 rounded-2xl border border-gray-100 focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 transition-all font-bold text-lg"
+              className="w-full px-8 py-6 bg-slate-50 rounded-[2rem] border-none focus:ring-4 focus:ring-orange-500/10 transition-all font-black text-xl text-slate-900"
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
-              placeholder="Вкажіть назву... (Українською)"
+              placeholder="e.g. Traditional Rolls"
             />
           </div>
           <div className="space-y-4">
-            <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest pl-1">Slug (URL)</label>
-            <input
-              className="w-full px-6 py-5 bg-gray-50 rounded-2xl border border-gray-100 focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 transition-all font-bold text-lg"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              placeholder="url-shlyakh"
-            />
+            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Slug (URL Path)</label>
+            <div className="relative">
+                <Hash className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+                <input
+                    className="w-full pl-16 pr-8 py-6 bg-slate-50 rounded-[2rem] border-none focus:ring-4 focus:ring-orange-500/10 transition-all font-black text-xl text-slate-900"
+                    value={slug}
+                    onChange={(e) => setSlug(e.target.value)}
+                    placeholder="category-slug"
+                />
+            </div>
           </div>
           <button 
             onClick={() => onSubmit(name, slug)}
-            className="w-full py-6 bg-orange-500 text-white rounded-[2rem] font-black text-xl shadow-xl shadow-orange-500/20 hover:scale-[1.01] transition-all uppercase tracking-tighter"
+            className="w-full py-8 bg-orange-500 text-white rounded-[2.5rem] font-black text-2xl shadow-xl shadow-orange-500/20 hover:scale-[1.01] transition-all uppercase tracking-tighter"
           >
-            Зберегти
+            Save Category
           </button>
         </div>
       </div>

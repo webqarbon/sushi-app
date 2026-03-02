@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingBag, LayoutGrid, Package, LayoutDashboard, Settings, LogOut, Star } from "lucide-react";
+import { ShoppingBag, LayoutGrid, Package, LayoutDashboard, Settings, LogOut, Star, User, Bell, Search } from "lucide-react";
 
 export default function AdminLayout({
   children,
@@ -12,36 +12,33 @@ export default function AdminLayout({
   const pathname = usePathname();
 
   const navItems = [
-    { href: "/admin", label: "DASHBOARD", icon: LayoutDashboard },
-    { href: "/admin/products", label: "PRODUCTS", icon: Package },
-    { href: "/admin/categories", label: "CATEGORIES", icon: LayoutGrid },
-    { href: "/admin/reviews", label: "REVIEWS", icon: Star },
-    { href: "/admin/orders", label: "ORDERS", icon: ShoppingBag },
+    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/products", label: "Products", icon: Package },
+    { href: "/admin/categories", label: "Categories", icon: LayoutGrid },
+    { href: "/admin/reviews", label: "Reviews", icon: Star },
+    { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#F3F5F9] font-sans">
+    <div className="flex min-h-screen bg-[#F8FAFC] font-sans text-slate-900">
       {/* Sidebar */}
-      <aside className="w-[300px] bg-[#1A1C1E] text-white hidden lg:flex flex-col sticky top-0 h-screen shadow-2xl z-40">
-        <div className="p-10">
-          <Link href="/" className="flex items-center gap-3 group">
-             <div className="relative">
-                 <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-500 shadow-xl shadow-white/10">
-                    <div className="w-5 h-5 bg-orange-500 rounded-full animate-pulse" />
-                 </div>
-                 <div className="absolute -top-2 -right-2 w-6 h-6 bg-orange-400 rounded-lg flex items-center justify-center border-4 border-[#1A1C1E]">
-                    <div className="w-1.5 h-1.5 bg-white rounded-full" />
-                 </div>
-             </div>
-             <div className="flex flex-col">
-                <span className="text-2xl font-black tracking-tighter leading-none">FROZEN</span>
-                <span className="text-[9px] font-black tracking-[0.4em] uppercase opacity-40 ml-1">Market Admin</span>
-             </div>
-          </Link>
+      <aside className="fixed left-0 top-0 h-screen w-72 bg-white border-r border-slate-200 flex flex-col z-50">
+        <div className="p-8">
+           <Link href="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
+                <div className="w-4 h-4 bg-white rounded-full" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-black tracking-tight leading-none text-slate-900">FROZEN <span className="text-orange-500">ADMIN</span></span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Management Tool</span>
+              </div>
+           </Link>
         </div>
 
-        <nav className="flex-1 px-6 space-y-4">
-          <div className="text-[10px] font-black tracking-[0.2em] text-white/20 uppercase mb-8 ml-4">Main Menu</div>
+        <nav className="flex-1 px-4 py-8 space-y-1">
+          <div className="px-4 mb-4">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Main Menu</span>
+          </div>
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -49,42 +46,75 @@ export default function AdminLayout({
               <Link 
                 key={item.href}
                 href={item.href} 
-                className={`flex items-center gap-4 px-6 py-5 rounded-[2rem] transition-all duration-500 group relative ${
+                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 group ${
                   isActive 
-                    ? "bg-orange-500 text-white shadow-2xl shadow-orange-500/40 translate-x-3 scale-105" 
-                    : "text-white/40 hover:text-white hover:bg-white/5 hover:translate-x-2"
+                    ? "bg-slate-900 text-white shadow-xl shadow-slate-900/10" 
+                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
-                <Icon className={`w-5 h-5 transition-transform duration-500 ${isActive ? "scale-110" : "group-hover:scale-110"}`} />
-                <span className="font-black text-xs tracking-widest">{item.label}</span>
+                <Icon className={`w-5 h-5 transition-transform duration-300 ${isActive ? "scale-100" : "group-hover:scale-110"}`} />
+                <span className="font-bold text-sm">{item.label}</span>
                 {isActive && (
-                    <div className="absolute -left-6 w-2 h-8 bg-white rounded-full" />
+                    <div className="ml-auto w-1.5 h-1.5 bg-orange-500 rounded-full" />
                 )}
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-8 space-y-4">
-            <button className="flex items-center gap-4 px-8 py-4 rounded-2xl bg-white/5 text-white/40 hover:text-white transition-all w-full group">
+        <div className="p-4 mt-auto border-t border-slate-100">
+            <Link 
+              href="/admin/settings"
+              className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all group ${
+                pathname === "/admin/settings" ? "bg-slate-900 text-white" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+              }`}
+            >
                 <Settings className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
-                <span className="font-bold uppercase tracking-widest text-[10px]">Settings</span>
-            </button>
-            <button className="flex items-center gap-4 px-8 py-4 rounded-2xl bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all w-full group overflow-hidden relative">
-                <LogOut className="w-5 h-5 translate-x-0 group-hover:translate-x-1 transition-transform" />
-                <span className="font-bold uppercase tracking-widest text-[10px]">Log Out</span>
+                <span className="font-bold text-sm">Settings</span>
+            </Link>
+            <button className="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-red-500 hover:bg-red-50 transition-all w-full mt-1 group">
+                <LogOut className="w-5 h-5 group-hover:translate-x-1 transition-all" />
+                <span className="font-bold text-sm">Log Out</span>
             </button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 min-h-screen relative">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 blur-[120px] rounded-full -z-10" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-500/5 blur-[100px] rounded-full -z-10" />
-        <div className="p-4 lg:p-12 relative z-10">
+      {/* Main Content Area */}
+      <div className="pl-72 flex-1 flex flex-col min-h-screen">
+        {/* Top Navbar */}
+        <header className="h-20 bg-white border-b border-slate-200 sticky top-0 z-30 flex items-center justify-between px-10">
+            <div className="relative group w-96">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
+                <input 
+                    type="text" 
+                    placeholder="Search anything..." 
+                    className="w-full bg-slate-50 border-none rounded-2xl py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-orange-500/20 transition-all"
+                />
+            </div>
+
+            <div className="flex items-center gap-6">
+                <button className="relative w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-50 transition-all text-slate-500">
+                    <Bell className="w-5 h-5" />
+                    <span className="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full border-2 border-white" />
+                </button>
+                <div className="h-10 w-[1px] bg-slate-100" />
+                <div className="flex items-center gap-3">
+                    <div className="flex flex-col items-end">
+                        <span className="text-sm font-black text-slate-900 leading-none">Frozen Admin</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Super Admin</span>
+                    </div>
+                    <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center border border-slate-200">
+                        <User className="w-5 h-5 text-slate-500" />
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        {/* Content */}
+        <main className="p-10">
             {children}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
