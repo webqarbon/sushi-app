@@ -6,24 +6,7 @@ import { Search, Filter, Edit2, Trash2, X, Link as LinkIcon, Camera, Upload, Plu
 import { updateProduct, deleteProduct, createProduct, uploadProductImage } from "@/app/actions/product";
 import { toast } from "react-hot-toast";
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  cost_price: number;
-  bonus_percent: number;
-  image_url: string;
-  category_id: string;
-  description: string;
-  categories?: {
-    name: string;
-  };
-}
-
-interface Category {
-  id: string;
-  name: string;
-}
+import { Product, Category } from "@/types/database";
 
 export default function AdminProductList({ 
   products, 
@@ -92,7 +75,6 @@ export default function AdminProductList({
     <div className="space-y-10">
       <div className="flex flex-col lg:flex-row items-baseline lg:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter text-slate-900 uppercase">Менеджмент Товарів</h1>
           <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-2">Каталог: {filteredProducts.length} позицій знайдено</p>
         </div>
         <button 
@@ -174,7 +156,13 @@ export default function AdminProductList({
                         <div className="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-1">Бонус</div>
                         <div className="text-xl font-black text-orange-500 tracking-tighter">{p.bonus_percent}%</div>
                     </div>
-                </div>
+                  {(p.reviews_count !== undefined && p.reviews_count > 0) && (
+                    <div className="col-span-2 bg-purple-50/30 p-4 rounded-3xl border border-purple-100/50 flex items-center justify-between">
+                      <div className="text-[9px] font-black text-purple-400 uppercase tracking-widest">Рейтинг</div>
+                      <div className="text-base font-black text-purple-600">★ {(p.average_rating || 0).toFixed(1)} <span className="text-[9px] text-purple-300">({p.reviews_count})</span></div>
+                    </div>
+                  )}
+              </div>
                 <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between">
                     <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Собівартість: ₴{p.cost_price || 0}</div>
                     <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">UUID: {p.id.slice(0, 4)}</div>

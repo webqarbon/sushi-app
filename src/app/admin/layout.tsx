@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { 
@@ -28,6 +28,17 @@ export default function AdminLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const [adminName, setAdminName] = useState("Admin");
+  const [adminEmail, setAdminEmail] = useState("");
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setAdminEmail(user.email || "");
+        setAdminName(user.user_metadata?.full_name || user.email?.split("@")[0] || "Admin");
+      }
+    });
+  }, [supabase]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -148,9 +159,9 @@ export default function AdminLayout({
                 <div className="h-10 w-[1px] bg-slate-200" />
                 <div className="flex items-center gap-4 group">
                     <div className="flex flex-col items-end mr-1">
-                        <span className="text-sm font-black text-slate-900 leading-none uppercase tracking-tighter">Frozen Admin</span>
+                        <span className="text-sm font-black text-slate-900 leading-none uppercase tracking-tighter">{adminName}</span>
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5 flex items-center gap-2">
-                           <div className="w-1 h-1 bg-green-500 rounded-full" /> Super Admin
+                           <div className="w-1 h-1 bg-green-500 rounded-full" /> Admin
                         </span>
                     </div>
                     <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100 shadow-inner group-hover:border-slate-300 transition-all overflow-hidden relative">

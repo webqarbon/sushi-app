@@ -1,16 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Edit2, Trash2, X, Plus, Hash, ChevronRight } from "lucide-react";
+import { Search, Edit2, Trash2, X, Plus, Hash, ChevronRight, LayoutGrid } from "lucide-react";
 import { createCategory, updateCategory, deleteCategory } from "@/app/actions/category";
 import { toast } from "react-hot-toast";
 import slugify from "slugify";
+import { Category } from "@/types/database";
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-}
+
 
 export default function AdminCategoryList({ initialCategories }: { initialCategories: Category[] }) {
   const [search, setSearch] = useState("");
@@ -49,15 +46,15 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
       {/* Page Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase">Categories</h1>
-          <p className="text-slate-500 font-medium tracking-tight">Organize your products with categories ({filteredCategories.length} total)</p>
+          <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase">Категорії</h1>
+          <p className="text-slate-500 font-medium tracking-tight">Організуйте ваші товари ({filteredCategories.length} всього)</p>
         </div>
         <button 
           onClick={() => setIsAddingNew(true)}
           className="flex items-center gap-2 px-10 py-4 bg-slate-900 text-white font-black text-xs uppercase tracking-widest rounded-3xl shadow-xl shadow-slate-900/20 hover:scale-105 transition-all duration-500 active:scale-95 group"
         >
           <Plus className="w-5 h-5 text-orange-500 group-hover:rotate-90 transition-transform" />
-          New Category
+          Нова категорія
         </button>
       </div>
 
@@ -68,7 +65,7 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
                 <input
                     type="text"
-                    placeholder="Search categories..."
+                    placeholder="Пошук категорій..."
                     className="w-full pl-16 pr-6 py-4 bg-white rounded-2xl border border-slate-100 focus:ring-4 focus:ring-orange-500/10 transition-all font-bold text-sm shadow-sm"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -80,9 +77,9 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 border-b border-slate-50 bg-slate-50/20">
-                <th className="px-10 py-6">Category Name</th>
-                <th className="px-10 py-6">Slug (URL Index)</th>
-                <th className="px-10 py-6 text-right">Actions</th>
+                <th className="px-10 py-6">Назва категорії</th>
+                <th className="px-10 py-6">Слаг (URL)</th>
+                <th className="px-10 py-6 text-right">Дії</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -152,9 +149,6 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
   );
 }
 
-const LayoutGrid = ({ className }: { className: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-);
 
 function CategoryModal({ onClose, initialData, onSubmit, title }: any) {
   const [name, setName] = useState(initialData?.name || "");
@@ -181,11 +175,11 @@ function CategoryModal({ onClose, initialData, onSubmit, title }: any) {
               className="w-full px-8 py-6 bg-slate-50 rounded-[2rem] border-none focus:ring-4 focus:ring-orange-500/10 transition-all font-black text-xl text-slate-900"
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
-              placeholder="e.g. Traditional Rolls"
+              placeholder="напр. Традиційні роли"
             />
           </div>
           <div className="space-y-4">
-            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Slug (URL Path)</label>
+            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Слаг (URL)</label>
             <div className="relative">
                 <Hash className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
                 <input
@@ -200,7 +194,7 @@ function CategoryModal({ onClose, initialData, onSubmit, title }: any) {
             onClick={() => onSubmit(name, slug)}
             className="w-full py-8 bg-orange-500 text-white rounded-[2.5rem] font-black text-2xl shadow-xl shadow-orange-500/20 hover:scale-[1.01] transition-all uppercase tracking-tighter"
           >
-            Save Category
+            Зберегти
           </button>
         </div>
       </div>
