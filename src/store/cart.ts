@@ -13,6 +13,7 @@ interface CartState {
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
+  setItems: (items: CartItem[]) => void;
 }
 
 export const useCartStore = create<CartState>()(
@@ -44,6 +45,7 @@ export const useCartStore = create<CartState>()(
           ),
         })),
       clearCart: () => set({ items: [] }),
+      setItems: (items) => set({ items }),
     }),
     {
       name: 'frozen-cart-storage',

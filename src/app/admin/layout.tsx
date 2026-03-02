@@ -1,9 +1,23 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ShoppingBag, LayoutGrid, Package, LayoutDashboard, LogOut, Star, User, Bell, Search, Menu, X } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { 
+  ShoppingBag, 
+  LayoutGrid, 
+  Package, 
+  LayoutDashboard, 
+  LogOut, 
+  Star, 
+  User, 
+  Bell, 
+  Search, 
+  Menu, 
+  X 
+} from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
+import { toast } from "react-hot-toast";
 
 export default function AdminLayout({
   children,
@@ -12,6 +26,15 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Ви вийшли з адмін-панелі");
+    router.push("/");
+    router.refresh();
+  };
 
   const navItems = [
     { href: "/admin", label: "Дашборд", icon: LayoutDashboard },
@@ -81,7 +104,10 @@ export default function AdminLayout({
         </nav>
 
         <div className="p-6 mt-auto border-t border-slate-50">
-            <button className="flex items-center justify-center gap-3 px-6 py-4 rounded-3xl bg-red-50/50 text-red-500 hover:bg-red-500 hover:text-white transition-all w-full group overflow-hidden relative border border-red-100/50">
+            <button 
+                onClick={handleLogout}
+                className="flex items-center justify-center gap-3 px-6 py-4 rounded-3xl bg-red-50/50 text-red-500 hover:bg-red-500 hover:text-white transition-all w-full group overflow-hidden relative border border-red-100/50"
+            >
                 <LogOut className="w-5 h-5 group-hover:translate-x-1 transition-all" />
                 <span className="font-black text-xs uppercase tracking-widest">Вийти з кабінету</span>
             </button>

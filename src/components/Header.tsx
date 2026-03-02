@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingCart, User, Phone, Search, Menu as MenuIcon, MapPin, ChevronDown, LayoutDashboard } from "lucide-react";
+import { ShoppingCart, User, Phone, Search as SearchIcon, Menu as MenuIcon, MapPin, ChevronDown, LayoutDashboard } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import CartDrawer from "./CartDrawer";
 import CategoryNav from "./CategoryNav";
 import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
+import Search from "./Search";
+
+const ADMIN_EMAILS = ['death@gmail.com', 'frozen_admin_2026@frozen-market.ua'];
 
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -40,8 +43,7 @@ export default function Header() {
   }, []);
 
   const isAdmin = user?.user_metadata?.role === 'admin' || 
-                  user?.email === 'death@gmail.com' || 
-                  user?.email === 'frozen_admin_2026@frozen-market.ua'; // Hardcoded for now as it's a client component, or I can pass it from a layout
+                  (user?.email && ADMIN_EMAILS.includes(user.email));
 
   return (
     <>
@@ -70,13 +72,17 @@ export default function Header() {
                </Link>
             </div>
 
-            {/* Middle Section: Navigation (Only on scroll) */}
-            <div className={`flex-1 min-w-0 transition-opacity duration-300 flex items-center px-2 lg:px-6 ${
-              isScrolled ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}>
-              <div className="w-full">
+            {/* Middle Section: Navigation (Only on scroll) or Search (Regular) */}
+            <div className={`flex-1 min-w-0 transition-all duration-300 flex items-center px-2 lg:px-6`}>
+              {isScrolled ? (
+                <div className="w-full animate-in fade-in duration-300">
                   <CategoryNav isCompact />
-              </div>
+                </div>
+              ) : (
+                <div className="w-full flex justify-center animate-in fade-in duration-300">
+                  <Search />
+                </div>
+              )}
             </div>
 
             {/* Right Section: Actions */}

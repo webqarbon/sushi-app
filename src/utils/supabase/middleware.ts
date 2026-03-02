@@ -40,17 +40,21 @@ export async function updateSession(request: NextRequest) {
 
   // Protect Admin routes
   if (request.nextUrl.pathname.startsWith('/admin')) {
+    // Exclude login page from redirect
+    if (request.nextUrl.pathname === '/admin/login') {
+      return supabaseResponse
+    }
+
     if (!user) {
         const url = request.nextUrl.clone()
-        url.pathname = '/login'
+        url.pathname = '/admin/login'
         return NextResponse.redirect(url)
     }
 
-    // Checking if user is admin (using user_metadata as a simple check)
     const isAdmin = 
         user.user_metadata?.role === 'admin' || 
         user.email === 'death@gmail.com' ||
-        user.email === process.env.ADMIN_USER_EMAIL; 
+        user.email === 'frozen_admin_2026@frozen-market.ua';
     
     if (!isAdmin) {
         const url = request.nextUrl.clone()

@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { History } from "lucide-react";
 
-import { ChevronDown, ChevronUp, Package } from "lucide-react";
+import { ChevronDown, ChevronUp, Package, RefreshCcw } from "lucide-react";
+import { useCartStore } from "@/store/cart";
+import { toast } from "react-hot-toast";
 
 interface Order {
   id: string;
@@ -23,7 +25,27 @@ interface OrderHistoryProps {
 export default function OrderHistory({ initialOrders, userId }: OrderHistoryProps) {
   const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const clearCart = useCartStore((state) => state.clearCart);
+  const setItems = useCartStore((state) => state.setItems);
   const supabase = createClient();
+
+  const handleRepeatOrder = (order: Order) => {
+    try {
+      if (!order.items_json) return;
+      
+      const cartItems = order.items_json.map((item: any) => ({
+        product: item.product,
+        quantity: item.quantity
+      }));
+      
+      clearCart();
+      setItems(cartItems);
+      toast.success("Товари додано до кошика!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Не вдалося повторити замовлення");
+    }
+  };
 
   useEffect(() => {
     // 1. Subscribe to real-time changes for this user's orders
@@ -126,10 +148,19 @@ export default function OrderHistory({ initialOrders, userId }: OrderHistoryProp
 
               {expandedOrderId === order.id && (
                 <div className="px-5 pb-5 pt-2 border-t border-gray-100 bg-white/50 animate-in fade-in slide-in-from-top-1">
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-2">
-                      <Package className="w-3 h-3" /> Склад замовлення
-                    </h4>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center mb-2">
+                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                           <Package className="w-3 h-3" /> Склад замовлення
+                        </h4>
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); handleRepeatOrder(order); }}
+                            className="flex items-center gap-2 px-4 py-1.5 bg-[#1A1C1E] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-orange-500 transition-all active:scale-95 shadow-lg shadow-black/5"
+                        >
+                            <RefreshCcw className="w-3 h-3" />
+                            Повторити
+                        </button>
+                    </div>
                     {order.items_json.map((item: any, idx: number) => (
                       <div key={idx} className="flex justify-between items-center text-sm">
                         <div className="flex items-center gap-3">
