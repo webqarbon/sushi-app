@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cart";
 import { ArrowLeft, Info, Truck, CreditCard, Gift, User as UserIcon, Star } from "lucide-react";
 import Link from "next/link";
@@ -134,7 +134,7 @@ export default function CheckoutPage() {
   const total = Math.max(0, subtotal - formData.bonusesUsed);
 
   // Fetch true user data on mount
-  useState(() => {
+  useEffect(() => {
     const fetchProfile = async () => {
       const { createClient } = await import("@/utils/supabase/client");
       const supabase = createClient();
@@ -161,7 +161,7 @@ export default function CheckoutPage() {
       }
     };
     fetchProfile();
-  });
+  }, []);
 
   const maxBonusesAllowed = Math.floor(subtotal * 0.5);
 

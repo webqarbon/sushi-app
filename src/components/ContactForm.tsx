@@ -49,26 +49,26 @@ export default function ContactForm() {
           Наші менеджери допоможуть підібрати ідеальний набір для вашої компанії, розкажуть про склад кожної страви та допоможуть оформити замовлення.
         </p>
 
-        <div className="space-y-6 relative z-10">
-            <div className="flex items-center gap-4 group">
-                <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-orange-50 transition-colors">
-                    <Phone className="w-5 h-5 text-gray-400 group-hover:text-orange-500" />
+            <div className="space-y-6 relative z-10">
+                <div className="flex items-center gap-4 group">
+                    <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-orange-50 transition-colors">
+                        <Phone className="w-5 h-5 text-gray-400 group-hover:text-orange-500" />
+                    </div>
+                    <div>
+                       <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Телефон</div>
+                       <a href="tel:+380953727599" className="font-black text-[#1A1C1E] hover:text-orange-500 transition-colors">(095) 372 75 99</a>
+                    </div>
                 </div>
-                <div>
-                   <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Гаряча лінія</div>
-                   <div className="font-black text-[#1A1C1E]">0 800 33 44 55</div>
+                <div className="flex items-center gap-4 group">
+                    <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                        <MessageSquare className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
+                    </div>
+                    <div>
+                       <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Telegram</div>
+                       <div className="font-black text-[#1A1C1E]">@frozen_market_ua</div>
+                    </div>
                 </div>
             </div>
-            <div className="flex items-center gap-4 group">
-                <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-blue-50 transition-colors">
-                    <MessageSquare className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
-                </div>
-                <div>
-                   <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Telegram / Viber</div>
-                   <div className="font-black text-[#1A1C1E]">@sushi_icons_support</div>
-                </div>
-            </div>
-        </div>
       </div>
 
       <div className="lg:col-span-7 bg-white rounded-[2.5rem] p-10 lg:p-14 shadow-premium border border-gray-100/50 relative overflow-hidden">

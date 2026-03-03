@@ -37,13 +37,13 @@ export default function AboutSection() {
           <div>
             <div className="inline-flex items-center gap-2 text-orange-400 font-black text-[10px] uppercase tracking-[0.2em] mb-6">
               <span className="w-8 h-[2px] bg-orange-400"></span>
-              Про SUSHI ICONS
+              Про Frozen Market
             </div>
             <h2 className="text-4xl lg:text-5xl font-black text-[#1A1C1E] leading-[1.1] mb-8 tracking-tight">
               Більше, ніж просто <br /> доставка їжі.
             </h2>
             <p className="text-lg text-gray-500 font-medium leading-relaxed mb-10 opacity-80">
-              Ми створили SUSHI ICONS, щоб змінити ваше уявлення про доставку. Для нас це мистецтво поєднання автентичних рецептів з сучасними технологіями обслуговування. Кожен рол, кожна піца — це результат нашої пристрасті до гастрономії.
+              Ми створили Frozen Market, щоб змінити ваше уявлення про заморожені продукти. Для нас це мистецтво поєднання преміальних інгредієнтів з сучасними технологіями обслуговування. Кожен продукт — це результат нашої пристрасті до якості.
             </p>
 
             <div className="grid grid-cols-2 gap-8">

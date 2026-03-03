@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# data files (import/export CSV, SQL dumps)
+*.csv
+scripts/.env

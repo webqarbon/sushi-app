@@ -10,7 +10,6 @@ import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import Search from "./Search";
 
-const ADMIN_EMAILS = ['death@gmail.com', 'frozen_admin_2026@frozen-market.ua'];
 
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -42,8 +41,7 @@ export default function Header() {
     };
   }, []);
 
-  const isAdmin = user?.user_metadata?.role === 'admin' || 
-                  (user?.email && ADMIN_EMAILS.includes(user.email));
+  const isAdmin = user?.user_metadata?.role === 'admin';
 
   return (
     <>

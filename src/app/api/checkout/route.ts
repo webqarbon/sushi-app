@@ -106,7 +106,7 @@ export async function POST(req: Request) {
         ccy: 980,
         merchantPaymInfo: {
           reference: order.id,
-          destination: "Оплата замовлення SUSHI ICONS",
+          destination: "Оплата замовлення FROZEN Market",
           basketOrder: validatedItems.map((i: any) => ({
             name: i.product.name,
             qty: i.quantity,

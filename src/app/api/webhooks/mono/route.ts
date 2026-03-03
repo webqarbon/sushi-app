@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
+import { calculateEarnedBonuses } from "@/utils/bonuses";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -84,14 +85,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ received: true });
     }
 
-    // Calculate Bonuses Earned
     const items = order.items_json || [];
-    const earnedBonuses = items.reduce((acc: number, item: any) => {
-      const price = item.product?.price || 0;
-      const bonusPercent = item.product?.bonus_percent || 0;
-      const bonus = (price * bonusPercent) / 100;
-      return acc + (bonus * (item.quantity || 1));
-    }, 0);
+    const earnedBonuses = calculateEarnedBonuses(items);
 
     // Update order status securely
     const { error: updateError } = await supabaseAdmin

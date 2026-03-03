@@ -21,14 +21,23 @@ export default function Footer() {
               Преміальні заморожені продукти з доставкою до ваших дверей. Смак, якість та зручність у кожній страві.
             </p>
             <div className="flex items-center gap-4">
-              <a href="#" className="w-10 h-10 bg-gray-50 hover:bg-blue-50 text-gray-400 hover:text-blue-500 rounded-xl flex items-center justify-center transition-all">
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="w-10 h-10 bg-gray-50 hover:bg-pink-50 text-gray-400 hover:text-pink-500 rounded-xl flex items-center justify-center transition-all"
+              >
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-50 hover:bg-sky-50 text-gray-400 hover:text-sky-500 rounded-xl flex items-center justify-center transition-all">
+              <a
+                href="https://t.me/frozen_market_ua"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Telegram"
+                className="w-10 h-10 bg-gray-50 hover:bg-sky-50 text-gray-400 hover:text-sky-500 rounded-xl flex items-center justify-center transition-all"
+              >
                 <Send className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-50 hover:bg-purple-50 text-gray-400 hover:text-purple-500 rounded-xl flex items-center justify-center transition-all">
-                <MessageCircle className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -102,8 +111,8 @@ export default function Footer() {
             Зроблено з <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> для вас
           </div>
           <div className="flex items-center gap-8">
-            <Link href="/privacy" className="text-xs font-extrabold text-gray-500 hover:text-blue-600 uppercase tracking-tighter">Політика конфіденційності</Link>
-            <Link href="/terms" className="text-xs font-extrabold text-gray-500 hover:text-blue-600 uppercase tracking-tighter">Публічна оферта</Link>
+            <Link href="/privacy" className="text-xs font-extrabold text-gray-500 hover:text-orange-500 uppercase tracking-tighter">Політика конфіденційності</Link>
+            <Link href="/terms" className="text-xs font-extrabold text-gray-500 hover:text-orange-500 uppercase tracking-tighter">Публічна оферта</Link>
           </div>
         </div>
       </div>

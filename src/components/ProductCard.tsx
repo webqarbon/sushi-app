@@ -14,8 +14,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((state) => state.addItem);
   const bonusUah = (product.price * product.bonus_percent) / 100;
   
-  // Weights and counts are usually in description or we can mock them for the design
-  const weightInfo = product.description?.match(/\d+\s*(г|кг|шт|мл|л)/gi)?.join(" | ") || "32 шт | 1355 г";
+  const weightInfo = product.description?.match(/\d+\s*(г|кг|шт|мл|л)/gi)?.join(" | ") || "";
 
   return (
     <>
@@ -51,7 +50,7 @@ export default function ProductCard({ product }: { product: Product }) {
           >
             <Star className={`w-3.5 h-3.5 ${(product.average_rating || 0) > 0 ? "fill-orange-400 text-orange-400" : "text-gray-300"} group-hover/rating:scale-110 transition-transform`} />
             <span className="text-[11px] font-black">
-              {(product.average_rating || 0) > 0 ? (product.average_rating as number).toFixed(1) : "5.0"}
+              {(product.average_rating || 0) > 0 ? (product.average_rating as number).toFixed(1) : "—"}
             </span>
             <span className="text-[9px] font-bold text-gray-400 border-l border-gray-200 pl-2">
               {product.reviews_count || 0}

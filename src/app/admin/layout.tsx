@@ -19,6 +19,8 @@ import {
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "react-hot-toast";
 
+const supabase = createClient();
+
 export default function AdminLayout({
   children,
 }: {
@@ -27,7 +29,6 @@ export default function AdminLayout({
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
   const [adminName, setAdminName] = useState("Admin");
   const [adminEmail, setAdminEmail] = useState("");
 
@@ -38,7 +39,7 @@ export default function AdminLayout({
         setAdminName(user.user_metadata?.full_name || user.email?.split("@")[0] || "Admin");
       }
     });
-  }, [supabase]);
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
