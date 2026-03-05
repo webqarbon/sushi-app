@@ -24,6 +24,15 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
   const catalogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Sync local state with store (e.g. when reset from Header logo or updated from compact nav)
+    if (activeCategoryId === '') {
+      setSelectedCategoryId(null);
+    } else if (activeCategoryId !== selectedCategoryId) {
+      setSelectedCategoryId(activeCategoryId);
+    }
+  }, [activeCategoryId, selectedCategoryId]);
+
+  useEffect(() => {
     setCategories(categories);
 
     const handleScroll = () => {
@@ -81,7 +90,7 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
         <div
           className={`transition-all duration-500 delay-100 ${
             showHeroAndSlider
-              ? "opacity-100 max-h-[600px] mb-12"
+              ? "opacity-100 max-h-[2000px] mb-12"
               : "opacity-0 max-h-0 overflow-hidden pointer-events-none mb-0"
           }`}
         >

@@ -8,10 +8,12 @@ import CartDrawer from "./CartDrawer";
 import CategoryNav from "./CategoryNav";
 import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
+import { useCategoryStore } from "@/store/category";
 import Search from "./Search";
 
 
 export default function Header() {
+  const { setActiveCategoryId } = useCategoryStore();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState<SupabaseUser | null>(null);
@@ -53,7 +55,7 @@ export default function Header() {
             
             {/* Left Section: Logo */}
             <div className="shrink-0 flex items-center">
-               <Link href="/" className="group flex items-center gap-3">
+               <Link href="/" onClick={() => setActiveCategoryId('')} className="group flex items-center gap-3">
                   <div className={`transition-all duration-500 rounded-full flex items-center justify-center p-1 border-2 border-[#1A1C1E]/5 group-hover:border-orange-500/20 ${
                     isScrolled ? "bg-[#1A1C1E] w-10 h-10 shadow-lg" : "bg-white w-12 h-12 lg:w-14 lg:h-14 shadow-sm"
                   }`}>

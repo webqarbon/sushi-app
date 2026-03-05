@@ -99,7 +99,7 @@ export default function ProductSlider({ products }: ProductSliderProps) {
 
         {/* Slider track area */}
         <div
-          className="relative py-8 overflow-hidden bg-gray-50/30"
+          className="relative py-12 overflow-hidden bg-gray-50/30"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           onTouchStart={() => setIsPaused(true)}
