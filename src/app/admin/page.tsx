@@ -4,12 +4,16 @@ import { SITE_CONFIG } from "@/constants/site";
 
 export const dynamic = 'force-dynamic';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function getAdminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
 
 export default async function AdminDashboard() {
+  const supabaseAdmin = getAdminClient();
+
   const [{ count: productCount }, { count: categoryCount }, { count: reviewCount }, { data: recentOrders }] = await Promise.all([
     supabaseAdmin.from('products').select('*', { count: 'exact', head: true }),
     supabaseAdmin.from('categories').select('*', { count: 'exact', head: true }),
