@@ -1,13 +1,16 @@
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import AdminProductList from "@/components/admin/AdminProductList";
 import { Product, Category } from "@/types/database";
 
-export default async function AdminProductsPage() {
-  const supabase = await createClient(true);
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
+export default async function AdminProductsPage() {
   const [{ data: categories }, { data: products }] = await Promise.all([
-    supabase.from("categories").select("*").order("order_index", { ascending: true }),
-    supabase.from("products").select("*, categories(name)").order("name", { ascending: true }),
+    supabaseAdmin.from("categories").select("*").order("order_index", { ascending: true }),
+    supabaseAdmin.from("products").select("*, categories(name)").order("name", { ascending: true }),
   ]);
 
   return (

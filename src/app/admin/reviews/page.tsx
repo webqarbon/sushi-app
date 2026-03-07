@@ -1,11 +1,14 @@
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import AdminReviewList from "@/components/admin/AdminReviewList";
 import { Review } from "@/types/database";
 
-export default async function AdminReviewsPage() {
-  const supabase = await createClient(true);
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
-  const { data: reviews } = await supabase
+export default async function AdminReviewsPage() {
+  const { data: reviews } = await supabaseAdmin
     .from("reviews")
     .select("*, products(name), profiles(full_name)")
     .order("created_at", { ascending: false });

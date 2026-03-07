@@ -1,11 +1,14 @@
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import AdminOrderList from "@/components/admin/AdminOrderList";
 import { Order } from "@/types/database";
 
-export default async function AdminOrdersPage() {
-  const supabase = await createClient(true);
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
-  const { data: orders } = await supabase
+export default async function AdminOrdersPage() {
+  const { data: orders } = await supabaseAdmin
     .from("orders")
     .select("*, profiles(full_name, phone)")
     .order("created_at", { ascending: false });

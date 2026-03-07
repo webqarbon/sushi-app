@@ -1,20 +1,23 @@
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import { ShoppingBag, Package, Star, TrendingUp, Clock } from "lucide-react";
 import { SITE_CONFIG } from "@/constants/site";
 
-export default async function AdminDashboard() {
-  const supabase = await createClient(true);
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
+export default async function AdminDashboard() {
   const [{ count: productCount }, { count: categoryCount }, { count: reviewCount }, { data: recentOrders }] = await Promise.all([
-    supabase.from('products').select('*', { count: 'exact', head: true }),
-    supabase.from('categories').select('*', { count: 'exact', head: true }),
-    supabase.from('reviews').select('*', { count: 'exact', head: true }),
-    supabase.from('orders').select('*, profiles(full_name)').order('created_at', { ascending: false }).limit(5)
+    supabaseAdmin.from('products').select('*', { count: 'exact', head: true }),
+    supabaseAdmin.from('categories').select('*', { count: 'exact', head: true }),
+    supabaseAdmin.from('reviews').select('*', { count: 'exact', head: true }),
+    supabaseAdmin.from('orders').select('*, profiles(full_name)').order('created_at', { ascending: false }).limit(5)
   ]);
 
   const [{ data: approvedReviews }, { data: pendingReviews }] = await Promise.all([
-      supabase.from('reviews').select('*').eq('status', 'approved'),
-      supabase.from('reviews').select('*').eq('status', 'pending')
+      supabaseAdmin.from('reviews').select('*').eq('status', 'approved'),
+      supabaseAdmin.from('reviews').select('*').eq('status', 'pending')
   ]);
 
   const stats = [
@@ -98,7 +101,7 @@ export default async function AdminDashboard() {
             
             <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100/50 flex flex-col items-center justify-center gap-4 flex-1">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] text-center max-w-[200px]">
-                    Перейдіть до розділу "Відгуки", щоб промодерувати нові коментарі
+                    Перейдіть до розділу &quot;Відгуки&quot;, щоб промодерувати нові коментарі
                 </p>
             </div>
         </div>

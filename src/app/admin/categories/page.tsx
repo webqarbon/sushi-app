@@ -1,10 +1,13 @@
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import AdminCategoryList from "@/components/admin/AdminCategoryList";
 
-export default async function AdminCategoriesPage() {
-  const supabase = await createClient(true);
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
-  const { data: categories } = await supabase
+export default async function AdminCategoriesPage() {
+  const { data: categories } = await supabaseAdmin
     .from("categories")
     .select("*")
     .order("order_index", { ascending: true });
