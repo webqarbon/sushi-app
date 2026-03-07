@@ -34,7 +34,7 @@ export async function POST(req: Request) {
           .single();
 
         if (fetchError || !order) {
-          console.error("Telegram Webhook: Order not found or fetch error:", fetchError);
+          console.error("Telegram Webhook Error: Order not found or fetch error:", JSON.stringify(fetchError));
           await answerCallbackQuery(callbackQueryId, "Помилка: замовлення не знайдено");
           return NextResponse.json({ ok: true });
         }
@@ -52,43 +52,48 @@ export async function POST(req: Request) {
             .eq("id", orderId);
 
           if (updateError) {
-            console.error("Telegram Webhook: Update error:", updateError);
+            console.error("Telegram Webhook Error: Update error:", JSON.stringify(updateError));
             throw updateError;
           }
 
           console.log("Telegram Webhook: Order updated to paid and confirmed");
 
-          // Finalize bonuses:
-          
-          // 1. Confirm Frozen (Spent) Bonuses
-          if (order.user_id && order.bonuses_used > 0) {
-            await supabaseAdmin.rpc('confirm_bonuses', {
-              user_id_val: order.user_id,
-              amount_val: order.bonuses_used
-            });
-            console.log(`Confirmed ${order.bonuses_used} bonuses for user ${order.user_id}`);
-          }
+          // Finalize bonuses (Wrapped in try/catch to not block the main flow)
+          try {
+            // 1. Confirm Frozen (Spent) Bonuses
+            if (order.user_id && order.bonuses_used > 0) {
+              const { error: rpcError } = await supabaseAdmin.rpc('confirm_bonuses', {
+                user_id_val: order.user_id,
+                amount_val: order.bonuses_used
+              });
+              if (rpcError) console.error("Telegram Webhook Error: confirm_bonuses failed:", JSON.stringify(rpcError));
+              else console.log(`Confirmed ${order.bonuses_used} bonuses for user ${order.user_id}`);
+            }
 
-          // 2. Add New Earned Bonuses
-          if (order.user_id) {
-            const items = order.items_json || [];
-            const earnedBonuses = calculateEarnedBonuses(items);
+            // 2. Add New Earned Bonuses
+            if (order.user_id) {
+              const items = order.items_json || [];
+              const earnedBonuses = calculateEarnedBonuses(items);
 
-            if (earnedBonuses > 0) {
-              const { data: profile } = await supabaseAdmin
-                .from("profiles")
-                .select("bonus_balance")
-                .eq("id", order.user_id)
-                .single();
-
-              if (profile) {
-                await supabaseAdmin
+              if (earnedBonuses > 0) {
+                const { data: profile } = await supabaseAdmin
                   .from("profiles")
-                  .update({ bonus_balance: Number(profile.bonus_balance) + earnedBonuses })
-                  .eq("id", order.user_id);
-                console.log(`Added ${earnedBonuses} bonuses to user ${order.user_id}`);
+                  .select("bonus_balance")
+                  .eq("id", order.user_id)
+                  .single();
+
+                if (profile) {
+                  const { error: balanceUpdateError } = await supabaseAdmin
+                    .from("profiles")
+                    .update({ bonus_balance: Number(profile.bonus_balance) + earnedBonuses })
+                    .eq("id", order.user_id);
+                  if (balanceUpdateError) console.error("Telegram Webhook Error: bonus_balance update failed:", JSON.stringify(balanceUpdateError));
+                  else console.log(`Added ${earnedBonuses} bonuses to user ${order.user_id}`);
+                }
               }
             }
+          } catch (bonusError) {
+             console.error("Telegram Webhook Error: Failed during bonus calculation:", bonusError);
           }
 
           // Update message in Telegram
