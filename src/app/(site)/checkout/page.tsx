@@ -203,11 +203,14 @@ export default function CheckoutPage() {
       if (data.url) {
         // Redirect to Monobank
         clearCart(); // Clear BEFORE redirecting to ensure it's empty even if user goes back
+        // Also set success flag so that if monobank redirects back to /success, it works
+        sessionStorage.setItem('orderSuccess', 'true');
         window.location.href = data.url;
         return; // Important: prevent further logic
       } else if (data.success) {
         // Manual details
         clearCart();
+        sessionStorage.setItem('orderSuccess', 'true');
         router.push("/success");
         return; // Important: prevent further logic
       }
