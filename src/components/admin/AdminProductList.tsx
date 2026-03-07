@@ -7,6 +7,7 @@ import { updateProduct, deleteProduct, createProduct, uploadProductImage } from 
 import { toast } from "react-hot-toast";
 
 import { Product, Category } from "@/types/database";
+import { SITE_CONFIG } from "@/constants/site";
 
 export default function AdminProductList({ 
   products, 
@@ -150,7 +151,7 @@ export default function AdminProductList({
                 <div className="grid grid-cols-2 gap-4 mt-auto">
                     <div className="bg-slate-50 p-4 rounded-3xl border border-slate-100/50">
                         <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Ціна</div>
-                        <div className="text-xl font-black text-slate-900 tracking-tighter">₴{p.price.toFixed(0)}</div>
+                         <div className="text-xl font-black text-slate-900 tracking-tighter">{SITE_CONFIG.currency}{p.price.toFixed(0)}</div>
                     </div>
                     <div className="bg-orange-50/30 p-4 rounded-3xl border border-orange-100/50">
                         <div className="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-1">Бонус</div>
@@ -163,8 +164,8 @@ export default function AdminProductList({
                     </div>
                   )}
               </div>
-                <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between">
-                    <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Собівартість: ₴{p.cost_price || 0}</div>
+                 <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between">
+                    <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Собівартість: {SITE_CONFIG.currency}{p.cost_price || 0}</div>
                     <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">UUID: {p.id.slice(0, 4)}</div>
                 </div>
              </div>
@@ -220,8 +221,8 @@ export default function AdminProductList({
               </div>
 
               <div className="grid grid-cols-2 gap-8">
-                <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Ціна продажу (₴)</label>
+                 <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Ціна продажу ({SITE_CONFIG.currency})</label>
                     <input
                         name="price"
                         type="number"
@@ -231,8 +232,8 @@ export default function AdminProductList({
                         required
                     />
                 </div>
-                <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2 font-black text-orange-500">Собівартість (₴)</label>
+                 <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2 font-black text-orange-500">Собівартість ({SITE_CONFIG.currency})</label>
                     <input
                         name="cost_price"
                         type="number"

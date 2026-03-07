@@ -1,8 +1,9 @@
 import { createClient } from "@/utils/supabase/server";
 import { ShoppingBag, Package, Star, TrendingUp, Clock } from "lucide-react";
+import { SITE_CONFIG } from "@/constants/site";
 
 export default async function AdminDashboard() {
-  const supabase = await createClient();
+  const supabase = await createClient(true);
 
   const [{ count: productCount }, { count: categoryCount }, { count: reviewCount }, { data: recentOrders }] = await Promise.all([
     supabase.from('products').select('*', { count: 'exact', head: true }),
@@ -65,7 +66,7 @@ export default async function AdminDashboard() {
                                 {new Date(order.created_at).toLocaleString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
                             </div>
                         </div>
-                        <div className="text-lg font-black text-slate-900 tracking-tighter">₴{order.total_price}</div>
+                        <div className="text-lg font-black text-slate-900 tracking-tighter">{SITE_CONFIG.currency}{order.total_price}</div>
                     </div>
                 )) : (
                     <div className="h-full flex flex-col items-center justify-center text-center py-10 opacity-40">

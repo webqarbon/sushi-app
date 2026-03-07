@@ -3,7 +3,7 @@ import AdminReviewList from "@/components/admin/AdminReviewList";
 import { Review } from "@/types/database";
 
 export default async function AdminReviewsPage() {
-  const supabase = await createClient();
+  const supabase = await createClient(true);
 
   const { data: reviews } = await supabase
     .from("reviews")

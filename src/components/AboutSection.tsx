@@ -1,29 +1,7 @@
 "use client";
 
-import { Award, Clock, Heart, ShieldCheck } from "lucide-react";
-
-const features = [
-  {
-    icon: Heart,
-    title: "Готуємо з любов'ю",
-    description: "Кожна страва створюється нашими кухарями з особливою увагою до деталей та смаку."
-  },
-  {
-    icon: ShieldCheck,
-    title: "Тільки свіже",
-    description: "Ми використовуємо лише перевірені інгредієнти найвищої якості від надійних постачальників."
-  },
-  {
-    icon: Clock,
-    title: "Швидка доставка",
-    description: "Ваше замовлення прибуде гарячим та вчасно завдяки нашій власній логістиці."
-  },
-  {
-    icon: Award,
-    title: "Преміум сервіс",
-    description: "Ми прагнемо, щоб кожен ваш візит або замовлення залишали лише приємні враження."
-  }
-];
+import { FEATURES as features } from "@/constants/content";
+import { SITE_CONFIG } from "@/constants/site";
 
 export default function AboutSection() {
   return (
@@ -37,13 +15,13 @@ export default function AboutSection() {
           <div>
             <div className="inline-flex items-center gap-2 text-orange-400 font-black text-[10px] uppercase tracking-[0.2em] mb-6">
               <span className="w-8 h-[2px] bg-orange-400"></span>
-              Про Frozen Market
+              Про {SITE_CONFIG.name}
             </div>
             <h2 className="text-4xl lg:text-5xl font-black text-[#1A1C1E] leading-[1.1] mb-8 tracking-tight">
               Більше, ніж просто <br /> доставка їжі.
             </h2>
             <p className="text-lg text-gray-500 font-medium leading-relaxed mb-10 opacity-80">
-              Ми створили Frozen Market, щоб змінити ваше уявлення про заморожені продукти. Для нас це мистецтво поєднання преміальних інгредієнтів з сучасними технологіями обслуговування. Кожен продукт — це результат нашої пристрасті до якості.
+              Ми створили {SITE_CONFIG.name}, щоб змінити ваше уявлення про заморожені продукти. Для нас це мистецтво поєднання преміальних інгредієнтів з сучасними технологіями обслуговування. Кожен продукт — це результат нашої пристрасті до якості.
             </p>
 
             <div className="grid grid-cols-2 gap-8">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingCart, User, Phone, Search as SearchIcon, Menu as MenuIcon, MapPin, ChevronDown, LayoutDashboard } from "lucide-react";
+import { ShoppingCart, User, Search as SearchIcon, LayoutDashboard } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import CartDrawer from "./CartDrawer";
 import CategoryNav from "./CategoryNav";
@@ -10,6 +10,7 @@ import { createClient } from "@/utils/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { useCategoryStore } from "@/store/category";
 import Search from "./Search";
+import { SITE_CONFIG } from "@/constants/site";
 
 
 export default function Header() {
@@ -63,10 +64,10 @@ export default function Header() {
                   </div>
                   <div className={`flex flex-col transition-all duration-500 ${isScrolled ? "hidden sm:flex" : "flex"}`}>
                     <span className={`font-black tracking-tighter leading-none transition-all text-[#1A1C1E] group-hover:text-orange-500 ${isScrolled ? "text-xl" : "text-2xl md:text-3xl"}`}>
-                      FROZEN
+                      {SITE_CONFIG.shortName}
                     </span>
                     {!isScrolled && (
-                      <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-30 ml-1 mt-1">Market</span>
+                      <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-30 ml-1 mt-1">{SITE_CONFIG.tagline}</span>
                     )}
                   </div>
                </Link>
@@ -91,13 +92,13 @@ export default function Header() {
               {!isScrolled && (
                 <div className="hidden xl:flex flex-col items-end border-r border-gray-100 pr-4 mr-2">
                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1 opacity-60 italic">Замовити:</span>
-                   <Link href="tel:+380953727599" className="text-base font-black text-[#1A1C1E] hover:text-orange-500 transition-colors tracking-tighter">
-                      (095) 372 75 99
+                   <Link href={`tel:${SITE_CONFIG.contacts.phoneRaw}`} className="text-base font-black text-[#1A1C1E] hover:text-orange-500 transition-colors tracking-tighter">
+                      {SITE_CONFIG.contacts.phoneDisplay}
                    </Link>
                 </div>
               )}
 
-              {/* Admin Access */}
+              {/* Admin Access / Admin Label */}
               {isAdmin && (
                 <Link 
                   href="/admin" 
@@ -126,10 +127,12 @@ export default function Header() {
                 <span className="hidden sm:inline text-xs lg:text-sm text-gray-900 uppercase tracking-[0.1em]">Кошик</span>
               </button>
 
-              {/* Profile */}
-              <Link href="/profile" className="flex items-center justify-center bg-gray-50/50 w-12 h-12 lg:w-14 lg:h-14 rounded-2xl shadow-inner border border-gray-100/50 hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all group overflow-hidden">
-                <User className="w-4 h-4 lg:w-5 lg:h-5 text-[#1A1C1E] transition-transform group-hover:scale-110" />
-              </Link>
+              {/* Profile - only for non-admin users */}
+              {!isAdmin && (
+                <Link href="/profile" className="flex items-center justify-center bg-gray-50/50 w-12 h-12 lg:w-14 lg:h-14 rounded-2xl shadow-inner border border-gray-100/50 hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all group overflow-hidden">
+                  <User className="w-4 h-4 lg:w-5 lg:h-5 text-[#1A1C1E] transition-transform group-hover:scale-110" />
+                </Link>
+              )}
             </div>
           </div>
         </div>

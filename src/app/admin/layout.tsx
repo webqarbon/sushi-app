@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "react-hot-toast";
+import { SITE_CONFIG } from "@/constants/site";
 
 const supabase = createClient();
 
@@ -36,7 +37,7 @@ export default function AdminLayout({
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
         setAdminEmail(user.email || "");
-        setAdminName(user.user_metadata?.full_name || user.email?.split("@")[0] || "Admin");
+        setAdminName(user.user_metadata?.full_name || user.email?.split("@")[0] || SITE_CONFIG.admin.defaultName);
       }
     });
   }, []);
@@ -78,10 +79,12 @@ export default function AdminLayout({
               <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
                 <div className="w-4 h-4 bg-white rounded-full transition-all hover:scale-125" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-black tracking-tight leading-none text-slate-900 uppercase">Frozen <span className="text-orange-500">Admin</span></span>
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Management Tool</span>
-              </div>
+               <div className="flex flex-col">
+                 <span className="text-xl font-black tracking-tight leading-none text-slate-900 uppercase">
+                   {SITE_CONFIG.admin.title.split(' ')[0]} <span className="text-orange-500">{SITE_CONFIG.admin.title.split(' ')[1]}</span>
+                 </span>
+                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{SITE_CONFIG.admin.subtitle}</span>
+               </div>
            </Link>
            <button 
              onClick={() => setIsSidebarOpen(false)}

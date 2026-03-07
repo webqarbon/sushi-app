@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import AdminCategoryList from "@/components/admin/AdminCategoryList";
 
 export default async function AdminCategoriesPage() {
-  const supabase = await createClient();
+  const supabase = await createClient(true);
 
   const { data: categories } = await supabase
     .from("categories")

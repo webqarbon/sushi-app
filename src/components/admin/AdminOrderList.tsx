@@ -5,6 +5,7 @@ import { ShoppingBag, Clock, CheckCircle, XCircle, Search, Filter, Calendar, Tru
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "react-hot-toast";
 import { Order } from "@/types/database";
+import { SITE_CONFIG } from "@/constants/site";
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
   pending:   { label: "Очікує",       color: "bg-orange-100 text-orange-600",  icon: Clock },
@@ -142,7 +143,7 @@ export default function AdminOrderList({ initialOrders }: { initialOrders: Order
                       )}
                     </td>
                     <td className="px-8 py-5">
-                      <div className="font-black text-slate-900 text-lg">₴{order.total_price}</div>
+                      <div className="font-black text-slate-900 text-lg">{SITE_CONFIG.currency}{order.total_price}</div>
                       <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{itemsCount} поз.</div>
                     </td>
                     <td className="px-8 py-5">

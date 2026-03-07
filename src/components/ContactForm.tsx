@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Send, User, Phone, MessageSquare, CheckCircle2 } from "lucide-react";
 import { sendConsultationRequest } from "@/app/actions/contact";
+import { SITE_CONFIG } from "@/constants/site";
 
 export default function ContactForm() {
   const [isPending, setIsPending] = useState(false);
@@ -56,7 +57,7 @@ export default function ContactForm() {
                     </div>
                     <div>
                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Телефон</div>
-                       <a href="tel:+380953727599" className="font-black text-[#1A1C1E] hover:text-orange-500 transition-colors">(095) 372 75 99</a>
+                       <a href={`tel:${SITE_CONFIG.contacts.phoneRaw}`} className="font-black text-[#1A1C1E] hover:text-orange-500 transition-colors">{SITE_CONFIG.contacts.phoneDisplay}</a>
                     </div>
                 </div>
                 <div className="flex items-center gap-4 group">
@@ -65,7 +66,7 @@ export default function ContactForm() {
                     </div>
                     <div>
                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Telegram</div>
-                       <div className="font-black text-[#1A1C1E]">@frozen_market_ua</div>
+                       <div className="font-black text-[#1A1C1E]">{SITE_CONFIG.socials.telegramHandle}</div>
                     </div>
                 </div>
             </div>

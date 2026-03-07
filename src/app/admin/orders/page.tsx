@@ -3,7 +3,7 @@ import AdminOrderList from "@/components/admin/AdminOrderList";
 import { Order } from "@/types/database";
 
 export default async function AdminOrdersPage() {
-  const supabase = await createClient();
+  const supabase = await createClient(true);
 
   const { data: orders } = await supabase
     .from("orders")

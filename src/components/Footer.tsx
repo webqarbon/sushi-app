@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Phone, Navigation, Instagram, MessageCircle, Send, Heart } from "lucide-react";
+import { SITE_CONFIG } from "@/constants/site";
 
 export default function Footer() {
   return (
@@ -13,16 +14,16 @@ export default function Footer() {
           <div className="flex flex-col gap-6">
             <Link href="/" className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                <span className="text-white font-black text-xl">F</span>
+                <span className="text-white font-black text-xl">{SITE_CONFIG.shortName[0]}</span>
               </div>
-              <span className="text-2xl font-black tracking-tighter text-gray-900">FROZEN</span>
+              <span className="text-2xl font-black tracking-tighter text-gray-900">{SITE_CONFIG.shortName}</span>
             </Link>
             <p className="text-gray-500 font-medium leading-relaxed">
-              Преміальні заморожені продукти з доставкою до ваших дверей. Смак, якість та зручність у кожній страві.
+              {SITE_CONFIG.description}
             </p>
             <div className="flex items-center gap-4">
               <a
-                href="https://instagram.com"
+                href={SITE_CONFIG.socials.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -31,7 +32,7 @@ export default function Footer() {
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="https://t.me/frozen_market_ua"
+                href={SITE_CONFIG.socials.telegram}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Telegram"
@@ -57,13 +58,13 @@ export default function Footer() {
           <div className="flex flex-col gap-6">
             <h4 className="text-gray-900 font-black uppercase text-xs tracking-widest">Контакти</h4>
             <div className="flex flex-col gap-4">
-              <a href="tel:+380953727599" className="flex items-center gap-3 group">
+              <a href={`tel:${SITE_CONFIG.contacts.phoneRaw}`} className="flex items-center gap-3 group">
                 <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
                   <Phone className="w-5 h-5" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Дзвінки</span>
-                  <span className="text-sm font-black text-gray-900">+380 95 372 75 99</span>
+                  <span className="text-sm font-black text-gray-900">{SITE_CONFIG.contacts.phone}</span>
                 </div>
               </a>
               <div className="flex items-center gap-3 group">
@@ -72,7 +73,7 @@ export default function Footer() {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Адреса</span>
-                  <span className="text-sm font-black text-gray-900">вул. Грушевського, 97в</span>
+                  <span className="text-sm font-black text-gray-900">{SITE_CONFIG.contacts.address}</span>
                 </div>
               </div>
             </div>
@@ -85,11 +86,11 @@ export default function Footer() {
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold text-gray-500">Пн - Пт:</span>
-                  <span className="text-xs font-black text-gray-900">09:00 - 21:00</span>
+                  <span className="text-xs font-black text-gray-900">{SITE_CONFIG.contacts.workingHours.weekdays}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold text-gray-500">Сб - Нд:</span>
-                  <span className="text-xs font-black text-gray-900">10:00 - 19:00</span>
+                  <span className="text-xs font-black text-gray-900">{SITE_CONFIG.contacts.workingHours.weekends}</span>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-gray-200">
@@ -105,7 +106,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-            © 2026 FROZEN MARKET. ВСІ ПРАВА ЗАХИЩЕНІ.
+            © {new Date().getFullYear()} {SITE_CONFIG.name}. ВСІ ПРАВА ЗАХИЩЕНІ.
           </p>
           <div className="flex items-center gap-1.5 text-xs font-bold text-gray-400">
             Зроблено з <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> для вас
