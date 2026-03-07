@@ -4,8 +4,11 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function submitReview(productId: string, rating: number, comment: string) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Use service role to bypass RLS for the follow-up select()
+  const supabase = await createClient(true); 
+  
+  // Verify user with standard client
+  const { data: { user } } = await (await createClient()).auth.getUser();
 
   if (!user) throw new Error("Ви повинні увійти, щоб залишити відгук");
 
@@ -14,7 +17,7 @@ export async function submitReview(productId: string, rating: number, comment: s
     user_id: user.id,
     rating,
     comment,
-    status: 'pending' // Default to pending
+    status: 'pending' 
   }).select('id').single();
 
   if (error) throw new Error(error.message);
@@ -62,7 +65,7 @@ export async function submitReview(productId: string, rating: number, comment: s
 }
 
 export async function approveReview(reviewId: string) {
-    const supabase = await createClient();
+    const supabase = await createClient(true);
     
     // 1. Get the review info first
     const { data: review } = await supabase.from('reviews').select('product_id').eq('id', reviewId).single();
@@ -81,7 +84,7 @@ export async function approveReview(reviewId: string) {
 }
 
 export async function rejectReview(reviewId: string) {
-    const supabase = await createClient();
+    const supabase = await createClient(true);
     
     // 1. Get the review info first
     const { data: review } = await supabase.from('reviews').select('product_id').eq('id', reviewId).single();
@@ -100,7 +103,7 @@ export async function rejectReview(reviewId: string) {
 }
 
 async function recalculateProductRating(productId: string) {
-    const supabase = await createClient();
+    const supabase = await createClient(true); // Required to update products table
     
     // Get all approved reviews for this product
     const { data: approvedReviews } = await supabase
