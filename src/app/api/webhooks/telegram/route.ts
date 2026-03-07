@@ -42,10 +42,13 @@ export async function POST(req: Request) {
         console.log("Telegram Webhook: Order found:", order.id);
 
         if (action === "confirm") {
-          // Update order status
+          // Update order status and payment status
           const { error: updateError } = await supabaseAdmin
             .from("orders")
-            .update({ payment_status: "paid" })
+            .update({ 
+              payment_status: "paid",
+              status: "confirmed" 
+            })
             .eq("id", orderId);
 
           if (updateError) {
@@ -53,7 +56,7 @@ export async function POST(req: Request) {
             throw updateError;
           }
 
-          console.log("Telegram Webhook: Order updated to paid");
+          console.log("Telegram Webhook: Order updated to paid and confirmed");
 
           // Finalize bonuses:
           
@@ -92,12 +95,21 @@ export async function POST(req: Request) {
           const clientName = order.delivery_data?.name || "Клієнт";
           const total = order.total_price || 0;
 
-          await editTelegramMessage(chatId, messageId, `✅ *Замовлення ПІДТВЕРДЖЕНО*\n\nID: \`${orderId}\`\nКлієнт: ${clientName}\nСума: ${total} ₴\nСтатус: ОПЛАЧЕНО`);
+          await editTelegramMessage(chatId, messageId, `✅ *Замовлення ПІДТВЕРДЖЕНО*\n\nID: \`${orderId}\`\nКлієнт: ${clientName}\nСума: ${total} ₴\nСтатус: ОПЛАЧЕНО / ПІДТВЕРДЖЕНО`);
           await answerCallbackQuery(callbackQueryId, "Замовлення підтверджено!");
         } else {
-          // Cancel flow: Return Frozen -> Balance
+          // Cancel flow
           console.log("Telegram Webhook: Cancelling order");
           
+          const { error: cancelError } = await supabaseAdmin
+            .from("orders")
+            .update({ status: "cancelled" })
+            .eq("id", orderId);
+
+          if (cancelError) {
+            console.error("Telegram Webhook: Cancel update error:", cancelError);
+          }
+
           if (order.user_id && order.bonuses_used > 0) {
             await supabaseAdmin.rpc('cancel_bonuses', {
               user_id_val: order.user_id,
