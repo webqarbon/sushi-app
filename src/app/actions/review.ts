@@ -1,35 +1,46 @@
 'use server';
 
 import { createClient } from "@/utils/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 
+// Direct admin client (same approach as checkout route - proven to work)
+const supabaseAdmin = createAdminClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
 export async function submitReview(productId: string, rating: number, comment: string) {
-  // 1. First get user from standard client (with cookies/session)
-  const authClient = await createClient();
-  const { data: { user } } = await authClient.auth.getUser();
+  // 1. Get authenticated user via standard client (with cookies)
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) throw new Error("Ви повинні увійти, щоб залишити відгук");
+  if (!user) {
+    return { success: false, error: "Ви повинні увійти, щоб залишити відгук" };
+  }
 
-  // 2. Then use service role for DB operations (bypasses RLS)
-  const supabase = await createClient(true);
-
-  const { data: insertedReview, error } = await supabase.from('reviews').insert({
+  // 2. Insert review via admin client (bypasses RLS)
+  const { data: insertedReview, error } = await supabaseAdmin.from('reviews').insert({
     product_id: productId,
     user_id: user.id,
     rating,
     comment,
-    status: 'pending' 
+    status: 'pending'
   }).select('id').single();
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("Review insert error:", error);
+    return { success: false, error: error.message };
+  }
+
   const reviewId = insertedReview?.id;
 
-  // Notify Admin via Telegram
+  // 3. Notify Admin via Telegram
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const adminId = process.env.ADMIN_TELEGRAM_ID;
 
   if (botToken && adminId) {
-    const { data: product } = await supabase.from('products').select('name').eq('id', productId).single();
+    const { data: product } = await supabaseAdmin.from('products').select('name').eq('id', productId).single();
     
     const message = `🌟 *НОВИЙ ВІДГУК (Frozen Market)*\n\n` +
                     `📦 *Товар:* ${product?.name}\n` +
@@ -66,16 +77,11 @@ export async function submitReview(productId: string, rating: number, comment: s
 }
 
 export async function approveReview(reviewId: string) {
-    const supabase = await createClient(true);
+    const { data: review } = await supabaseAdmin.from('reviews').select('product_id').eq('id', reviewId).single();
     
-    // 1. Get the review info first
-    const { data: review } = await supabase.from('reviews').select('product_id').eq('id', reviewId).single();
-    
-    // 2. Update status
-    const { error } = await supabase.from('reviews').update({ status: 'approved' }).eq('id', reviewId);
+    const { error } = await supabaseAdmin.from('reviews').update({ status: 'approved' }).eq('id', reviewId);
     if (error) throw new Error(error.message);
 
-    // 3. Recalculate rating for that product
     if (review?.product_id) {
         await recalculateProductRating(review.product_id);
     }
@@ -85,16 +91,11 @@ export async function approveReview(reviewId: string) {
 }
 
 export async function rejectReview(reviewId: string) {
-    const supabase = await createClient(true);
+    const { data: review } = await supabaseAdmin.from('reviews').select('product_id').eq('id', reviewId).single();
     
-    // 1. Get the review info first
-    const { data: review } = await supabase.from('reviews').select('product_id').eq('id', reviewId).single();
-    
-    // 2. Update status
-    const { error } = await supabase.from('reviews').update({ status: 'rejected' }).eq('id', reviewId);
+    const { error } = await supabaseAdmin.from('reviews').update({ status: 'rejected' }).eq('id', reviewId);
     if (error) throw new Error(error.message);
 
-    // 3. Recalculate rating (in case it was previously approved)
     if (review?.product_id) {
         await recalculateProductRating(review.product_id);
     }
@@ -104,10 +105,7 @@ export async function rejectReview(reviewId: string) {
 }
 
 async function recalculateProductRating(productId: string) {
-    const supabase = await createClient(true); // Required to update products table
-    
-    // Get all approved reviews for this product
-    const { data: approvedReviews } = await supabase
+    const { data: approvedReviews } = await supabaseAdmin
         .from('reviews')
         .select('rating')
         .eq('product_id', productId)
@@ -120,8 +118,7 @@ async function recalculateProductRating(productId: string) {
         ? approvedReviews.reduce((sum, r) => sum + r.rating, 0) / count 
         : 0;
 
-    // Update the product table
-    await supabase
+    await supabaseAdmin
         .from('products')
         .update({ 
             average_rating: parseFloat(avg.toFixed(1)),

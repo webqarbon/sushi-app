@@ -22,9 +22,13 @@ export default function ReviewPopup({ productId, productName, onClose }: ReviewP
 
     setIsSubmitting(true);
     try {
-      await submitReview(productId, rating, comment);
-      toast.success("Відгук надіслано на перевірку адміністратору. Дякуємо!");
-      onClose();
+      const result = await submitReview(productId, rating, comment);
+      if (result.success) {
+        toast.success("Відгук надіслано на перевірку адміністратору. Дякуємо!");
+        onClose();
+      } else {
+        toast.error("Помилка: " + (result.error || "Невідома помилка"));
+      }
     } catch (err: any) {
       toast.error("Помилка: " + err.message);
     } finally {
