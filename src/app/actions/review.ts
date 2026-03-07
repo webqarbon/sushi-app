@@ -4,13 +4,14 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function submitReview(productId: string, rating: number, comment: string) {
-  // Use service role to bypass RLS for the follow-up select()
-  const supabase = await createClient(true); 
-  
-  // Verify user with standard client
-  const { data: { user } } = await (await createClient()).auth.getUser();
+  // 1. First get user from standard client (with cookies/session)
+  const authClient = await createClient();
+  const { data: { user } } = await authClient.auth.getUser();
 
   if (!user) throw new Error("Ви повинні увійти, щоб залишити відгук");
+
+  // 2. Then use service role for DB operations (bypasses RLS)
+  const supabase = await createClient(true);
 
   const { data: insertedReview, error } = await supabase.from('reviews').insert({
     product_id: productId,
