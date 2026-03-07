@@ -111,21 +111,24 @@ export default function Header() {
                 </Link>
               )}
 
-              {/* Cart */}
-              <button 
-                onClick={() => setIsCartOpen(true)}
-                className={`flex items-center bg-white rounded-2xl shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all font-black border border-gray-50/50 relative px-5 h-12 lg:h-14 gap-3 group`}
-              >
-                <div className="relative">
-                    <ShoppingCart className="w-4 h-4 lg:w-5 lg:h-5 text-[#1A1C1E] group-hover:scale-110 transition-transform" />
-                    {cartItemCount > 0 && (
-                        <span className="absolute -top-3 -right-3 min-w-[20px] h-5 px-1 bg-orange-500 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-orange-500/50 border-2 border-white">
-                            {cartItemCount}
-                        </span>
-                    )}
-                </div>
-                <span className="hidden sm:inline text-xs lg:text-sm text-gray-900 uppercase tracking-[0.1em]">Кошик</span>
-              </button>
+              {/* Cart - only for non-admin users */}
+              {!isAdmin && (
+                <button 
+                  onClick={() => setIsCartOpen(true)}
+                  className={`flex items-center bg-white rounded-2xl shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all font-black border border-gray-50/50 relative px-5 h-12 lg:h-14 gap-3 group`}
+                >
+                  <div className="relative">
+                      <ShoppingCart className="w-4 h-4 lg:w-5 lg:h-5 text-[#1A1C1E] group-hover:scale-110 transition-transform" />
+                      {cartItemCount > 0 && (
+                          <span className="absolute -top-3 -right-3 min-w-[20px] h-5 px-1 bg-orange-500 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-orange-500/50 border-2 border-white">
+                              {cartItemCount}
+                          </span>
+                      )}
+                  </div>
+                  <span className="hidden sm:inline text-xs lg:text-sm text-gray-900 uppercase tracking-[0.1em]">Кошик</span>
+                </button>
+              )}
+
 
               {/* Profile - only for non-admin users */}
               {!isAdmin && (
@@ -138,7 +141,9 @@ export default function Header() {
         </div>
       </header>
 
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      {!isAdmin && (
+        <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      )}
     </>
   );
 }
