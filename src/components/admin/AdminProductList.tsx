@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
-import { Search, Filter, Edit2, Trash2, X, Link as LinkIcon, Camera, Upload, Plus, ChevronRight, Hash, Percent, DollarSign, Package } from "lucide-react";
+import { Search, Filter, Edit2, Trash2, X, Link as LinkIcon, Camera, Upload, Plus, ChevronRight, Package } from "lucide-react";
 import { updateProduct, deleteProduct, createProduct, uploadProductImage } from "@/app/actions/product";
 import { toast } from "react-hot-toast";
 
@@ -76,6 +76,7 @@ export default function AdminProductList({
     <div className="space-y-10">
       <div className="flex flex-col lg:flex-row items-baseline lg:items-center justify-between gap-6">
         <div>
+          <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase">Товари</h1>
           <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-2">Каталог: {filteredProducts.length} позицій знайдено</p>
         </div>
         <button 
@@ -105,7 +106,7 @@ export default function AdminProductList({
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
-              <option value="all">Усі категории</option>
+              <option value="all">Усі категорії</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}

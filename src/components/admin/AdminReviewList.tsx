@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, CheckCircle, XCircle, Clock, Trash2, Search, MessageCircle, User } from "lucide-react";
+import { Star, CheckCircle, XCircle, Clock, Search, MessageCircle, User } from "lucide-react";
 import { approveReview, rejectReview } from "@/app/actions/review";
 import { toast } from "react-hot-toast";
 import { Review } from "@/types/database";

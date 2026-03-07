@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ShoppingBag, Clock, CheckCircle, XCircle, Search, Filter, Calendar, Truck, ChefHat, Package } from "lucide-react";
+import { useState } from "react";
+import { ShoppingBag, Clock, CheckCircle, XCircle, Search, Truck, ChefHat, Package } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "react-hot-toast";
 import { Order } from "@/types/database";
@@ -19,41 +19,23 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }>
 const STATUS_ORDER = ["pending", "confirmed", "cooking", "delivery", "delivered", "cancelled"];
 
 export default function AdminOrderList({ initialOrders }: { initialOrders: Order[] }) {
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const supabase = createClient();
-
-  // Real-time subscription
-  useEffect(() => {
-    const channel = supabase
-      .channel("admin-orders")
-      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => {
-        // Refetch on any change
-        supabase
-          .from("orders")
-          .select("*, profiles(full_name, phone)")
-          .order("created_at", { ascending: false })
-          .then(({ data }) => { if (data) setOrders(data as Order[]); });
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [supabase]);
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
     if (error) {
       toast.error("Помилка оновлення статусу");
     } else {
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus as Order["status"] } : o));
       toast.success(`Статус змінено: ${STATUS_CONFIG[newStatus]?.label}`);
     }
   };
 
   const today = new Date().toLocaleDateString("uk-UA");
-  const todayCount = orders.filter(o => new Date(o.created_at).toLocaleDateString("uk-UA") === today).length;
+  const todayCount = initialOrders.filter(o => new Date(o.created_at).toLocaleDateString("uk-UA") === today).length;
 
-  const filtered = orders.filter(o => {
+  const filtered = initialOrders.filter(o => {
     const matchesSearch = 
       o.id.toLowerCase().includes(search.toLowerCase()) ||
       (o.profiles?.full_name || "").toLowerCase().includes(search.toLowerCase());
@@ -68,7 +50,7 @@ export default function AdminOrderList({ initialOrders }: { initialOrders: Order
         <div>
           <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase">Замовлення</h1>
           <p className="text-slate-500 font-medium tracking-tight">
-            Всього: <span className="text-slate-900 font-black">{orders.length}</span> &nbsp;|&nbsp; 
+            Всього: <span className="text-slate-900 font-black">{initialOrders.length}</span> &nbsp;|&nbsp; 
             Сьогодні: <span className="text-orange-500 font-black">{todayCount}</span>
           </p>
         </div>
@@ -118,7 +100,7 @@ export default function AdminOrderList({ initialOrders }: { initialOrders: Order
               {filtered.map(order => {
                 const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
                 const Icon = cfg.icon;
-                const itemsCount = Array.isArray(order.items) ? order.items.length : 0;
+                const itemsCount = Array.isArray(order.items_json) ? order.items_json.length : 0;
 
                 return (
                   <tr key={order.id} className="hover:bg-slate-50/50 transition-colors group">

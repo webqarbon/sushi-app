@@ -109,6 +109,10 @@ export async function POST(req: Request) {
           await editTelegramMessage(chatId, messageId, `❌ *Замовлення СКАСОВАНО*\n\nID: \`${orderId}\``);
           await answerCallbackQuery(callbackQueryId, "Замовлення скасовано");
         }
+
+        revalidatePath("/");
+        revalidatePath("/admin");
+        revalidatePath("/admin/orders");
       }
 
       // Handle Review Actions

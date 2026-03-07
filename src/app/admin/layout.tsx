@@ -19,6 +19,7 @@ import {
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "react-hot-toast";
 import { SITE_CONFIG } from "@/constants/site";
+import AdminRealtimeReloader from "@/components/admin/AdminRealtimeReloader";
 
 const supabase = createClient();
 
@@ -64,6 +65,7 @@ export default function AdminLayout({
 
   return (
     <div className="flex min-h-screen bg-[#F8FAFC] font-sans text-slate-900 scroll-smooth overflow-x-hidden">
+      <AdminRealtimeReloader />
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 

@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Edit2, Trash2, X, Plus, Hash, ChevronRight, LayoutGrid } from "lucide-react";
+import { Search, Edit2, Trash2, X, Plus, Hash, LayoutGrid } from "lucide-react";
 import { createCategory, updateCategory, deleteCategory } from "@/app/actions/category";
 import { toast } from "react-hot-toast";
 import slugify from "slugify";
 import { Category } from "@/types/database";
-
-
 
 export default function AdminCategoryList({ initialCategories }: { initialCategories: Category[] }) {
   const [search, setSearch] = useState("");
@@ -122,7 +120,6 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
         </div>
       </div>
 
-      {/* Modals are kept similar but refined */}
       {isAddingNew && (
         <CategoryModal 
           onClose={() => setIsAddingNew(false)} 
@@ -130,7 +127,7 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
             await createCategory(name, slug);
             setIsAddingNew(false);
           }}
-          title="Create Category"
+          title="Створити категорію"
         />
       )}
 
@@ -142,13 +139,12 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
             await updateCategory(editingCategory.id, name, slug);
             setEditingCategory(null);
           }}
-          title="Edit Category"
+          title="Редагувати категорію"
         />
       )}
     </div>
   );
 }
-
 
 function CategoryModal({ onClose, initialData, onSubmit, title }: any) {
   const [name, setName] = useState(initialData?.name || "");
@@ -170,7 +166,7 @@ function CategoryModal({ onClose, initialData, onSubmit, title }: any) {
         </div>
         <div className="p-10 space-y-10">
           <div className="space-y-4">
-            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Category Name</label>
+            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Назва категорії</label>
             <input
               className="w-full px-8 py-6 bg-slate-50 rounded-[2rem] border-none focus:ring-4 focus:ring-orange-500/10 transition-all font-black text-xl text-slate-900"
               value={name}
