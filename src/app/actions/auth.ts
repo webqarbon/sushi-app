@@ -16,8 +16,11 @@ export async function login(formData: FormData) {
     return redirect(`/login?error=${encodeURIComponent("Неправильна пошта або пароль")}`);
   }
 
+  const { data: { user } } = await supabase.auth.getUser();
+  const isAdmin = user?.user_metadata?.role === 'admin';
+
   revalidatePath("/", "layout");
-  redirect("/profile");
+  redirect(isAdmin ? "/admin" : "/profile");
 }
 
 export async function signup(formData: FormData) {
