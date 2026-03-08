@@ -82,12 +82,12 @@ export default function AdminReviewList({ initialReviews }: { initialReviews: Re
 function ReviewCard({ review }: { review: Review }) {
   const handleApprove = async () => {
     try { await approveReview(review.id); toast.success("✅ Відгук схвалено!"); } 
-    catch (err: any) { toast.error(err.message); }
+    catch (err: unknown) { toast.error(err instanceof Error ? err.message : "Помилка"); }
   };
 
   const handleReject = async () => {
     try { await rejectReview(review.id); toast.success("❌ Відгук відхилено"); } 
-    catch (err: any) { toast.error(err.message); }
+    catch (err: unknown) { toast.error(err instanceof Error ? err.message : "Помилка"); }
   };
 
   return (
@@ -127,7 +127,7 @@ function ReviewCard({ review }: { review: Review }) {
       </div>
 
       <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100/50 mb-8 min-h-[100px] flex-1">
-        <p className="text-sm font-medium text-slate-600 leading-relaxed italic">"{review.comment}"</p>
+        <p className="text-sm font-medium text-slate-600 leading-relaxed italic">&quot;{review.comment}&quot;</p>
       </div>
 
       <div className="flex items-center gap-4 mt-auto">

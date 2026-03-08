@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import CategoryNav from "./CategoryNav";
+import { useEffect, useRef } from "react";
 import Hero from "./Hero";
 import ProductSlider from "./ProductSlider";
 import Catalog from "./Catalog";
@@ -18,59 +17,31 @@ interface HomeContentProps {
 
 export default function HomeContent({ categories, products }: HomeContentProps) {
   const { activeCategoryId, setActiveCategoryId, setCategories } = useCategoryStore();
-  const [isHeaderCategoriesVisible, setIsHeaderCategoriesVisible] = useState(false);
-  // null = initial state (show Hero + Slider), string = category selected (show Catalog)
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const catalogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Sync local state with store (e.g. when reset from Header logo or updated from compact nav)
-    if (activeCategoryId === '') {
-      setSelectedCategoryId(null);
-    } else if (activeCategoryId !== selectedCategoryId) {
-      setSelectedCategoryId(activeCategoryId);
-    }
-  }, [activeCategoryId, selectedCategoryId]);
-
-  useEffect(() => {
     setCategories(categories);
-
-    const handleScroll = () => {
-      setIsHeaderCategoriesVisible(window.scrollY > 75);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, [categories, setCategories]);
 
-  const handleCategorySelect = (id: string) => {
-    setActiveCategoryId(id);
-    setSelectedCategoryId(id);
-    // Scroll to catalog smoothly
-    setTimeout(() => {
+  useEffect(() => {
+    if (!activeCategoryId) return;
+    const timeoutId = window.setTimeout(() => {
       catalogRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
-  };
+    return () => window.clearTimeout(timeoutId);
+  }, [activeCategoryId]);
 
   const handleResetToHome = () => {
-    setSelectedCategoryId(null);
+    setActiveCategoryId("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const showHeroAndSlider = selectedCategoryId === null;
+  const showHeroAndSlider = !activeCategoryId;
 
   return (
     <div className="flex flex-col gap-0 pb-32">
 
-      {/* 1. Category Navigation — sticky under header */}
-      <div
-        className={`sticky top-[72px] lg:top-[80px] z-30 bg-[#F3F5F9] py-3 md:py-4 border-b border-gray-100/50 transition-all duration-300 ${
-          isHeaderCategoriesVisible ? "opacity-0 pointer-events-none" : "opacity-100"
-        }`}
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <CategoryNav onSelect={handleCategorySelect} />
-        </div>
-      </div>
+      {/* Category Navigation is now handled globally in the Header */}
 
       {/* 2. Hero + Slider OR Catalog — animated switch */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8">
@@ -123,7 +94,7 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
               <Catalog
                 categories={categories}
                 products={products}
-                activeCategoryId={selectedCategoryId || undefined}
+                activeCategoryId={activeCategoryId || undefined}
               />
             </div>
           )}

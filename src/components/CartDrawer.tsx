@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { X, Plus, Minus, ShoppingCart, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/store/cart";

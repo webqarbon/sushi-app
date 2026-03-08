@@ -170,7 +170,7 @@ export async function POST(req: Request) {
         if (approvedReviews) {
           const count = approvedReviews.length;
           const avg = count > 0
-            ? approvedReviews.reduce((sum: number, r: any) => sum + r.rating, 0) / count
+            ? approvedReviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / count
             : 0;
           await supabaseAdmin
             .from("products")

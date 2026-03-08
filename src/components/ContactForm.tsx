@@ -93,7 +93,7 @@ export default function ContactForm() {
             <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Ваше ім'я</label>
+                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Ваше ім&apos;я</label>
                         <div className="relative group">
                             <User className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
                             <input 
@@ -121,7 +121,7 @@ export default function ContactForm() {
                 </div>
 
                 <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Ваше питання (необов'язково)</label>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-2">Ваше питання (необов&apos;язково)</label>
                     <textarea 
                         name="message"
                         rows={3}

@@ -32,12 +32,10 @@ export default function AdminLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();
   const [adminName, setAdminName] = useState("Admin");
-  const [adminEmail, setAdminEmail] = useState("");
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
-        setAdminEmail(user.email || "");
         setAdminName(user.user_metadata?.full_name || user.email?.split("@")[0] || SITE_CONFIG.admin.defaultName);
       }
     });

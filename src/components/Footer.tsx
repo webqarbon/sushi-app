@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Phone, Navigation, Instagram, MessageCircle, Send, Heart } from "lucide-react";
+import { Phone, Navigation, Instagram, Send, Heart } from "lucide-react";
 import { SITE_CONFIG } from "@/constants/site";
 
 export default function Footer() {

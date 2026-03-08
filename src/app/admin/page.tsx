@@ -63,7 +63,7 @@ export default async function AdminDashboard() {
                 <ShoppingBag className="w-6 h-6 text-slate-200" />
             </div>
             <div className="space-y-6 flex-1">
-                {recentOrders && recentOrders.length > 0 ? recentOrders.map((order: any) => (
+                {recentOrders && recentOrders.length > 0 ? recentOrders.map((order: { id: string; created_at: string; total_price: number; profiles?: { full_name?: string } | null }) => (
                     <div key={order.id} className="flex items-center gap-6 p-4 rounded-[1.5rem] hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100">
                         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm">
                             <span className="font-black text-xs text-orange-500">#{order.id.slice(0, 4)}</span>

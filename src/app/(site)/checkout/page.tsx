@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cart";
-import { ArrowLeft, Info, Truck, CreditCard, Gift, User as UserIcon, Star } from "lucide-react";
+import { ArrowLeft, Info, Truck, CreditCard, Gift, Star } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";

@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
-import { History } from "lucide-react";
-
-import { ChevronDown, ChevronUp, Package, RefreshCcw } from "lucide-react";
-import { useCartStore } from "@/store/cart";
+import { History, ChevronDown, ChevronUp, Package, RefreshCcw } from "lucide-react";
+import { useCartStore, type CartItem } from "@/store/cart";
 import { toast } from "react-hot-toast";
 
 interface Order {
@@ -14,7 +13,7 @@ interface Order {
   created_at: string;
   total_price: number;
   bonuses_used: number;
-  items_json: any[];
+  items_json: { product: { id: string; name: string; price: number; image_url?: string; cost_price?: number; bonus_percent?: number; category_id?: string }; quantity: number }[];
 }
 
 interface OrderHistoryProps {
@@ -33,10 +32,21 @@ export default function OrderHistory({ initialOrders, userId }: OrderHistoryProp
     try {
       if (!order.items_json) return;
       
-      const cartItems = order.items_json.map((item: any) => ({
-        product: item.product,
-        quantity: item.quantity
-      }));
+      const cartItems: CartItem[] = order.items_json.map((item) => {
+        const p = item.product;
+        return {
+          product: {
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            cost_price: p.cost_price ?? 0,
+            bonus_percent: p.bonus_percent ?? 0,
+            category_id: p.category_id ?? "",
+            image_url: p.image_url,
+          },
+          quantity: item.quantity,
+        };
+      });
       
       clearCart();
       setItems(cartItems);
@@ -161,12 +171,12 @@ export default function OrderHistory({ initialOrders, userId }: OrderHistoryProp
                             Повторити
                         </button>
                     </div>
-                    {order.items_json.map((item: any, idx: number) => (
+                    {order.items_json.map((item: { product: { name: string; price: number; image_url?: string }; quantity: number }, idx: number) => (
                       <div key={idx} className="flex justify-between items-center text-sm">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                          <div className="relative w-8 h-8 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
                             {item.product?.image_url && (
-                              <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover" />
+                              <Image src={item.product.image_url} alt={item.product.name} fill className="object-cover" sizes="32px" />
                             )}
                           </div>
                           <div>

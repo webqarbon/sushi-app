@@ -41,7 +41,7 @@ export interface Order {
   user_id?: string;
   status: 'pending' | 'confirmed' | 'cooking' | 'delivery' | 'delivered' | 'cancelled';
   total_price: number;
-  items_json: any[];
+  items_json: { product: Product; quantity: number }[];
   address?: string;
   payment_method?: string;
   comment?: string;

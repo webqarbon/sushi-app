@@ -14,20 +14,15 @@ import {
   LayoutGrid,
   Fish,
   Milk,
-  Box,
   ShoppingBag,
   Gem,
   Cpu,
-  Waves,
   Hammer,
   Grape,
-  Zap,
-  Star,
-  Settings,
-  MoreHorizontal,
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useCategoryStore } from "@/store/category";
 import { Category } from "@/types/database";
 
@@ -75,7 +70,7 @@ export default function CategoryNav({
   const onSelect = propsOnSelect || storeSetActiveId;
 
   // Map icons based on category slug or name
-  const iconMap: Record<string, any> = {
+  const iconMap: Record<string, LucideIcon> = {
     "sets": LayoutGrid,
     "rolls": Utensils,
     "sushi": Beef,
@@ -203,47 +198,42 @@ export default function CategoryNav({
   }
 
   return (
-    <div className="w-full relative group flex items-center">
+    <div className="w-full relative group flex items-center justify-center border-b border-gray-100 bg-white/50 backdrop-blur-md pb-4 pt-2">
       {/* Left Scroll Button */}
       {canScrollLeft && (
         <button 
           onClick={() => handleScroll('left')}
-          className="absolute -left-5 z-20 w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-2xl border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in slide-in-from-right-2 duration-300 ring-4 ring-white"
+          className="absolute left-0 z-20 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-md border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in duration-300"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-4 h-4" />
         </button>
       )}
 
       <div 
         ref={scrollContainerRef}
-        className="w-full overflow-x-auto hide-scrollbar flex gap-3 py-6 px-4 scroll-smooth"
+        className="w-full overflow-x-auto hide-scrollbar flex gap-4 lg:gap-8 px-8 scroll-smooth justify-center max-w-7xl mx-auto"
       >
         {sortedCategories.map((cat) => {
-          const Icon = iconMap[cat.slug] || Utensils;
           const isActive = activeCategoryId === cat.id;
 
           return (
             <button
               key={cat.id}
               onClick={() => onSelect(cat.id)}
-              className={`flex flex-col items-center justify-center min-w-[110px] lg:min-w-[130px] h-[110px] lg:h-[130px] rounded-[2.5rem] transition-all duration-300 shrink-0 group border-2 ${
+              className={`relative flex items-center justify-center transition-all duration-300 shrink-0 group py-2 ${
                 isActive 
-                  ? "bg-white text-orange-500 shadow-2xl shadow-orange-500/15 border-orange-100 ring-8 ring-orange-500/5 translate-y-[-4px]" 
-                  : "bg-white/50 text-gray-500 hover:bg-white hover:text-[#1A1C1E] shadow-sm border-gray-100/50 hover:shadow-xl hover:shadow-slate-200/50 hover:translate-y-[-2px]"
+                  ? "text-[#1A1C1E]" 
+                  : "text-gray-400 hover:text-[#1A1C1E]"
               }`}
             >
-              <div className={`p-3 rounded-2xl transition-all duration-500 ${
-                isActive ? "bg-orange-50 scale-110" : "bg-gray-50 group-hover:bg-gray-100 group-hover:scale-105"
-              }`}>
-                <Icon className={`w-6 h-6 lg:w-7 lg:h-7 transition-colors duration-300 ${
-                  isActive ? "text-orange-500" : "text-gray-400 group-hover:text-[#1A1C1E]"
-                }`} />
-              </div>
-              <span className={`text-[10px] lg:text-[12px] font-black tracking-tight mt-2 px-2 text-center uppercase leading-tight ${
-                isActive ? "text-[#1A1C1E] opacity-100" : "text-gray-500 opacity-60"
-              }`}>
+              <span className={`text-[11px] lg:text-[13px] font-black tracking-[0.1em] uppercase transition-all duration-300 ${isActive ? "scale-105" : "group-hover:scale-100"}`}>
                 {cat.name}
               </span>
+              
+              {/* Active Indicator Underline */}
+              {isActive && (
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-1 bg-orange-500 rounded-full animate-in zoom-in duration-300" />
+              )}
             </button>
           );
         })}
@@ -253,15 +243,15 @@ export default function CategoryNav({
       {canScrollRight && (
         <button 
           onClick={() => handleScroll('right')}
-          className="absolute -right-5 z-20 w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-2xl border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in slide-in-from-left-2 duration-300 ring-4 ring-white"
+          className="absolute right-0 z-20 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-md border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in duration-300"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-4 h-4" />
         </button>
       )}
 
-      {/* Scroll Masks */}
-      {canScrollLeft && <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#F3F5F9] via-[#F3F5F9]/40 to-transparent pointer-events-none z-10" />}
-      {canScrollRight && <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#F3F5F9] via-[#F3F5F9]/40 to-transparent pointer-events-none z-10" />}
+      {/* Subtle Scroll Masks */}
+      {canScrollLeft && <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white via-white/80 to-transparent pointer-events-none z-10" />}
+      {canScrollRight && <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white via-white/80 to-transparent pointer-events-none z-10" />}
     </div>
   );
 }

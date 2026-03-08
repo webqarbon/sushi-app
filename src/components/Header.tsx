@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingCart, User, Search as SearchIcon, LayoutDashboard } from "lucide-react";
+import { ShoppingCart, User, LayoutDashboard } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import CartDrawer from "./CartDrawer";
 import CategoryNav from "./CategoryNav";
@@ -55,13 +55,13 @@ export default function Header() {
           <div className="flex items-center justify-between gap-4 h-16 lg:h-20 transition-all duration-300">
             
             {/* Left Section: Logo */}
-            <div className="shrink-0 flex items-center">
-               <Link href="/" onClick={() => setActiveCategoryId('')} className="group flex items-center gap-3">
-                  <div className={`transition-all duration-500 rounded-full flex items-center justify-center p-1 border-2 border-[#1A1C1E]/5 group-hover:border-orange-500/20 ${
-                    isScrolled ? "bg-[#1A1C1E] w-10 h-10 shadow-lg" : "bg-white w-12 h-12 lg:w-14 lg:h-14 shadow-sm"
-                  }`}>
-                    <div className="w-5 h-5 bg-orange-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(249,115,22,0.5)]" />
-                  </div>
+              <div className="shrink-0 flex items-center">
+                 <Link href="/" onClick={() => setActiveCategoryId('')} className="group flex items-center gap-3">
+                    <div className={`transition-all duration-500 rounded-full flex items-center justify-center p-1 border border-gray-100 group-hover:border-orange-500/20 ${
+                      isScrolled ? "bg-white w-10 h-10 shadow-sm" : "bg-white w-12 h-12 lg:w-14 lg:h-14 shadow-sm"
+                    }`}>
+                      <div className="w-5 h-5 bg-orange-500 rounded-full shadow-[0_4px_10px_rgba(249,115,22,0.3)] transition-all group-hover:scale-110 group-active:scale-95" />
+                    </div>
                   <div className={`flex flex-col transition-all duration-500 ${isScrolled ? "hidden sm:flex" : "flex"}`}>
                     <span className={`font-black tracking-tighter leading-none transition-all text-[#1A1C1E] group-hover:text-orange-500 ${isScrolled ? "text-xl" : "text-2xl md:text-3xl"}`}>
                       {SITE_CONFIG.shortName}
@@ -73,30 +73,22 @@ export default function Header() {
                </Link>
             </div>
 
-            {/* Middle Section: Navigation (Only on scroll) or Search (Regular) */}
-            <div className={`flex-1 min-w-0 transition-all duration-300 flex items-center px-2 lg:px-6`}>
-              {isScrolled ? (
-                <div className="w-full animate-in fade-in duration-300">
-                  <CategoryNav isCompact />
-                </div>
-              ) : (
-                <div className="w-full flex justify-center animate-in fade-in duration-300">
-                  <Search />
-                </div>
-              )}
+            {/* Middle Section: Search (Always visible now, minimal design) */}
+            <div className={`flex-1 min-w-0 transition-all duration-300 flex items-center justify-center px-4 lg:px-8`}>
+               <div className="w-full max-w-xl">
+                 <Search />
+               </div>
             </div>
 
             {/* Right Section: Actions */}
-            <div className="flex items-center justify-end gap-2 lg:gap-4 shrink-0">
-              {/* Desktop Contacts - visible when NOT scrolled */}
-              {!isScrolled && (
-                <div className="hidden xl:flex flex-col items-end border-r border-gray-100 pr-4 mr-2">
-                   <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1 opacity-60 italic">Замовити:</span>
-                   <Link href={`tel:${SITE_CONFIG.contacts.phoneRaw}`} className="text-base font-black text-[#1A1C1E] hover:text-orange-500 transition-colors tracking-tighter">
-                      {SITE_CONFIG.contacts.phoneDisplay}
-                   </Link>
-                </div>
-              )}
+            <div className="flex items-center justify-end gap-3 lg:gap-5 shrink-0">
+              {/* Desktop Contacts */}
+              <div className="hidden xl:flex flex-col items-end border-r border-gray-100 pr-5 mr-2">
+                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5 opacity-80">Замовити:</span>
+                 <Link href={`tel:${SITE_CONFIG.contacts.phoneRaw}`} className="text-sm font-black text-[#1A1C1E] hover:text-orange-500 transition-colors tracking-tighter">
+                    {SITE_CONFIG.contacts.phoneDisplay}
+                 </Link>
+              </div>
 
               {/* Admin Access / Admin Label */}
               {isAdmin && (
@@ -139,6 +131,13 @@ export default function Header() {
             </div>
           </div>
         </div>
+
+        {/* Global Categories Row (Always visible, clean, minimalist) */}
+        {!isAdmin && (
+          <div className="w-full mt-2 animate-in fade-in duration-500">
+             <CategoryNav />
+          </div>
+        )}
       </header>
 
       {!isAdmin && (

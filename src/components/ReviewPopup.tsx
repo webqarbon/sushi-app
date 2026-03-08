@@ -29,9 +29,9 @@ export default function ReviewPopup({ productId, productName, onClose }: ReviewP
       } else {
         toast.error("Помилка: " + (result.error || "Невідома помилка"));
       }
-    } catch (err: any) {
-      toast.error("Помилка: " + err.message);
-    } finally {
+} catch (err: unknown) {
+        toast.error("Помилка: " + (err instanceof Error ? err.message : "Невідома помилка"));
+      } finally {
       setIsSubmitting(false);
     }
   };

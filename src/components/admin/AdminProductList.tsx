@@ -34,11 +34,11 @@ export default function AdminProductList({
     toast(
       (t) => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ fontWeight: 800, fontSize: 14 }}>Видалити "{name}"?</div>
+          <div style={{ fontWeight: 800, fontSize: 14 }}>Видалити &quot;{name}&quot;?</div>
           <div style={{ fontSize: 12, color: '#64748b' }}>Цю дію не можна скасувати</div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button
-              onClick={async () => { toast.dismiss(t.id); try { await deleteProduct(id); toast.success('Товар видалено'); } catch (err: any) { toast.error(err.message); } }}
+              onClick={async () => { toast.dismiss(t.id); try { await deleteProduct(id); toast.success('Товар видалено'); } catch (err: unknown) { toast.error(err instanceof Error ? err.message : "Помилка"); } }}
               style={{ flex: 1, background: '#ef4444', color: '#fff', border: 'none', borderRadius: 12, padding: '8px 16px', fontWeight: 800, cursor: 'pointer', fontSize: 12 }}
             >Видалити</button>
             <button
@@ -65,8 +65,8 @@ export default function AdminProductList({
         if (input) input.value = url;
       }
       toast.success('Зображення завантажено!');
-    } catch (err: any) {
-      toast.error('Помилка: ' + err.message);
+    } catch (err: unknown) {
+      toast.error('Помилка: ' + (err instanceof Error ? err.message : "Невідома помилка"));
     } finally {
       setIsUploading(false);
     }
@@ -184,7 +184,7 @@ export default function AdminProductList({
                     {editingProduct ? 'Редагувати товар' : 'Додати товар'}
                 </h3>
                 <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest font-mono">
-                    {editingProduct ? `ID: ${editingProduct.id.slice(0, 16)}` : 'Створення нового об\'єкту'}
+                    {editingProduct ? `ID: ${editingProduct.id.slice(0, 16)}` : "Створення нового об&apos;єкту"}
                 </p>
               </div>
               <button 
@@ -202,8 +202,8 @@ export default function AdminProductList({
                 setEditingProduct(null);
                 setIsAddingNew(false);
                 toast.success('Зміни успішно збережено!');
-              } catch (err: any) {
-                toast.error('Помилка: ' + err.message);
+              } catch (err: unknown) {
+                toast.error('Помилка: ' + (err instanceof Error ? err.message : "Невідома помилка"));
               }
             }} className="p-10 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
               {editingProduct && <input type="hidden" name="id" value={editingProduct.id} />}

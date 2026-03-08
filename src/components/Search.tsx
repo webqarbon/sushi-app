@@ -5,7 +5,6 @@ import { Search as SearchIcon, X, Loader2, Star } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { Product } from "@/types/database";
 import Image from "next/image";
-import Link from "next/link";
 import { useCategoryStore } from "@/store/category";
 
 export default function Search() {

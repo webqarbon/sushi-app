@@ -32,7 +32,7 @@ export default function ProfileSettings({ initialData }: ProfileSettingsProps) {
       } else {
         toast.error('Помилка при збереженні: ' + result.error);
       }
-    } catch (error) {
+    } catch {
       toast.error('Виникла помилка під час збереження');
     } finally {
       setIsSubmitting(false);

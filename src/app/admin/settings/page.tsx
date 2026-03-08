@@ -1,4 +1,4 @@
-import { Settings, User, Bell, Shield, Smartphone, Globe, Save } from "lucide-react";
+import { User, Bell, Shield, Smartphone, Globe, Save } from "lucide-react";
 
 export default function AdminSettings() {
   const settings = [

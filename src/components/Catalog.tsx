@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ArrowUpDown, Flame, TrendingUp, Star, ArrowDown01 as ArrowDownIcon, ArrowUp10 as ArrowUpIcon } from "lucide-react";
+import { Flame, Star, ArrowDown01 as ArrowDownIcon, ArrowUp10 as ArrowUpIcon } from "lucide-react";
 import { Category, Product } from "@/types/database";
 import ProductCard from "./ProductCard";
 

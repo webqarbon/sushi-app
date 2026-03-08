@@ -11,7 +11,7 @@ const supabaseAdmin = createAdminClient(
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { items, name, phone, cityName, cityRef, branchName, branchRef, bonusesUsed, paymentMethod, total_price } = body;
+    const { items, name, phone, cityName, cityRef, branchName, branchRef, bonusesUsed, paymentMethod } = body;
 
     // 1. Validate inputs
     if (!items?.length) return NextResponse.json({ error: "Empty cart" }, { status: 400 });
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     const { data: { user } } = await supabase.auth.getUser();
 
     // 2.1 Fetch actual product data from DB to prevent price tampering
-    const productIds = items.map((i: any) => i.product.id);
+    const productIds = items.map((i: { product: { id: string } }) => i.product.id);
     const { data: dbProducts, error: dbError } = await supabaseAdmin
       .from("products")
       .select("id, price, bonus_percent")
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
     // 2.2 Recalculate total on server
     let serverTotal = 0;
-    const validatedItems = items.map((cartItem: any) => {
+    const validatedItems = items.map((cartItem: { product: { id: string }; quantity: number }) => {
       const dbProduct = dbProducts.find(p => p.id === cartItem.product.id);
       if (!dbProduct) throw new Error(`Product not found: ${cartItem.product.id}`);
       
@@ -107,7 +107,7 @@ export async function POST(req: Request) {
         merchantPaymInfo: {
           reference: order.id,
           destination: "Оплата замовлення FROZEN Market",
-          basketOrder: validatedItems.map((i: any) => ({
+          basketOrder: validatedItems.map((i: { product: { name: string; price: number; image_url?: string }; quantity: number }) => ({
             name: i.product.name,
             qty: i.quantity,
             sum: Math.round((i.product.price * i.quantity) * 100),

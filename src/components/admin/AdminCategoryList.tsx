@@ -21,11 +21,11 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
     toast(
       (t) => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ fontWeight: 800, fontSize: 14 }}>Видалити "{name}"?</div>
+          <div style={{ fontWeight: 800, fontSize: 14 }}>Видалити &quot;{name}&quot;?</div>
           <div style={{ fontSize: 12, color: '#64748b' }}>Може вплинути на товари в цій категорії</div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button
-              onClick={async () => { toast.dismiss(t.id); try { await deleteCategory(id); toast.success('Категорію видалено'); } catch (err: any) { toast.error(err.message); } }}
+              onClick={async () => { toast.dismiss(t.id); try { await deleteCategory(id); toast.success('Категорію видалено'); } catch (err: unknown) { toast.error(err instanceof Error ? err.message : "Помилка"); } }}
               style={{ flex: 1, background: '#ef4444', color: '#fff', border: 'none', borderRadius: 12, padding: '8px 16px', fontWeight: 800, cursor: 'pointer', fontSize: 12 }}
             >Видалити</button>
             <button
@@ -146,7 +146,7 @@ export default function AdminCategoryList({ initialCategories }: { initialCatego
   );
 }
 
-function CategoryModal({ onClose, initialData, onSubmit, title }: any) {
+function CategoryModal({ onClose, initialData, onSubmit, title }: { onClose: () => void; initialData?: Category; onSubmit: (name: string, slug: string) => Promise<void>; title: string }) {
   const [name, setName] = useState(initialData?.name || "");
   const [slug, setSlug] = useState(initialData?.slug || "");
 

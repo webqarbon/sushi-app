@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 import { Order } from "@/types/database";
 import { SITE_CONFIG } from "@/constants/site";
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
+const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ComponentType<{ className?: string }> }> = {
   pending:   { label: "Очікує",       color: "bg-orange-100 text-orange-600",  icon: Clock },
   confirmed: { label: "Підтверджено", color: "bg-blue-100 text-blue-600",      icon: CheckCircle },
   cooking:   { label: "Готується",    color: "bg-purple-100 text-purple-600",  icon: ChefHat },

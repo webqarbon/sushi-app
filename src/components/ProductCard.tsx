@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Product } from "@/types/database";
 import { useCartStore } from "@/store/cart";
-import { Plus, Star, MessageCircle } from "lucide-react";
+import { Plus, Star } from "lucide-react";
 import { useState } from "react";
 import ReviewPopup from "./ReviewPopup";
 import { createClient } from "@/utils/supabase/client";

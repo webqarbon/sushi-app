@@ -10,17 +10,13 @@ export default function SuccessPage() {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    // Check if the user arrived here from a valid checkout
     const hasSuccessFlag = sessionStorage.getItem("orderSuccess") === "true";
-    
     if (!hasSuccessFlag) {
-      // Unauthorised access, redirect to homepage immediately
       router.replace("/");
-    } else {
-      // Authorised. Clear the flag so they can't refresh the page and view it again
-      setIsAuthorized(true);
-      sessionStorage.removeItem("orderSuccess");
+      return;
     }
+    sessionStorage.removeItem("orderSuccess");
+    queueMicrotask(() => setIsAuthorized(true));
   }, [router]);
 
   if (!isAuthorized) {
