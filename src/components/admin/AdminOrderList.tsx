@@ -44,11 +44,10 @@ export default function AdminOrderList({ initialOrders }: { initialOrders: Order
   });
 
   return (
-    <div className="space-y-10">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <div className="space-y-6">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase">Замовлення</h1>
+          <h1 className="text-2xl font-black tracking-tight text-slate-900 uppercase">Замовлення</h1>
           <p className="text-slate-500 font-medium tracking-tight">
             Всього: <span className="text-slate-900 font-black">{initialOrders.length}</span> &nbsp;|&nbsp; 
             Сьогодні: <span className="text-orange-500 font-black">{todayCount}</span>
@@ -57,7 +56,7 @@ export default function AdminOrderList({ initialOrders }: { initialOrders: Order
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col lg:flex-row gap-4 bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm">
+      <div className="flex flex-col lg:flex-row gap-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
         <div className="relative group flex-1">
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
           <input
@@ -84,16 +83,16 @@ export default function AdminOrderList({ initialOrders }: { initialOrders: Order
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 border-b border-slate-50 bg-slate-50/30">
-                <th className="px-8 py-6">Замовлення</th>
-                <th className="px-8 py-6">Клієнт</th>
-                <th className="px-8 py-6">Сума / Товари</th>
-                <th className="px-8 py-6">Статус</th>
-                <th className="px-8 py-6 text-right">Змінити статус</th>
+                <th className="px-6 py-4">Замовлення</th>
+                <th className="px-6 py-4">Клієнт</th>
+                <th className="px-6 py-4">Сума / Товари</th>
+                <th className="px-6 py-4">Статус</th>
+                <th className="px-6 py-4 text-right">Змінити статус</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -104,9 +103,9 @@ export default function AdminOrderList({ initialOrders }: { initialOrders: Order
 
                 return (
                   <tr key={order.id} className="hover:bg-slate-50/50 transition-colors group">
-                    <td className="px-8 py-5">
+                    <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center border border-slate-100 group-hover:bg-orange-50 group-hover:border-orange-100 transition-colors shrink-0">
+                        <div className="w-10 h-10 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center border border-slate-100 group-hover:bg-orange-50 group-hover:border-orange-100 transition-colors shrink-0">
                           <ShoppingBag className="w-5 h-5 group-hover:text-orange-500 transition-colors" />
                         </div>
                         <div>
@@ -118,23 +117,23 @@ export default function AdminOrderList({ initialOrders }: { initialOrders: Order
                         </div>
                       </div>
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="px-6 py-4">
                       <div className="font-black text-slate-900">{order.profiles?.full_name || "Гість"}</div>
                       {order.profiles?.phone && (
                         <div className="text-[10px] text-slate-400 font-bold mt-0.5">{order.profiles.phone}</div>
                       )}
                     </td>
-                    <td className="px-8 py-5">
-                      <div className="font-black text-slate-900 text-lg">{SITE_CONFIG.currency}{order.total_price}</div>
+                    <td className="px-6 py-4">
+                      <div className="font-black text-slate-900 text-base">{SITE_CONFIG.currency}{order.total_price}</div>
                       <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{itemsCount} поз.</div>
                     </td>
-                    <td className="px-8 py-5">
+                    <td className="px-6 py-4">
                       <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${cfg.color}`}>
                         <Icon className="w-3.5 h-3.5" />
                         {cfg.label}
                       </span>
                     </td>
-                    <td className="px-8 py-5 text-right">
+                    <td className="px-6 py-4 text-right">
                       <select
                         value={order.status}
                         onChange={e => handleStatusChange(order.id, e.target.value)}
@@ -150,7 +149,7 @@ export default function AdminOrderList({ initialOrders }: { initialOrders: Order
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-8 py-20 text-center">
+                  <td colSpan={5} className="px-6 py-16 text-center">
                     <ShoppingBag className="w-12 h-12 text-slate-200 mx-auto mb-4" />
                     <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Замовлень не знайдено</p>
                   </td>

@@ -76,14 +76,14 @@ export default function AdminLoginPage() {
           Повернутися на сайт
         </Link>
 
-        <div className="bg-white rounded-[3rem] p-10 lg:p-12 shadow-premium border border-white/20 relative overflow-hidden">
+        <div className="bg-white rounded-2xl p-8 lg:p-10 shadow-premium border border-white/20 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full -mr-16 -mt-16" />
           
-          <div className="mb-10 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-900 rounded-2xl shadow-xl shadow-slate-900/10 mb-6">
-                <ShieldCheck className="w-8 h-8 text-orange-500" />
+          <div className="mb-8 text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-slate-900 rounded-xl shadow-xl shadow-slate-900/10 mb-5">
+                <ShieldCheck className="w-7 h-7 text-orange-500" />
             </div>
-            <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tight leading-none mb-3">
+            <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tight leading-none mb-2">
               Admin Login
             </h1>
             <p className="text-sm font-medium text-slate-400">
@@ -101,7 +101,7 @@ export default function AdminLoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-16 pl-16 pr-6 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all"
+                  className="w-full h-14 pl-14 pr-6 bg-slate-50 border-none rounded-xl font-bold text-slate-900 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all"
                   placeholder="admin@frozen-market.ua"
                 />
               </div>
@@ -116,7 +116,7 @@ export default function AdminLoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-16 pl-16 pr-6 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all"
+                  className="w-full h-14 pl-14 pr-6 bg-slate-50 border-none rounded-xl font-bold text-slate-900 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -125,7 +125,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-20 bg-slate-900 text-white rounded-[2rem] font-black text-lg uppercase tracking-widest shadow-xl shadow-slate-900/20 hover:scale-[1.01] transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 overflow-hidden group"
+              className="w-full h-14 bg-slate-900 text-white rounded-xl font-black text-sm uppercase tracking-widest shadow-xl shadow-slate-900/20 hover:scale-[1.01] transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 overflow-hidden group"
             >
               {isLoading ? (
                 <Loader2 className="w-6 h-6 animate-spin" />

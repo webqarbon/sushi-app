@@ -22,11 +22,10 @@ export default function AdminReviewList({ initialReviews }: { initialReviews: Re
   const pendingCount = initialReviews.filter(r => r.status === "pending").length;
 
   return (
-    <div className="space-y-10">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <div className="space-y-6">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase">Відгуки</h1>
+          <h1 className="text-2xl font-black tracking-tight text-slate-900 uppercase">Відгуки</h1>
           <p className="text-slate-500 font-medium tracking-tight">
             На модерації: <span className="text-orange-500 font-black">{pendingCount}</span> &nbsp;|&nbsp; 
             Всього: <span className="text-slate-900 font-black">{initialReviews.length}</span>
@@ -48,7 +47,7 @@ export default function AdminReviewList({ initialReviews }: { initialReviews: Re
       </div>
 
       {/* Search */}
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm">
+      <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
         <div className="relative group w-full max-w-lg">
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
           <input
@@ -62,16 +61,16 @@ export default function AdminReviewList({ initialReviews }: { initialReviews: Re
       </div>
 
       {/* Reviews Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {filteredReviews.map(r => <ReviewCard key={r.id} review={r} />)}
       </div>
 
       {filteredReviews.length === 0 && (
-        <div className="p-32 text-center bg-white rounded-[3rem] border border-slate-100 shadow-sm">
+        <div className="p-16 text-center bg-white rounded-2xl border border-slate-100 shadow-sm">
           <div className="bg-slate-50 w-24 h-24 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 border border-slate-100 shadow-inner">
             <MessageCircle className="w-10 h-10 text-slate-200" />
           </div>
-          <h3 className="text-2xl font-black tracking-tight text-slate-900 uppercase">Відгуків не знайдено</h3>
+          <h3 className="text-lg font-black tracking-tight text-slate-900 uppercase">Відгуків не знайдено</h3>
           <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-3">Спробуйте змінити фільтри</p>
         </div>
       )}
@@ -91,10 +90,10 @@ function ReviewCard({ review }: { review: Review }) {
   };
 
   return (
-    <div className="p-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-500 group flex flex-col h-full relative overflow-hidden">
+    <div className="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-500 group flex flex-col h-full relative overflow-hidden">
       <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50/50 blur-3xl -z-10 rounded-full" />
       
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex gap-1.5 bg-slate-50/50 p-2 rounded-xl border border-slate-100/50">
           {[1, 2, 3, 4, 5].map(s => (
             <Star key={s} className={`w-4 h-4 ${s <= review.rating ? "fill-orange-400 text-orange-400" : "text-slate-100"}`} />
@@ -126,7 +125,7 @@ function ReviewCard({ review }: { review: Review }) {
         {new Date(review.created_at).toLocaleDateString("uk-UA", { day: "2-digit", month: "2-digit", year: "numeric" })}
       </div>
 
-      <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100/50 mb-8 min-h-[100px] flex-1">
+      <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-100/50 mb-5 min-h-[80px] flex-1">
         <p className="text-sm font-medium text-slate-600 leading-relaxed italic">&quot;{review.comment}&quot;</p>
       </div>
 

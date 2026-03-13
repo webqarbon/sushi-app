@@ -73,22 +73,22 @@ export default function AdminProductList({
   };
 
   return (
-    <div className="space-y-10">
-      <div className="flex flex-col lg:flex-row items-baseline lg:items-center justify-between gap-6">
+    <div className="space-y-6">
+      <div className="flex flex-col lg:flex-row items-baseline lg:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-slate-900 uppercase">Товари</h1>
-          <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-2">Каталог: {filteredProducts.length} позицій знайдено</p>
+          <h1 className="text-2xl font-black tracking-tight text-slate-900 uppercase">Товари</h1>
+          <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Каталог: {filteredProducts.length} позицій</p>
         </div>
         <button 
           onClick={() => setIsAddingNew(true)}
-          className="w-full lg:w-auto flex items-center justify-center gap-3 px-10 py-5 bg-slate-900 text-white font-black text-xs uppercase tracking-widest rounded-[2rem] shadow-xl shadow-slate-900/10 hover:shadow-orange-500/20 active:scale-95 transition-all group"
+          className="w-full lg:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-xl shadow-slate-900/10 hover:shadow-orange-500/20 active:scale-95 transition-all group"
         >
-          <Plus className="w-5 h-5 text-orange-500 group-hover:rotate-90 transition-transform" />
+          <Plus className="w-4 h-4 text-orange-500 group-hover:rotate-90 transition-transform" />
           Додати новий товар
         </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-4 bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm">
+      <div className="flex flex-col lg:flex-row gap-3 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
           <div className="relative group flex-1">
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
             <input
@@ -115,10 +115,10 @@ export default function AdminProductList({
           </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         {filteredProducts.map((p) => (
-          <div key={p.id} className="bg-white rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 group flex flex-col p-4 relative overflow-hidden">
-             <div className="relative aspect-square w-full rounded-[2.5rem] overflow-hidden mb-6 bg-slate-50 border border-slate-50 group-hover:scale-[1.02] transition-transform duration-700">
+          <div key={p.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-500 group flex flex-col p-3 relative overflow-hidden">
+             <div className="relative aspect-square w-full rounded-xl overflow-hidden mb-4 bg-slate-50 border border-slate-50 group-hover:scale-[1.02] transition-transform duration-700">
                 {p.image_url ? (
                     <Image src={p.image_url} alt={p.name} fill className="object-cover" />
                 ) : (
@@ -126,46 +126,46 @@ export default function AdminProductList({
                         <Camera className="w-16 h-16" />
                     </div>
                 )}
-                <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0 flex flex-col gap-2">
+                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0 flex flex-col gap-1.5">
                     <button 
                          onClick={() => setEditingProduct(p)}
-                         className="p-4 bg-white/90 backdrop-blur-md rounded-2xl text-slate-900 shadow-xl border border-white hover:bg-orange-500 hover:text-white transition-all"
+                         className="p-2.5 bg-white/90 backdrop-blur-md rounded-xl text-slate-900 shadow-xl border border-white hover:bg-orange-500 hover:text-white transition-all"
                     >
-                         <Edit2 className="w-5 h-5" />
+                         <Edit2 className="w-4 h-4" />
                     </button>
                     <button 
                          onClick={() => handleDelete(p.id, p.name)}
-                         className="p-4 bg-white/90 backdrop-blur-md rounded-2xl text-red-500 shadow-xl border border-white hover:bg-red-500 hover:text-white transition-all"
+                         className="p-2.5 bg-white/90 backdrop-blur-md rounded-xl text-red-500 shadow-xl border border-white hover:bg-red-500 hover:text-white transition-all"
                     >
-                         <Trash2 className="w-5 h-5" />
+                         <Trash2 className="w-4 h-4" />
                     </button>
                 </div>
-                <div className="absolute bottom-6 left-6">
-                    <span className="px-5 py-2 rounded-full bg-white/80 backdrop-blur-md text-[9px] font-black uppercase tracking-widest text-slate-500 border border-white shadow-sm">
+                <div className="absolute bottom-3 left-3">
+                    <span className="px-3 py-1.5 rounded-lg bg-white/80 backdrop-blur-md text-[9px] font-black uppercase tracking-widest text-slate-500 border border-white shadow-sm">
                         {p.categories?.name || "Без категорії"}
                     </span>
                 </div>
              </div>
 
-             <div className="px-4 pb-4 flex-1 flex flex-col">
-                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter leading-tight mb-4 group-hover:text-orange-500 transition-colors line-clamp-2">{p.name}</h3>
-                <div className="grid grid-cols-2 gap-4 mt-auto">
-                    <div className="bg-slate-50 p-4 rounded-3xl border border-slate-100/50">
-                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Ціна</div>
-                         <div className="text-xl font-black text-slate-900 tracking-tighter">{SITE_CONFIG.currency}{p.price.toFixed(0)}</div>
+             <div className="px-2 pb-2 flex-1 flex flex-col">
+                <h3 className="text-base font-black text-slate-900 uppercase tracking-tighter leading-tight mb-3 group-hover:text-orange-500 transition-colors line-clamp-2">{p.name}</h3>
+                <div className="grid grid-cols-2 gap-2 mt-auto">
+                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-100/50">
+                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Ціна</div>
+                         <div className="text-base font-black text-slate-900 tracking-tighter">{SITE_CONFIG.currency}{p.price.toFixed(0)}</div>
                     </div>
-                    <div className="bg-orange-50/30 p-4 rounded-3xl border border-orange-100/50">
-                        <div className="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-1">Бонус</div>
-                        <div className="text-xl font-black text-orange-500 tracking-tighter">{p.bonus_percent}%</div>
+                    <div className="bg-orange-50/30 p-3 rounded-xl border border-orange-100/50">
+                        <div className="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-0.5">Бонус</div>
+                        <div className="text-base font-black text-orange-500 tracking-tighter">{p.bonus_percent}%</div>
                     </div>
                   {(p.reviews_count !== undefined && p.reviews_count > 0) && (
-                    <div className="col-span-2 bg-purple-50/30 p-4 rounded-3xl border border-purple-100/50 flex items-center justify-between">
+                    <div className="col-span-2 bg-purple-50/30 p-3 rounded-xl border border-purple-100/50 flex items-center justify-between">
                       <div className="text-[9px] font-black text-purple-400 uppercase tracking-widest">Рейтинг</div>
                       <div className="text-base font-black text-purple-600">★ {(p.average_rating || 0).toFixed(1)} <span className="text-[9px] text-purple-300">({p.reviews_count})</span></div>
                     </div>
                   )}
               </div>
-                 <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between">
+                 <div className="mt-3 pt-3 border-t border-slate-50 flex items-center justify-between">
                     <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Собівартість: {SITE_CONFIG.currency}{p.cost_price || 0}</div>
                     <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">UUID: {p.id.slice(0, 4)}</div>
                 </div>
@@ -177,10 +177,10 @@ export default function AdminProductList({
       {/* Add New Modal */}
       {(isAddingNew || editingProduct) && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-xl animate-in fade-in duration-500">
-          <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-premium relative overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-500 border border-white/20">
-            <div className="p-10 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
+          <div className="bg-white w-full max-w-2xl rounded-2xl shadow-premium relative overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-500 border border-white/20">
+            <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
               <div>
-                <h3 className="text-3xl font-black tracking-tighter uppercase leading-none mb-2">
+                <h3 className="text-xl font-black tracking-tighter uppercase leading-none mb-1">
                     {editingProduct ? 'Редагувати товар' : 'Додати товар'}
                 </h3>
                 <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest font-mono">
@@ -205,7 +205,7 @@ export default function AdminProductList({
               } catch (err: unknown) {
                 toast.error('Помилка: ' + (err instanceof Error ? err.message : "Невідома помилка"));
               }
-            }} className="p-10 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+            }} className="p-6 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
               {editingProduct && <input type="hidden" name="id" value={editingProduct.id} />}
               
               <div className="space-y-3">
@@ -216,7 +216,7 @@ export default function AdminProductList({
                   name="name"
                   defaultValue={editingProduct?.name || ""}
                   placeholder="Введіть назву..."
-                  className="w-full px-8 py-5 bg-slate-50 rounded-[2rem] border border-slate-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-black text-lg text-slate-900 shadow-inner"
+                  className="w-full px-6 py-4 bg-slate-50 rounded-xl border border-slate-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-black text-base text-slate-900 shadow-inner"
                   required
                 />
               </div>
@@ -229,7 +229,7 @@ export default function AdminProductList({
                         type="number"
                         step="0.01"
                         defaultValue={editingProduct?.price || ""}
-                        className="w-full px-8 py-5 bg-slate-50 rounded-[2rem] border border-slate-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-black text-lg text-slate-900 shadow-inner"
+                        className="w-full px-6 py-4 bg-slate-50 rounded-xl border border-slate-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-black text-base text-slate-900 shadow-inner"
                         required
                     />
                 </div>
@@ -240,7 +240,7 @@ export default function AdminProductList({
                         type="number"
                         step="0.01"
                         defaultValue={editingProduct?.cost_price || ""}
-                        className="w-full px-8 py-5 bg-orange-50/50 rounded-[2rem] border border-orange-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-black text-lg text-slate-900 shadow-inner"
+                        className="w-full px-6 py-4 bg-orange-50/50 rounded-xl border border-orange-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-black text-base text-slate-900 shadow-inner"
                     />
                 </div>
               </div>
@@ -252,7 +252,7 @@ export default function AdminProductList({
                         <select
                         name="category_id"
                         defaultValue={editingProduct?.category_id || ""}
-                        className="w-full px-8 py-5 bg-slate-50 rounded-[2rem] border border-slate-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-black text-base text-slate-900 appearance-none cursor-pointer shadow-inner"
+                        className="w-full px-6 py-4 bg-slate-50 rounded-xl border border-slate-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-black text-base text-slate-900 appearance-none cursor-pointer shadow-inner"
                         required
                         >
                         <option value="" disabled>Оберіть категорію</option>
@@ -270,7 +270,7 @@ export default function AdminProductList({
                         type="number"
                         step="0.1"
                         defaultValue={editingProduct?.bonus_percent || 5}
-                        className="w-full px-8 py-5 bg-green-50/50 rounded-[2rem] border border-green-100 focus:ring-4 focus:ring-green-500/10 focus:bg-white transition-all font-black text-lg text-slate-900 shadow-inner"
+                        className="w-full px-6 py-4 bg-green-50/50 rounded-xl border border-green-100 focus:ring-4 focus:ring-green-500/10 focus:bg-white transition-all font-black text-base text-slate-900 shadow-inner"
                     />
                 </div>
               </div>
@@ -284,7 +284,7 @@ export default function AdminProductList({
                             name="image_url"
                             id={editingProduct ? 'edit-image-url' : 'new-image-url'}
                             defaultValue={editingProduct?.image_url || ""}
-                            className="w-full pl-14 pr-6 py-5 bg-slate-50 rounded-[2rem] border border-slate-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-medium text-slate-500 text-sm shadow-inner truncate"
+                            className="w-full pl-12 pr-6 py-4 bg-slate-50 rounded-xl border border-slate-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-medium text-slate-500 text-sm shadow-inner truncate"
                             placeholder="URL або завантажте файл..."
                         />
                     </div>
@@ -300,14 +300,14 @@ export default function AdminProductList({
                 <textarea
                   name="description"
                   defaultValue={editingProduct?.description || ""}
-                  className="w-full px-8 py-5 bg-slate-50 rounded-[2rem] border border-slate-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-medium h-32 resize-none text-slate-700 shadow-inner"
+                        className="w-full px-6 py-4 bg-slate-50 rounded-xl border border-slate-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-medium h-28 resize-none text-slate-700 text-sm shadow-inner"
                   placeholder="Вага, склад, особливості..."
                 />
               </div>
 
               <button 
                 type="submit"
-                className="w-full py-8 bg-[#1A1C1E] text-white rounded-[2.5rem] font-black text-xl shadow-2xl hover:scale-[1.01] active:scale-95 transition-all uppercase tracking-tighter mt-4"
+                className="w-full py-5 bg-[#1A1C1E] text-white rounded-xl font-black text-sm shadow-2xl hover:scale-[1.01] active:scale-95 transition-all uppercase tracking-tighter mt-4"
               >
                 {editingProduct ? 'Оновити дані' : 'Створити товар'}
               </button>
