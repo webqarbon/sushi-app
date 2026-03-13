@@ -210,13 +210,15 @@ export default function CheckoutPage() {
     fetchProfile();
   }, []);
 
-  const maxBonusesAllowed = Math.floor(subtotal * 0.5);
+  const maxBonusesAllowed = Math.min(userBonusBalance, subtotal * 0.5);
 
   const handleBonusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = parseFloat(e.target.value) || 0;
-    const limit = Math.min(userBonusBalance, maxBonusesAllowed);
-    if (val > limit) val = limit;
-    setFormData({ ...formData, bonusesUsed: val });
+    const raw = e.target.value.replace(",", ".");
+    let val = parseFloat(raw) || 0;
+    if (Number.isNaN(val)) val = 0;
+    if (val > maxBonusesAllowed) val = maxBonusesAllowed;
+    if (val < 0) val = 0;
+    setFormData(prev => ({ ...prev, bonusesUsed: val }));
   };
 
   const potentialBonuses = items.reduce((acc, item) => {
@@ -491,7 +493,7 @@ export default function CheckoutPage() {
                 <label className="flex flex-col mb-1 font-black text-blue-900 uppercase text-xs tracking-widest pl-1">
                   Використати бонуси
                   <span className="text-[10px] font-bold text-blue-500/80 mt-1 lowercase tracking-normal">
-                    Доступно: {userBonusBalance} ₴ (можна списати до 50% від суми)
+                    Доступно: {Number(userBonusBalance).toFixed(2)} ₴ (можна списати до 50% від суми)
                   </span>
                 </label>
                 <div className="flex flex-col gap-5 mt-4">
@@ -500,7 +502,8 @@ export default function CheckoutPage() {
                     <input 
                       type="number" 
                       min={0}
-                      max={Math.min(userBonusBalance, maxBonusesAllowed)}
+                      max={maxBonusesAllowed}
+                      step={0.01}
                       value={formData.bonusesUsed || ""}
                       onChange={handleBonusChange}
                       className="w-full bg-white border border-blue-200 rounded-2xl pl-10 pr-5 py-4 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-black text-blue-900 shadow-inner"
@@ -509,30 +512,25 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="flex flex-wrap gap-3">
-                    {[25, 50].map((percent) => (
+                    {[25, 50].map((percent) => {
+                      const amountFromPercent = (subtotal * percent) / 100;
+                      const val = Math.min(amountFromPercent, maxBonusesAllowed);
+                      const isActive = formData.bonusesUsed > 0 && Math.abs(formData.bonusesUsed - val) < 0.01;
+                      return (
                       <button
                         key={percent}
                         type="button"
-                        onClick={() => {
-                          const amountFromPercent = Math.floor((subtotal * percent) / 100);
-                          const val = Math.min(amountFromPercent, userBonusBalance, maxBonusesAllowed);
-                          setFormData({ ...formData, bonusesUsed: val });
-                        }}
+                        onClick={() => setFormData(prev => ({ ...prev, bonusesUsed: val }))}
                         className={`px-6 py-3 border-2 transition-all text-xs font-black uppercase tracking-widest rounded-2xl shadow-sm ${
-                            formData.bonusesUsed === Math.min(Math.floor((subtotal * percent) / 100), userBonusBalance, maxBonusesAllowed) && formData.bonusesUsed > 0
-                            ? "bg-blue-600 border-blue-600 text-white"
-                            : "bg-white border-blue-100 text-blue-600 hover:border-blue-300"
+                            isActive ? "bg-blue-600 border-blue-600 text-white" : "bg-white border-blue-100 text-blue-600 hover:border-blue-300"
                         }`}
                       >
                         {percent}%
                       </button>
-                    ))}
+                    );})}
                     <button
                       type="button"
-                      onClick={() => {
-                        const val = Math.min(userBonusBalance, maxBonusesAllowed);
-                        setFormData({ ...formData, bonusesUsed: val });
-                      }}
+                      onClick={() => setFormData(prev => ({ ...prev, bonusesUsed: maxBonusesAllowed }))}
                       className="px-6 py-3 bg-blue-900 text-white font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-black transition-all shadow-md active:scale-95"
                     >
                       Максимум (50%)
@@ -541,7 +539,7 @@ export default function CheckoutPage() {
                   
                   {formData.bonusesUsed > 0 && (
                       <p className="text-[10px] font-bold text-blue-400 italic">
-                        * Ви економите {formData.bonusesUsed.toFixed(0)} ₴ за рахунок бонусів
+                        * Ви економите {formData.bonusesUsed.toFixed(2)} ₴ за рахунок бонусів
                       </p>
                   )}
                 </div>
@@ -603,7 +601,7 @@ export default function CheckoutPage() {
               {formData.bonusesUsed > 0 && (
                 <div className="flex justify-between text-blue-600 font-bold pb-2">
                   <span>Списані бонуси</span>
-                  <span>-{formData.bonusesUsed.toFixed(0)} ₴</span>
+                  <span>-{formData.bonusesUsed.toFixed(2)} ₴</span>
                 </div>
               )}
 
