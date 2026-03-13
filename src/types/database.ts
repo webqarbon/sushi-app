@@ -36,12 +36,21 @@ export interface OrderItem {
   image_url?: string;
 }
 
+export interface DeliveryData {
+  name?: string;
+  phone?: string;
+  city?: string;
+  branch?: string;
+}
+
 export interface Order {
   id: string;
   user_id?: string;
   status: 'pending' | 'confirmed' | 'cooking' | 'delivery' | 'delivered' | 'cancelled';
   total_price: number;
+  bonuses_used?: number;
   items_json: { product: Product; quantity: number }[];
+  delivery_data?: DeliveryData | null;
   address?: string;
   payment_method?: string;
   comment?: string;

@@ -1,9 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { Star, X, MessageSquare, ArrowRight } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Star, X, MessageSquare, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { submitReview } from "@/app/actions/review";
 import { toast } from "react-hot-toast";
+import { createClient } from "@/utils/supabase/client";
+
+interface ReviewItem {
+  id: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+  profiles: { full_name?: string } | null;
+}
 
 interface ReviewPopupProps {
   productId: string;
@@ -15,6 +24,61 @@ export default function ReviewPopup({ productId, productName, onClose }: ReviewP
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [reviews, setReviews] = useState<ReviewItem[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from("reviews")
+      .select("id, rating, comment, created_at, profiles(full_name)")
+      .eq("product_id", productId)
+      .eq("status", "approved")
+      .order("created_at", { ascending: false })
+      .limit(20)
+      .then(({ data }) => setReviews((data as ReviewItem[]) || []));
+  }, [productId]);
+
+  const updateScrollState = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    const maxScroll = Math.max(0, scrollWidth - clientWidth);
+    setCanScrollLeft(scrollLeft > 2);
+    setCanScrollRight(scrollLeft < maxScroll - 2);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || reviews.length <= 1) return;
+    const scheduleUpdate = () => requestAnimationFrame(() => requestAnimationFrame(updateScrollState));
+    scheduleUpdate();
+    const t = setTimeout(scheduleUpdate, 100);
+    const ro = new ResizeObserver(scheduleUpdate);
+    ro.observe(el);
+    el.addEventListener("scroll", updateScrollState, { passive: true });
+    return () => {
+      clearTimeout(t);
+      ro.disconnect();
+      el.removeEventListener("scroll", updateScrollState);
+    };
+  }, [reviews.length, updateScrollState]);
+
+  const scroll = useCallback(
+    (dir: "left" | "right") => {
+      const el = scrollRef.current;
+      if (!el) return;
+      const step = el.clientWidth * 0.75;
+      const target = Math.max(
+        0,
+        Math.min(el.scrollWidth - el.clientWidth, el.scrollLeft + (dir === "right" ? step : -step))
+      );
+      el.scrollTo({ left: target, behavior: "smooth" });
+    },
+    []
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +115,64 @@ export default function ReviewPopup({ productId, productName, onClose }: ReviewP
                 <X className="w-5 h-5" />
             </button>
         </div>
+
+        {/* Reviews Slider */}
+        {reviews.length > 0 && (
+          <div className="px-6 py-4 bg-gray-50/50 border-b border-gray-100">
+            <div className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-3">Вже залишені відгуки</div>
+            <div className="relative">
+              <div
+                ref={scrollRef}
+                className="flex gap-3 overflow-x-auto hide-scrollbar"
+                style={{ scrollSnapType: "x mandatory", scrollBehavior: "smooth" }}
+              >
+                {reviews.map((r) => (
+                  <div
+                    key={r.id}
+                    className="min-w-[200px] flex-shrink-0 p-4 rounded-2xl bg-white/80 border border-gray-100 shadow-sm"
+                    style={{ scrollSnapAlign: "start" }}
+                  >
+                    <div className="flex gap-1 mb-1.5">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star
+                          key={s}
+                          className={`w-3 h-3 ${s <= r.rating ? "fill-orange-400 text-orange-400" : "text-gray-200"}`}
+                        />
+                      ))}
+                    </div>
+                    <div className="text-xs font-black text-slate-800 mb-1">{r.profiles?.full_name || "Анонім"}</div>
+                    <p className="text-[11px] text-gray-600 line-clamp-2 leading-relaxed">&quot;{r.comment}&quot;</p>
+                    <div className="text-[10px] text-gray-400 mt-2">
+                      {new Date(r.created_at).toLocaleDateString("uk-UA", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {reviews.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => scroll("left")}
+                    disabled={!canScrollLeft}
+                    aria-label="Прокрутити вліво"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/90 rounded-xl border border-gray-100 shadow-sm hover:text-orange-500 transition-all disabled:opacity-20 disabled:pointer-events-none"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scroll("right")}
+                    disabled={!canScrollRight}
+                    aria-label="Прокрутити вправо"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/90 rounded-xl border border-gray-100 shadow-sm hover:text-orange-500 transition-all disabled:opacity-20 disabled:pointer-events-none"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="p-10 space-y-10">
           
