@@ -617,14 +617,30 @@ export default function CheckoutPage() {
                           <div>
                             <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Отримувач</span>
                             <p className="font-bold text-gray-900">{SITE_CONFIG.paymentRequisites.recipient}</p>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(SITE_CONFIG.paymentRequisites.recipient);
+                                toast.success("Отримувача скопійовано");
+                              }}
+                              className="mt-2 flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold text-xs"
+                            >
+                              <Copy className="w-3.5 h-3.5" /> Копіювати
+                            </button>
                           </div>
                           <div>
                             <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">ЄДРПОУ</span>
                             <p className="font-bold text-gray-900 font-mono">{SITE_CONFIG.paymentRequisites.edrpou}</p>
-                          </div>
-                          <div>
-                            <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Банк</span>
-                            <p className="font-bold text-gray-900">{SITE_CONFIG.paymentRequisites.bankName}</p>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(SITE_CONFIG.paymentRequisites.edrpou);
+                                toast.success("ЄДРПОУ скопійовано");
+                              }}
+                              className="mt-2 flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold text-xs"
+                            >
+                              <Copy className="w-3.5 h-3.5" /> Копіювати
+                            </button>
                           </div>
                           <div>
                             <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">IBAN</span>
@@ -637,16 +653,12 @@ export default function CheckoutPage() {
                               }}
                               className="mt-2 flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold text-xs"
                             >
-                              <Copy className="w-3.5 h-3.5" /> Копіювати IBAN
+                              <Copy className="w-3.5 h-3.5" /> Копіювати
                             </button>
-                          </div>
-                          <div>
-                            <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Призначення платежу</span>
-                            <p className="font-medium text-gray-700">{SITE_CONFIG.paymentRequisites.purpose}</p>
                           </div>
                         </div>
                         <p className="mt-4 text-xs text-gray-500">
-                          Після оплати надішліть підтвердження (скрін або чек) у Telegram {SITE_CONFIG.socials.telegramHandle}
+                          Після оплати обов&apos;язково натисніть кнопку «Підтвердити замовлення».
                         </p>
                       </div>
                     </div>
