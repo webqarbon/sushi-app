@@ -40,73 +40,103 @@ export async function uploadProductImage(file: File) {
 }
 
 export async function createProduct(formData: FormData) {
-  const admin = await requireAdmin();
-  if ("error" in admin) throw new Error(admin.error);
+  try {
+    const admin = await requireAdmin();
+    if ("error" in admin) throw new Error(admin.error);
 
-  const supabase = await createClient(true);
-  
-  const name = formData.get('name') as string;
-  const price = parseFloat(formData.get('price') as string);
-  const cost_price = parseFloat(formData.get('cost_price') as string) || 0;
-  const bonus_percent = parseFloat(formData.get('bonus_percent') as string) || 5;
-  const image_url = formData.get('image_url') as string;
-  const description = formData.get('description') as string;
-  const category_id = formData.get('category_id') as string;
+    const supabase = await createClient(true);
+    
+    const name = formData.get('name') as string;
+    const priceRaw = formData.get('price') as string;
+    const category_id = formData.get('category_id') as string;
 
-  const { error } = await supabase
-    .from('products')
-    .insert({ 
-      name, 
-      price, 
-      cost_price, 
-      bonus_percent, 
-      image_url, 
-      description, 
-      category_id 
-    });
+    if (!name || !priceRaw || !category_id) {
+      throw new Error("Назва, ціна та категорія є обов'язковими полями");
+    }
 
-  if (error) throw new Error(error.message);
+    const price = parseFloat(priceRaw);
+    if (isNaN(price)) throw new Error("Некоректна ціна");
 
-  revalidatePath('/');
-  revalidatePath('/admin/products');
-  return { success: true };
+    const cost_price = parseFloat(formData.get('cost_price') as string) || 0;
+    const bonus_percent = parseFloat(formData.get('bonus_percent') as string) || 5;
+    const image_url = formData.get('image_url') as string;
+    const description = formData.get('description') as string;
+
+    const { error } = await supabase
+      .from('products')
+      .insert({ 
+        name, 
+        price, 
+        cost_price, 
+        bonus_percent, 
+        image_url, 
+        description, 
+        category_id 
+      });
+
+    if (error) {
+      console.error('Supabase insert error:', error);
+      throw new Error(error.message);
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/products');
+    return { success: true };
+  } catch (err: any) {
+    console.error('Create product error:', err);
+    throw new Error(err.message || "Помилка при створенні товару");
+  }
 }
 
 export async function updateProduct(formData: FormData) {
-  const admin = await requireAdmin();
-  if ("error" in admin) throw new Error(admin.error);
+  try {
+    const admin = await requireAdmin();
+    if ("error" in admin) throw new Error(admin.error);
 
-  const supabase = await createClient(true);
-  
-  const id = formData.get('id') as string;
-  const name = formData.get('name') as string;
-  const price = parseFloat(formData.get('price') as string);
-  const cost_price = parseFloat(formData.get('cost_price') as string) || 0;
-  const bonus_percent = parseFloat(formData.get('bonus_percent') as string) || 5;
-  const image_url = formData.get('image_url') as string;
-  const description = formData.get('description') as string;
-  const category_id = formData.get('category_id') as string;
+    const supabase = await createClient(true);
+    
+    const id = formData.get('id') as string;
+    const name = formData.get('name') as string;
+    const priceRaw = formData.get('price') as string;
+    const category_id = formData.get('category_id') as string;
 
-  const { error } = await supabase
-    .from('products')
-    .update({ 
-      name, 
-      price, 
-      cost_price, 
-      bonus_percent, 
-      image_url, 
-      description, 
-      category_id 
-    })
-    .eq('id', id);
+    if (!id || !name || !priceRaw || !category_id) {
+      throw new Error("ID, назва, ціна та категорія є обов'язковими полями");
+    }
 
-  if (error) {
-    throw new Error(error.message);
+    const price = parseFloat(priceRaw);
+    if (isNaN(price)) throw new Error("Некоректна ціна");
+
+    const cost_price = parseFloat(formData.get('cost_price') as string) || 0;
+    const bonus_percent = parseFloat(formData.get('bonus_percent') as string) || 5;
+    const image_url = formData.get('image_url') as string;
+    const description = formData.get('description') as string;
+
+    const { error } = await supabase
+      .from('products')
+      .update({ 
+        name, 
+        price, 
+        cost_price, 
+        bonus_percent, 
+        image_url, 
+        description, 
+        category_id 
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Supabase update error:', error);
+      throw new Error(error.message);
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/products');
+    return { success: true };
+  } catch (err: any) {
+    console.error('Update product error:', err);
+    throw new Error(err.message || "Помилка при оновленні товару");
   }
-
-  revalidatePath('/');
-  revalidatePath('/admin/products');
-  return { success: true };
 }
 
 export async function deleteProduct(id: string) {

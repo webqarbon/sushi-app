@@ -21,6 +21,7 @@ export default function AdminProductList({
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
@@ -52,17 +53,15 @@ export default function AdminProductList({
     );
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setIsUploading(true);
     try {
       const url = await uploadProductImage(file);
-      if (isEdit && editingProduct) {
+      setImageUrl(url);
+      if (editingProduct) {
         setEditingProduct({ ...editingProduct, image_url: url });
-      } else {
-        const input = document.getElementById(isEdit ? 'edit-image-url' : 'new-image-url') as HTMLInputElement;
-        if (input) input.value = url;
       }
       toast.success('Зображення завантажено!');
     } catch (err: unknown) {
@@ -70,6 +69,16 @@ export default function AdminProductList({
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleOpenAdd = () => {
+    setImageUrl("");
+    setIsAddingNew(true);
+  };
+
+  const handleOpenEdit = (p: Product) => {
+    setEditingProduct(p);
+    setImageUrl(p.image_url || "");
   };
 
   return (
@@ -80,7 +89,7 @@ export default function AdminProductList({
           <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-1">Каталог: {filteredProducts.length} позицій</p>
         </div>
         <button 
-          onClick={() => setIsAddingNew(true)}
+          onClick={handleOpenAdd}
           className="w-full lg:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-xl shadow-slate-900/10 hover:shadow-orange-500/20 active:scale-95 transition-all group"
         >
           <Plus className="w-4 h-4 text-orange-500 group-hover:rotate-90 transition-transform" />
@@ -128,7 +137,7 @@ export default function AdminProductList({
                 )}
                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0 flex flex-col gap-1.5">
                     <button 
-                         onClick={() => setEditingProduct(p)}
+                         onClick={() => handleOpenEdit(p)}
                          className="p-2.5 bg-white/90 backdrop-blur-md rounded-xl text-slate-900 shadow-xl border border-white hover:bg-orange-500 hover:text-white transition-all"
                     >
                          <Edit2 className="w-4 h-4" />
@@ -277,19 +286,33 @@ export default function AdminProductList({
 
               <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest pl-2">Зображення товару</label>
+                
+                {imageUrl && (
+                  <div className="relative group w-32 h-32 rounded-2xl overflow-hidden border border-slate-100 mb-2">
+                    <Image src={imageUrl} alt="Preview" fill className="object-cover" />
+                    <button 
+                      type="button"
+                      onClick={() => setImageUrl("")}
+                      className="absolute inset-0 bg-red-500/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
+
                 <div className="flex gap-4">
                     <div className="relative flex-1 group">
                         <LinkIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none" />
                         <input
                             name="image_url"
-                            id={editingProduct ? 'edit-image-url' : 'new-image-url'}
-                            defaultValue={editingProduct?.image_url || ""}
+                            value={imageUrl}
+                            onChange={(e) => setImageUrl(e.target.value)}
                             className="w-full pl-12 pr-6 py-4 bg-slate-50 rounded-xl border border-slate-100 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all font-medium text-slate-500 text-sm shadow-inner truncate"
                             placeholder="URL або завантажте файл..."
                         />
                     </div>
                     <label className={`cursor-pointer flex items-center justify-center aspect-square h-[66px] bg-slate-900 text-white rounded-2xl shadow-xl hover:bg-orange-500 transition-all group ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
-                        <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, !!editingProduct)} />
+                        <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
                         {isUploading ? <div className="animate-spin w-5 h-5 border-2 border-orange-500 border-t-transparent rounded-full" /> : <Upload className="w-5 h-5 group-hover:scale-110 transition-transform" />}
                     </label>
                 </div>
