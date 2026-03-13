@@ -198,60 +198,69 @@ export default function CategoryNav({
   }
 
   return (
-    <div className="w-full relative group flex items-center justify-center border-b border-gray-100 bg-white/50 backdrop-blur-md pb-4 pt-2">
-      {/* Left Scroll Button */}
-      {canScrollLeft && (
-        <button 
-          onClick={() => handleScroll('left')}
-          className="absolute left-0 z-20 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-md border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in duration-300"
+    <div className="w-full relative bg-white/40 backdrop-blur-md border-b border-gray-100/50 pb-3 pt-1">
+      <div className="max-w-7xl mx-auto relative px-4 sm:px-8 flex items-center">
+        
+        {/* Left Scroll Button */}
+        {canScrollLeft && (
+          <button 
+            onClick={() => handleScroll('left')}
+            className="absolute left-2 z-20 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-lg border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in duration-300"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+        )}
+
+        {/* Categories Container */}
+        <div 
+          ref={scrollContainerRef}
+          className="w-full overflow-x-auto hide-scrollbar flex gap-2 sm:gap-3 py-1 scroll-smooth items-center"
         >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-      )}
+          {sortedCategories.map((cat) => {
+            const Icon = iconMap[cat.slug] || Utensils;
+            const isActive = activeCategoryId === cat.id;
 
-      <div 
-        ref={scrollContainerRef}
-        className="w-full overflow-x-auto hide-scrollbar flex gap-4 lg:gap-8 px-8 scroll-smooth justify-center max-w-7xl mx-auto"
-      >
-        {sortedCategories.map((cat) => {
-          const isActive = activeCategoryId === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => onSelect(cat.id)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl transition-all duration-500 shrink-0 group border shadow-sm ${
+                  isActive 
+                    ? "bg-[#1A1C1E] border-[#1A1C1E] text-white shadow-xl shadow-black/10 scale-105" 
+                    : "bg-white border-gray-100 text-gray-500 hover:border-gray-300 hover:text-[#1A1C1E] hover:bg-white"
+                }`}
+              >
+                <div className={`p-1 rounded-lg transition-all duration-500 ${
+                  isActive ? "bg-white/10" : "bg-gray-50 group-hover:bg-orange-50"
+                }`}>
+                  <Icon className={`w-3.5 h-3.5 transition-transform duration-500 ${
+                    isActive ? "text-white" : "text-gray-400 group-hover:text-orange-500 group-hover:rotate-6 shadow-sm"
+                  }`} />
+                </div>
+                <span className={`text-[12px] font-bold tracking-tight transition-all duration-300 ${
+                  isActive ? "text-white" : "group-hover:text-[#1A1C1E]"
+                }`}>
+                  {cat.name}
+                </span>
+              </button>
+            );
+          })}
+        </div>
 
-          return (
-            <button
-              key={cat.id}
-              onClick={() => onSelect(cat.id)}
-              className={`relative flex items-center justify-center transition-all duration-300 shrink-0 group py-2 ${
-                isActive 
-                  ? "text-[#1A1C1E]" 
-                  : "text-gray-400 hover:text-[#1A1C1E]"
-              }`}
-            >
-              <span className={`text-[11px] lg:text-[13px] font-black tracking-[0.1em] uppercase transition-all duration-300 ${isActive ? "scale-105" : "group-hover:scale-100"}`}>
-                {cat.name}
-              </span>
-              
-              {/* Active Indicator Underline */}
-              {isActive && (
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-1 bg-orange-500 rounded-full animate-in zoom-in duration-300" />
-              )}
-            </button>
-          );
-        })}
+        {/* Right Scroll Button */}
+        {canScrollRight && (
+          <button 
+            onClick={() => handleScroll('right')}
+            className="absolute right-2 z-20 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-lg border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in duration-300"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        )}
+
+        {/* Scroll Masks */}
+        {canScrollLeft && <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white via-white/40 to-transparent pointer-events-none z-10" />}
+        {canScrollRight && <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white via-white/40 to-transparent pointer-events-none z-10" />}
       </div>
-
-      {/* Right Scroll Button */}
-      {canScrollRight && (
-        <button 
-          onClick={() => handleScroll('right')}
-          className="absolute right-0 z-20 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-md border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in duration-300"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </button>
-      )}
-
-      {/* Subtle Scroll Masks */}
-      {canScrollLeft && <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white via-white/80 to-transparent pointer-events-none z-10" />}
-      {canScrollRight && <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white via-white/80 to-transparent pointer-events-none z-10" />}
     </div>
   );
 }
