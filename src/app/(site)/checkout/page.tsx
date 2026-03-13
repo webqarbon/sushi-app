@@ -162,23 +162,37 @@ export default function CheckoutPage() {
     setIsBranchDropdownOpen(false);
   };
 
-  const handleBranchSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setBranchSearchTerm(e.target.value);
+  const handleBranchFocus = () => {
+    const ref = formData.settlementRef || formData.cityRef;
+    if (ref && branches.length === 0) loadBranches(ref);
+    setIsBranchDropdownOpen(true);
+  };
+
+  const handleBranchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setBranchSearchTerm(val);
+    setFormData(prev => ({ ...prev, branchName: val, branchRef: "" }));
   };
 
   const sortedBranches = useMemo(() => {
+    const getNum = (d: string) => d.match(/(?:№\s*|№)(\d+)/i)?.[1] ?? "";
     const q = branchSearchTerm.trim().toLowerCase();
     if (!q) return branches;
-    const filtered = branches.filter(b => b.Description.toLowerCase().includes(q));
-    const numMatch = q.match(/^\d+$/);
+    const isNumericOnly = /^\d+$/.test(q);
+    const filtered = isNumericOnly
+      ? branches.filter(b => {
+          const num = getNum(b.Description);
+          return num !== "" && num.startsWith(q);
+        })
+      : branches.filter(b => b.Description.toLowerCase().includes(q));
     return filtered.sort((a, b) => {
       const descA = a.Description;
       const descB = b.Description;
-      const numA = descA.match(/№\s*(\d+)/)?.[1] ?? "";
-      const numB = descB.match(/№\s*(\d+)/)?.[1] ?? "";
-      if (numMatch) {
-        const exactA = numA === q ? 1 : numA.startsWith(q) ? 2 : descA.toLowerCase().includes(q) ? 3 : 4;
-        const exactB = numB === q ? 1 : numB.startsWith(q) ? 2 : descB.toLowerCase().includes(q) ? 3 : 4;
+      const numA = getNum(descA);
+      const numB = getNum(descB);
+      if (isNumericOnly) {
+        const exactA = numA === q ? 1 : numA.startsWith(q) ? 2 : 4;
+        const exactB = numB === q ? 1 : numB.startsWith(q) ? 2 : 4;
         return exactA - exactB;
       }
       const idxA = descA.toLowerCase().indexOf(q);
@@ -442,35 +456,20 @@ export default function CheckoutPage() {
 
                 {/* Branch Selection */}
                 <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Відділення / Поштомат</label>
-                  <button
-                    type="button"
-                    disabled={!formData.cityRef}
-                    onClick={() => {
-                      const ref = formData.settlementRef || formData.cityRef;
-                      if (ref) {
-                        // Always try to load if branches are empty
-                        if (branches.length === 0) loadBranches(ref);
-                        setIsBranchDropdownOpen(!isBranchDropdownOpen);
-                      }
-                    }}
-                    className={`w-full text-left bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium truncate ${!formData.cityRef && "opacity-50 cursor-not-allowed"}`}
-                  >
-                    {formData.branchName || "Оберіть відділення..."}
-                  </button>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Відділення / Поштомат (або введіть адресу вручну)</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Введіть номер, адресу або оберіть зі списку..."
+                    value={formData.branchName}
+                    onChange={handleBranchInputChange}
+                    onFocus={handleBranchFocus}
+                    onBlur={() => setTimeout(() => setIsBranchDropdownOpen(false), 200)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium"
+                  />
                   
                   {isBranchDropdownOpen && (formData.cityRef || formData.settlementRef) && (
                     <div className="absolute z-40 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-2xl max-h-72 overflow-hidden flex flex-col">
-                      <div className="p-2 border-b border-gray-100 relative">
-                        <input
-                          autoFocus
-                          type="text"
-                          placeholder="Введіть номер або адресу..."
-                          value={branchSearchTerm}
-                          onChange={handleBranchSearchChange}
-                          className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-blue-500"
-                        />
-                      </div>
                       <ul className="overflow-y-auto overflow-x-hidden p-0 m-0">
                         {isBranchLoading && branches.length === 0 ? (
                           <li className="px-4 py-6 text-sm text-gray-500 text-center">Завантаження...</li>
@@ -480,7 +479,7 @@ export default function CheckoutPage() {
                           sortedBranches.map(branch => (
                             <li 
                               key={branch.Ref}
-                              onClick={() => handleBranchSelect(branch)}
+                              onMouseDown={(e) => { e.preventDefault(); handleBranchSelect(branch); }}
                               className="px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm font-medium text-gray-800 border-b border-gray-100 last:border-b-0 break-words"
                             >
                               {branch.Description}
@@ -490,8 +489,6 @@ export default function CheckoutPage() {
                       </ul>
                     </div>
                   )}
-                  {/* Hidden required input to force HTML5 validation */}
-                  <input type="hidden" required value={formData.branchRef} />
                 </div>
               </div>
             </section>

@@ -13,6 +13,7 @@ function sanitizeMethodProperties(method: string, props: Record<string, unknown>
     },
     getWarehouses: {
       CityRef: (v) => (typeof v === "string" && v.length <= 50 ? v : ""),
+      SettlementRef: (v) => (typeof v === "string" && v.length <= 50 ? v : ""),
       Page: (v) => Math.max(1, Number(v) || 1),
       Limit: (v) => Math.min(500, Math.max(1, Number(v) || 100)),
     },
@@ -42,7 +43,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Method not allowed" }, { status: 400 });
     }
 
-    const safeProps = sanitizeMethodProperties(calledMethod, methodProperties || {});
+    let safeProps = sanitizeMethodProperties(calledMethod, methodProperties || {});
+
+    // Nova Poshta getWarehouses expects CityRef; client sends SettlementRef from searchSettlements
+    if (calledMethod === "getWarehouses") {
+      const cityRef = (safeProps.CityRef as string) || "";
+      const settlementRef = (safeProps.SettlementRef as string) || "";
+      if (!cityRef && settlementRef) {
+        safeProps = { ...safeProps, CityRef: settlementRef };
+      }
+    }
 
     const npReqBody = {
       apiKey,
