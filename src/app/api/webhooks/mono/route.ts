@@ -38,16 +38,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No signature" }, { status: 400 });
     }
 
-    // 1. Verify Signature
-    const pubKey = await getMonoPubKey();
-    if (pubKey) {
-      const verify = crypto.createVerify("sha256");
+    // 1. Verify Signature (MonoBank returns base64 of full PEM; use as-is per docs)
+    const pubKeyB64 = await getMonoPubKey();
+    if (pubKeyB64) {
+      const publicKeyBuf = Buffer.from(pubKeyB64, "base64");
+      const signatureBuf = Buffer.from(signature, "base64");
+      const verify = crypto.createVerify("SHA256");
       verify.update(bodyText);
-      const isVerified = verify.verify(
-        `-----BEGIN PUBLIC KEY-----\n${pubKey}\n-----END PUBLIC KEY-----`,
-        signature,
-        "base64"
-      );
+      verify.end();
+      const isVerified = verify.verify(publicKeyBuf, signatureBuf);
 
       if (!isVerified) {
         console.error("Monobank Webhook: Signature verification failed");
