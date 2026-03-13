@@ -135,20 +135,20 @@ export default function CheckoutPage() {
   };
 
   const handleCitySelect = (city: NPCity) => {
-    // Ref = settlement ref; DeliveryCity = parent city ref (for villages). getWarehouses needs settlement/city ref.
-    const ref = city.Ref;
+    // DeliveryCity = parent city ref (villages/districts). getWarehouses needs it for settlements without direct branches.
+    const refForWarehouses = city.DeliveryCity || city.Ref;
     const displayName = city.Present ?? city.Description ?? "";
     setFormData(prev => ({ 
       ...prev, 
-      cityRef: ref, 
+      cityRef: refForWarehouses, 
       cityName: displayName,
-      settlementRef: ref,
+      settlementRef: refForWarehouses,
       branchRef: "",
       branchName: ""
     }));
     setCitySearchTerm(displayName);
     setIsCityDropdownOpen(false);
-    loadBranches(ref);
+    loadBranches(refForWarehouses);
   };
 
   const handleBranchSelect = (branch: NPBranch) => {
@@ -174,7 +174,8 @@ export default function CheckoutPage() {
   };
 
   const sortedBranches = useMemo(() => {
-    const getNum = (d: string) => d.match(/(?:№\s*|№)(\d+)/i)?.[1] ?? "";
+    // Match: №447, Відділення №447, Поштомат №5, Поштомат 5, ПриватБанк Поштомат №1
+    const getNum = (d: string) => d.match(/(?:№|(?:відділення|поштомат)\s*№?)\s*(\d+)/i)?.[1] ?? "";
     const q = branchSearchTerm.trim().toLowerCase();
     if (!q) return branches;
     const isNumericOnly = /^\d+$/.test(q);
