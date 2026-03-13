@@ -1,7 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
-import AdminDashboardClient from "@/components/admin/AdminDashboardClient";
+"use server";
 
-export const dynamic = 'force-dynamic';
+import { createClient } from "@supabase/supabase-js";
 
 function getAdminClient() {
   return createClient(
@@ -10,9 +9,8 @@ function getAdminClient() {
   );
 }
 
-export default async function AdminDashboard() {
+export async function getDashboardStats() {
   const supabaseAdmin = getAdminClient();
-
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -23,12 +21,10 @@ export default async function AdminDashboard() {
     supabaseAdmin.from('orders').select('created_at, total_price').gte('created_at', thirtyDaysAgo.toISOString()).order('created_at', { ascending: true })
   ]);
 
-  const initialData = {
+  return {
     productCount: productCount || 0,
     categoryCount: categoryCount || 0,
     reviewCount: reviewCount || 0,
     allOrders: allOrders || []
   };
-
-  return <AdminDashboardClient initialData={initialData} />;
 }

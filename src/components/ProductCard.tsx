@@ -21,7 +21,7 @@ export default function ProductCard({ product, compact = false, variant }: { pro
 
   return (
     <>
-      <div className={`group flex flex-col bg-white shadow-sm hover:shadow-premium transition-all duration-500 border border-transparent hover:border-white h-full ${
+      <div className={`group flex flex-col bg-white shadow-sm hover:shadow-premium transition-all duration-500 border border-transparent hover:border-white h-full select-none ${
         mode === "compact" ? "rounded-xl sm:rounded-2xl p-1.5" :
         mode === "catalog" ? "rounded-2xl p-2" : "rounded-[2.5rem] p-2"
       }`}>

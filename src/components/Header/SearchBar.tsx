@@ -59,7 +59,7 @@ export default function SearchBar({ onClose }: SearchBarProps) {
   };
 
   return (
-    <div ref={searchRef} className="relative w-full max-w-full md:max-w-sm">
+    <div ref={searchRef} className="relative w-full">
       <div className="relative group">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors">
           {isLoading ? (

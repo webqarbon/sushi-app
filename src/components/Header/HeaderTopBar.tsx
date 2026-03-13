@@ -31,48 +31,50 @@ export default function HeaderTopBar({
             compact ? "h-14 lg:h-14" : "h-16 lg:h-[72px]"
           }`}
         >
-          {/* Logo */}
-          <div className="shrink-0 flex items-center">
+          {/* Logo & Search Container */}
+          <div className="flex items-center gap-10 min-w-0 max-w-3xl">
             <Link
               href="/"
               onClick={() => setActiveCategoryId("")}
-              className="group flex items-center gap-2.5"
+              className="group flex items-center gap-2.5 shrink-0 animate-logo-float"
             >
               <div
-                className={`rounded-xl bg-orange-500 flex items-center justify-center group-hover:bg-orange-600 transition-all ${
+                className={`rounded-xl bg-orange-500 flex items-center justify-center group-hover:bg-orange-600 group-hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all duration-500 ${
                   compact ? "w-8 h-8" : "w-9 h-9"
                 }`}
               >
-                <span className="w-2 h-2 bg-white rounded-full" />
+                <span className="w-2 h-2 bg-white rounded-full group-hover:scale-125 transition-transform duration-500" />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col group-hover:translate-x-0.5 transition-transform duration-500">
                 <span
-                  className={`font-bold text-slate-900 group-hover:text-orange-500 transition-colors ${
+                  className={`font-bold text-slate-900 group-hover:text-orange-500 transition-colors whitespace-nowrap ${
                     compact ? "text-base" : "text-lg"
                   }`}
                 >
                   {SITE_CONFIG.shortName}
                 </span>
                 {!compact && (
-                  <span className="text-[10px] font-medium tracking-widest uppercase text-slate-400">
+                  <span className="text-[10px] font-medium tracking-widest uppercase text-slate-400 whitespace-nowrap">
                     {SITE_CONFIG.tagline}
                   </span>
                 )}
               </div>
             </Link>
-          </div>
 
-          {/* Desktop Search */}
-          <div className="flex-1 min-w-0 max-w-xl mx-6 hidden md:block">
-            <SearchBar />
+            {/* Desktop Search - now anchored to the left near logo */}
+            <div className="hidden md:block w-full max-w-sm">
+              <SearchBar />
+            </div>
           </div>
 
           {/* Actions */}
-          <HeaderActions
-            isAdmin={isAdmin}
-            onCartClick={onCartClick}
-            onSearchClick={onMobileSearchToggle}
-          />
+          <div className="flex-1 flex items-center justify-end shrink-0">
+            <HeaderActions
+              isAdmin={isAdmin}
+              onCartClick={onCartClick}
+              onSearchClick={onMobileSearchToggle}
+            />
+          </div>
         </div>
       </div>
 

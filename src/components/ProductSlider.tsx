@@ -90,9 +90,9 @@ export default function ProductSlider({ products }: ProductSliderProps) {
   if (finalItems.length === 0) return null;
 
   return (
-    <section className="w-full">
+    <section className="w-full select-none">
       <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 sm:pt-8 sm:pb-5 border-b border-gray-50">
+        <div className="flex items-center justify-between px-4 sm:px-6 pt-5 pb-2 sm:pt-7 sm:pb-3">
           <div>
             <div className="inline-flex items-center gap-1.5 text-orange-400 font-bold text-[10px] uppercase tracking-[0.15em] mb-1">
               <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-orange-400" />
@@ -109,7 +109,7 @@ export default function ProductSlider({ products }: ProductSliderProps) {
               onClick={() => scroll("left")}
               disabled={!canScrollLeft}
               aria-label="Прокрутити вліво"
-              className="w-9 h-9 flex items-center justify-center bg-gray-50 rounded-xl border border-gray-100 hover:border-orange-200 hover:text-orange-500 transition-all active:scale-95 disabled:opacity-20 disabled:pointer-events-none"
+              className="w-9 h-9 flex items-center justify-center bg-gray-50 rounded-xl border border-gray-100 hover:border-orange-200 hover:text-orange-500 transition-all active:scale-95 disabled:opacity-20 disabled:pointer-events-none select-none"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -118,14 +118,14 @@ export default function ProductSlider({ products }: ProductSliderProps) {
               onClick={() => scroll("right")}
               disabled={!canScrollRight}
               aria-label="Прокрутити вправо"
-              className="w-9 h-9 flex items-center justify-center bg-gray-50 rounded-xl border border-gray-100 hover:border-orange-200 hover:text-orange-500 transition-all active:scale-95 disabled:opacity-20 disabled:pointer-events-none"
+              className="w-9 h-9 flex items-center justify-center bg-gray-50 rounded-xl border border-gray-100 hover:border-orange-200 hover:text-orange-500 transition-all active:scale-95 disabled:opacity-20 disabled:pointer-events-none select-none"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        <div className="relative px-4 sm:px-6 py-4 sm:py-5 md:py-6 bg-gray-50/30">
+        <div className="relative px-4 sm:px-6 py-2 sm:py-3 md:py-4 bg-gray-50/30">
           <div
             ref={scrollRef}
             className="flex gap-3 sm:gap-4 overflow-x-auto hide-scrollbar pt-2 pb-6 -my-2"
