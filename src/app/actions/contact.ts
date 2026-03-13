@@ -1,9 +1,20 @@
 "use server";
 
+const MAX_NAME = 100;
+const MAX_PHONE = 30;
+const MAX_MESSAGE = 2000;
+
 export async function sendConsultationRequest(formData: FormData) {
-  const name = formData.get("name") as string;
-  const phone = formData.get("phone") as string;
-  const message = formData.get("message") as string || "Без повідомлення";
+  const name = String(formData.get("name") || "").trim().slice(0, MAX_NAME);
+  const phone = String(formData.get("phone") || "").trim().slice(0, MAX_PHONE);
+  const message = (String(formData.get("message") || "Без повідомлення").trim().slice(0, MAX_MESSAGE)) || "Без повідомлення";
+
+  if (!name || name.length < 2) {
+    return { error: "Введіть ім'я (мінімум 2 символи)" };
+  }
+  if (!phone || phone.length < 10) {
+    return { error: "Введіть коректний номер телефону" };
+  }
 
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const ADMIN_ID = process.env.ADMIN_TELEGRAM_ID;

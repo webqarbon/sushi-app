@@ -58,10 +58,14 @@ export async function signOut() {
 export async function forgotPassword(formData: FormData) {
   const supabase = await createClient();
   const email = formData.get("email") as string;
-  const origin = formData.get("origin") as string;
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "");
+
+  if (!siteUrl.startsWith("http")) {
+    return { error: "Налаштуйте NEXT_PUBLIC_SITE_URL у .env" };
+  }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/callback?next=/reset-password`,
+    redirectTo: `${siteUrl}/auth/callback?next=/reset-password`,
   });
 
   if (error) {

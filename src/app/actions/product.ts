@@ -2,8 +2,12 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/utils/auth";
 
 export async function uploadProductImage(file: File) {
+  const admin = await requireAdmin();
+  if ("error" in admin) throw new Error(admin.error);
+
   const supabase = await createClient();
   const fileExt = file.name.split('.').pop();
   const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
@@ -23,6 +27,9 @@ export async function uploadProductImage(file: File) {
 }
 
 export async function createProduct(formData: FormData) {
+  const admin = await requireAdmin();
+  if ("error" in admin) throw new Error(admin.error);
+
   const supabase = await createClient();
   
   const name = formData.get('name') as string;
@@ -53,6 +60,9 @@ export async function createProduct(formData: FormData) {
 }
 
 export async function updateProduct(formData: FormData) {
+  const admin = await requireAdmin();
+  if ("error" in admin) throw new Error(admin.error);
+
   const supabase = await createClient();
   
   const id = formData.get('id') as string;
@@ -87,6 +97,9 @@ export async function updateProduct(formData: FormData) {
 }
 
 export async function deleteProduct(id: string) {
+  const admin = await requireAdmin();
+  if ("error" in admin) throw new Error(admin.error);
+
   const supabase = await createClient();
   const { error } = await supabase.from('products').delete().eq('id', id);
 

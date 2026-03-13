@@ -70,8 +70,6 @@ export default function OrderHistory({ initialOrders, userId }: OrderHistoryProp
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          console.log('Realtime update received:', payload);
-          
           if (payload.eventType === 'INSERT') {
             setOrders((current) => [payload.new as Order, ...current]);
           } else if (payload.eventType === 'UPDATE') {

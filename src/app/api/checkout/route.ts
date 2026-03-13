@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { createClient as createServerClient } from "@/utils/supabase/server";
+import { SITE_CONFIG } from "@/constants/site";
 
 // Init Supabase admin client here since we need to bypass RLS for secure order creation/bonus assigning
 const supabaseAdmin = createAdminClient(
@@ -51,7 +52,8 @@ export async function POST(req: Request) {
 
     // 2.3 Check bonuses if user is logged in
     let finalBonusesUsed = 0;
-    if (user && bonusesUsed > 0) {
+    const rawBonuses = Number(bonusesUsed) || 0;
+    if (user && rawBonuses > 0) {
       const { data: profile } = await supabaseAdmin
         .from("profiles")
         .select("bonus_balance")
@@ -59,7 +61,8 @@ export async function POST(req: Request) {
         .single();
       
       const maxAvailable = Number(profile?.bonus_balance || 0);
-      finalBonusesUsed = Math.min(bonusesUsed, maxAvailable, serverTotal); 
+      const maxByOrder = Math.floor(serverTotal * 0.5); // max 50% of order
+      finalBonusesUsed = Math.min(rawBonuses, maxAvailable, serverTotal, maxByOrder);
     }
 
     const finalTotalPrice = serverTotal - finalBonusesUsed;
@@ -106,7 +109,7 @@ export async function POST(req: Request) {
         ccy: 980,
         merchantPaymInfo: {
           reference: order.id,
-          destination: "Оплата замовлення FROZEN Market",
+          destination: `Оплата замовлення ${SITE_CONFIG.shortName}`,
           basketOrder: validatedItems.map((i: { product: { name: string; price: number; image_url?: string }; quantity: number }) => ({
             name: i.product.name,
             qty: i.quantity,

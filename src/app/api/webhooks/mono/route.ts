@@ -55,17 +55,13 @@ export async function POST(req: Request) {
     }
 
     const data = JSON.parse(bodyText);
-    const payload = data.data || data; 
-    console.log("Processing Monobank Payload:", JSON.stringify(payload, null, 2));
+    const payload = data.data || data;
 
-    // Only accept status 'success'
     if (payload.status !== "success") {
-      console.log("Monobank: Status is not success:", payload.status);
       return NextResponse.json({ received: true });
     }
 
     const orderId = payload.reference;
-    console.log("Processing Order ID:", orderId);
 
     // Fetch Order
     const { data: order, error: fetchError } = await supabaseAdmin
@@ -80,7 +76,6 @@ export async function POST(req: Request) {
     }
 
     if (order.payment_status === "paid") {
-      console.log("Monobank Webhook: Order already paid:", orderId);
       return NextResponse.json({ received: true });
     }
 
@@ -98,20 +93,14 @@ export async function POST(req: Request) {
       throw updateError;
     }
 
-    console.log("Monobank Webhook: Order marked as paid:", orderId);
-
-    // Give bonuses if linked to known user
     if (order.user_id) {
-       // 1. Confirm Frozen Bonuses
        if (order.bonuses_used > 0) {
          await supabaseAdmin.rpc('confirm_bonuses', {
            user_id_val: order.user_id,
            amount_val: order.bonuses_used
          });
-         console.log(`Confirmed ${order.bonuses_used} frozen bonuses for user ${order.user_id}`);
        }
 
-       // 2. Add New Earned Bonuses
        const { data: profile } = await supabaseAdmin
          .from("profiles")
          .select("bonus_balance")
@@ -123,7 +112,6 @@ export async function POST(req: Request) {
            .from("profiles")
            .update({ bonus_balance: Number(profile.bonus_balance) + earnedBonuses })
            .eq("id", order.user_id);
-         console.log(`Added ${earnedBonuses} bonuses to user ${order.user_id}`);
        }
     }
 

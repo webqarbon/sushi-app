@@ -3,6 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/utils/auth";
 
 // Direct admin client (same approach as checkout route - proven to work)
 const supabaseAdmin = createAdminClient(
@@ -77,6 +78,9 @@ export async function submitReview(productId: string, rating: number, comment: s
 }
 
 export async function approveReview(reviewId: string) {
+    const admin = await requireAdmin();
+    if ("error" in admin) throw new Error(admin.error);
+
     const { data: review } = await supabaseAdmin.from('reviews').select('product_id').eq('id', reviewId).single();
     
     const { error } = await supabaseAdmin.from('reviews').update({ status: 'approved' }).eq('id', reviewId);
@@ -91,6 +95,9 @@ export async function approveReview(reviewId: string) {
 }
 
 export async function rejectReview(reviewId: string) {
+    const admin = await requireAdmin();
+    if ("error" in admin) throw new Error(admin.error);
+
     const { data: review } = await supabaseAdmin.from('reviews').select('product_id').eq('id', reviewId).single();
     
     const { error } = await supabaseAdmin.from('reviews').update({ status: 'rejected' }).eq('id', reviewId);

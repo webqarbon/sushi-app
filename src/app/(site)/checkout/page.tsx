@@ -275,27 +275,25 @@ export default function CheckoutPage() {
       
       if (data.url) {
         // Redirect to Monobank
-        clearCart(); // Clear BEFORE redirecting to ensure it's empty even if user goes back
-        // Also set success flag so that if monobank redirects back to /success, it works
+        clearCart();
         sessionStorage.setItem('orderSuccess', 'true');
         window.location.href = data.url;
-        return; // Important: prevent further logic
-      } else if (data.success) {
-        // Manual details
+        return;
+      }
+      if (data.success) {
         clearCart();
         sessionStorage.setItem('orderSuccess', 'true');
         router.push("/success");
-        return; // Important: prevent further logic
+        return;
+      }
+      if (data.error) {
+        toast.error(data.error);
       }
     } catch (error: unknown) {
       console.error("Checkout Error:", error);
       toast.error('Виникла помилка під час оформлення замовлення');
     } finally {
-      // We don't necessarily want to set isSubmitting(false) if we are redirecting away,
-      // but it's safe to keep it here if the logic above returns correctly.
-      // However, to prevent "empty cart" flash, we can check if data.url or data.success was true
-      // and NOT set isSubmitting to false if we are navigating.
-      // But a simpler way is to check items.length only if NOT isSubmitting.
+      setIsSubmitting(false);
     }
   };
 
