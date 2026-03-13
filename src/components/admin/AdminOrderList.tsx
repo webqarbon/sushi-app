@@ -196,7 +196,10 @@ export default function AdminOrderList({ initialOrders }: { initialOrders: Order
                                 <CreditCard className="w-3.5 h-3.5" /> Оплата
                               </div>
                               <div className="font-medium text-slate-700">
-                                {order.payment_method === "mono" ? "Монобанк" : order.payment_method === "cash" ? "Готівка" : order.payment_method || "—"}
+                                {order.payment_method === "mono" ? "Монобанк" : 
+                                 order.payment_method === "cash" ? "Готівка" : 
+                                 order.payment_method === "details" ? "Оплата за реквізитами" : 
+                                 order.payment_method || "—"}
                               </div>
                             </div>
                             <div className="md:col-span-2 lg:col-span-3 space-y-3">

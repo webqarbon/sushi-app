@@ -145,21 +145,11 @@ export default function AdminLayout({
                 >
                     <Menu className="w-6 h-6" />
                 </button>
-                <div className="hidden md:flex relative group w-56 lg:w-72">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
-                    <input 
-                        type="text" 
-                        placeholder="Шукати що завгодно..." 
-                        className="w-full bg-slate-50 border-none rounded-xl py-2.5 pl-10 pr-4 text-sm font-bold text-slate-700 focus:ring-4 focus:ring-orange-500/10 focus:bg-white transition-all shadow-inner"
-                    />
-                </div>
+                {/* Search removed */}
             </div>
 
             <div className="flex items-center gap-4 lg:gap-8">
-                <button className="relative w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 hover:bg-slate-50 transition-all text-slate-500 shadow-sm">
-                    <Bell className="w-4 h-4" />
-                    <span className="absolute top-3.5 right-3.5 w-2.5 h-2.5 bg-orange-500 rounded-full border-4 border-white" />
-                </button>
+                {/* Bell removed */}
                 <div className="h-8 w-[1px] bg-slate-200" />
                 <div className="flex items-center gap-3 group">
                     <div className="flex flex-col items-end mr-1">
