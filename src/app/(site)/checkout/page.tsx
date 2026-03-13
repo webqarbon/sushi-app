@@ -46,7 +46,6 @@ export default function CheckoutPage() {
   const [isCityLoading, setIsCityLoading] = useState(false);
   const [isBranchLoading, setIsBranchLoading] = useState(false);
   const cityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const branchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const searchCities = (query: string) => {
     if (!query) {
@@ -80,7 +79,8 @@ export default function CheckoutPage() {
     .finally(() => setIsCityLoading(false));
   };
 
-  const loadBranches = (cityRef: string, query: string = "") => {
+  const loadBranches = (cityRef: string) => {
+    if (!cityRef) return;
     setIsBranchLoading(true);
     fetch("/api/novaposhta", {
       method: "POST",
@@ -90,8 +90,7 @@ export default function CheckoutPage() {
         calledMethod: "getWarehouses",
         methodProperties: {
           SettlementRef: cityRef,
-          FindByString: query,
-          Limit: 50,
+          Limit: 500,
         }
       })
     })
@@ -121,18 +120,18 @@ export default function CheckoutPage() {
   };
 
   const handleCitySelect = (city: NPCity) => {
-    const settlementRef = city.DeliveryCity || city.Ref;
+    const ref = city.DeliveryCity || city.Ref;
     setFormData(prev => ({ 
       ...prev, 
       cityRef: city.Ref, 
       cityName: city.Present,
-      settlementRef,
+      settlementRef: ref,
       branchRef: "",
       branchName: ""
     }));
     setCitySearchTerm(city.Present);
     setIsCityDropdownOpen(false);
-    loadBranches(settlementRef);
+    loadBranches(ref);
   };
 
   const handleBranchSelect = (branch: NPBranch) => {
@@ -146,22 +145,15 @@ export default function CheckoutPage() {
   };
 
   const handleBranchSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setBranchSearchTerm(val);
-    const ref = formData.settlementRef || formData.cityRef;
-    if (!ref) return;
-    if (branchTimeoutRef.current) clearTimeout(branchTimeoutRef.current);
-    branchTimeoutRef.current = setTimeout(() => {
-      loadBranches(ref, val);
-      branchTimeoutRef.current = null;
-    }, 280);
+    setBranchSearchTerm(e.target.value);
   };
 
   const sortedBranches = useMemo(() => {
-    if (!branchSearchTerm.trim()) return branches;
     const q = branchSearchTerm.trim().toLowerCase();
+    if (!q) return branches;
+    const filtered = branches.filter(b => b.Description.toLowerCase().includes(q));
     const numMatch = q.match(/^\d+$/);
-    return [...branches].sort((a, b) => {
+    return filtered.sort((a, b) => {
       const descA = a.Description;
       const descB = b.Description;
       const numA = descA.match(/№\s*(\d+)/)?.[1] ?? "";
@@ -182,7 +174,6 @@ export default function CheckoutPage() {
 
   useEffect(() => () => {
     if (cityTimeoutRef.current) clearTimeout(cityTimeoutRef.current);
-    if (branchTimeoutRef.current) clearTimeout(branchTimeoutRef.current);
   }, []);
 
   // Derived calculations
@@ -432,10 +423,9 @@ export default function CheckoutPage() {
                     type="button"
                     disabled={!formData.cityRef}
                     onClick={() => {
-                      if (formData.settlementRef || formData.cityRef) {
-                        if (branches.length === 0 && !branchSearchTerm) {
-                          loadBranches(formData.settlementRef || formData.cityRef);
-                        }
+                      const ref = formData.settlementRef || formData.cityRef;
+                      if (ref) {
+                        if (branches.length === 0) loadBranches(ref);
                         setIsBranchDropdownOpen(!isBranchDropdownOpen);
                       }
                     }}
@@ -453,11 +443,8 @@ export default function CheckoutPage() {
                           placeholder="Введіть номер або адресу..."
                           value={branchSearchTerm}
                           onChange={handleBranchSearchChange}
-                          className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 pr-9 text-sm focus:outline-none focus:ring-2 focus:border-blue-500"
+                          className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-blue-500"
                         />
-                        {isBranchLoading && (
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                        )}
                       </div>
                       <ul className="overflow-y-auto overflow-x-hidden p-0 m-0">
                         {isBranchLoading && branches.length === 0 ? (
