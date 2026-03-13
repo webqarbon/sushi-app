@@ -20,6 +20,7 @@ import { createClient } from "@/utils/supabase/client";
 import { toast } from "react-hot-toast";
 import { SITE_CONFIG } from "@/constants/site";
 import AdminRealtimeReloader from "@/components/admin/AdminRealtimeReloader";
+import AdminRefreshButton from "@/components/admin/AdminRefreshButton";
 
 const supabase = createClient();
 
@@ -149,7 +150,7 @@ export default function AdminLayout({
             </div>
 
             <div className="flex items-center gap-4 lg:gap-8">
-                {/* Bell removed */}
+                <AdminRefreshButton />
                 <div className="h-8 w-[1px] bg-slate-200" />
                 <div className="flex items-center gap-3 group">
                     <div className="flex flex-col items-end mr-1">
