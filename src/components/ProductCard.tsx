@@ -111,7 +111,16 @@ export default function ProductCard({ product, compact = false, variant }: { pro
             </div>
             
             <button
-              onClick={() => addItem(product)}
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                window.dispatchEvent(
+                  new CustomEvent("cart:fly", {
+                    detail: { product, sourceRect: rect },
+                  })
+                );
+                addItem(product);
+                toast.success("Додано в кошик");
+              }}
               className={`flex items-center justify-center bg-white text-[#1A1C1E] rounded-xl shadow-md hover:bg-orange-400 hover:text-white transition-all duration-300 active:scale-90 hover:shadow-lg hover:shadow-orange-400/30 ${
                 mode === "compact" ? "w-10 h-10 sm:w-11 sm:h-11" : mode === "catalog" ? "w-10 h-10 sm:w-11 sm:h-11" : "w-14 h-14 rounded-2xl"
               }`}

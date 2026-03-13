@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ShoppingCart, User, LayoutDashboard, Search, Phone } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { SITE_CONFIG } from "@/constants/site";
+import { useEffect, useRef, useState } from "react";
 
 interface HeaderActionsProps {
   isAdmin: boolean;
@@ -18,6 +19,18 @@ export default function HeaderActions({
 }: HeaderActionsProps) {
   const items = useCartStore((state) => state.items);
   const cartItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  const prevCount = useRef(cartItemCount);
+  const [badgePulse, setBadgePulse] = useState(false);
+
+  useEffect(() => {
+    if (cartItemCount > prevCount.current) {
+      setBadgePulse(true);
+      const t = setTimeout(() => setBadgePulse(false), 500);
+      prevCount.current = cartItemCount;
+      return () => clearTimeout(t);
+    }
+    prevCount.current = cartItemCount;
+  }, [cartItemCount]);
 
   return (
     <div className="flex items-center gap-2 lg:gap-4 shrink-0">
@@ -63,13 +76,18 @@ export default function HeaderActions({
       {/* Cart */}
       {!isAdmin && (
         <button
+          data-cart-target
           onClick={onCartClick}
           className="flex items-center gap-2 h-10 px-4 rounded-xl bg-slate-900 text-white font-semibold text-xs uppercase tracking-wider hover:bg-orange-500 transition-colors relative"
         >
           <ShoppingCart className="w-4 h-4" />
           <span className="hidden sm:inline">Кошик</span>
           {cartItemCount > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-orange-500 flex items-center justify-center text-[10px] font-bold text-white">
+            <span
+              className={`absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-orange-500 flex items-center justify-center text-[10px] font-bold text-white transition-transform ${
+                badgePulse ? "animate-cart-badge-pulse" : ""
+              }`}
+            >
               {cartItemCount}
             </span>
           )}
