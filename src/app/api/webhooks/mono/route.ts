@@ -82,10 +82,14 @@ export async function POST(req: Request) {
     const items = order.items_json || [];
     const earnedBonuses = calculateEarnedBonuses(items);
 
-    // Update order status securely
+    // Update payment status and order status (pending -> confirmed when paid via Monobank)
+    const updatePayload: Record<string, string> = { payment_status: "paid" };
+    if (order.status === "pending") {
+      updatePayload.status = "confirmed";
+    }
     const { error: updateError } = await supabaseAdmin
       .from("orders")
-      .update({ payment_status: "paid" })
+      .update(updatePayload)
       .eq("id", orderId);
 
     if (updateError) {

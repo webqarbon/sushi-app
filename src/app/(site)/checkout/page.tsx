@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useCartStore } from "@/store/cart";
-import { ArrowLeft, Info, Truck, CreditCard, Gift, Star, X, Copy } from "lucide-react";
+import { ArrowLeft, Info, Truck, CreditCard, Gift, Star, Copy } from "lucide-react";
 import Link from "next/link";
 import { SITE_CONFIG } from "@/constants/site";
 import { useRouter } from "next/navigation";
@@ -47,7 +47,6 @@ export default function CheckoutPage() {
   const [branchSearchTerm, setBranchSearchTerm] = useState("");
   const [isCityLoading, setIsCityLoading] = useState(false);
   const [isBranchLoading, setIsBranchLoading] = useState(false);
-  const [isRequisitesOpen, setIsRequisitesOpen] = useState(false);
   const cityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const searchCities = (query: string) => {
@@ -591,78 +590,68 @@ export default function CheckoutPage() {
                   <span className="ml-4 font-bold text-gray-900 text-lg">Monobank Pay</span>
                 </label>
                 
-                <label className={`relative flex items-center p-5 border-2 rounded-2xl cursor-pointer transition-all ${formData.paymentMethod === 'details' ? 'border-gray-900 bg-gray-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                  <input 
-                    type="radio" 
-                    name="payment" 
-                    value="details" 
-                    className="w-5 h-5 text-gray-900 focus:ring-gray-900" 
-                    checked={formData.paymentMethod === 'details'}
-                    onChange={() => {
-                      setFormData(prev => ({ ...prev, paymentMethod: 'details' }));
-                      setIsRequisitesOpen(true);
-                    }}
-                  />
-                  <span className="ml-4 font-bold text-gray-900 text-lg">Оплата за реквізитами</span>
-                </label>
+                <div className="flex flex-col gap-0">
+                  <label className={`relative flex items-center p-5 border-2 cursor-pointer transition-all ${formData.paymentMethod === 'details' ? 'border-gray-900 bg-gray-50 rounded-t-2xl' : 'border-gray-200 hover:border-gray-300 rounded-2xl'}`}>
+                    <input 
+                      type="radio" 
+                      name="payment" 
+                      value="details" 
+                      className="w-5 h-5 text-gray-900 focus:ring-gray-900" 
+                      checked={formData.paymentMethod === 'details'}
+                      onChange={() => setFormData(prev => ({ ...prev, paymentMethod: 'details' }))}
+                    />
+                    <span className="ml-4 font-bold text-gray-900 text-lg">Оплата за реквізитами</span>
+                  </label>
 
-              {/* Requisites Popup */}
-              {isRequisitesOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-                  <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-in zoom-in-95 duration-200">
-                    <button
-                      type="button"
-                      onClick={() => setIsRequisitesOpen(false)}
-                      className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-900 rounded-xl hover:bg-gray-100 transition-all"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                    <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight mb-6">Реквізити для оплати</h3>
-                    <div className="space-y-4 text-sm">
-                      <div>
-                        <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Отримувач</span>
-                        <p className="font-bold text-gray-900">{SITE_CONFIG.paymentRequisites.recipient}</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">ЄДРПОУ</span>
-                        <p className="font-bold text-gray-900 font-mono">{SITE_CONFIG.paymentRequisites.edrpou}</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Банк</span>
-                        <p className="font-bold text-gray-900">{SITE_CONFIG.paymentRequisites.bankName}</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">IBAN</span>
-                        <p className="font-bold text-gray-900 font-mono break-all">{SITE_CONFIG.paymentRequisites.iban}</p>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            navigator.clipboard.writeText(SITE_CONFIG.paymentRequisites.iban);
-                            toast.success("IBAN скопійовано");
-                          }}
-                          className="mt-2 flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold text-xs"
-                        >
-                          <Copy className="w-3.5 h-3.5" /> Копіювати IBAN
-                        </button>
-                      </div>
-                      <div>
-                        <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Призначення платежу</span>
-                        <p className="font-medium text-gray-700">{SITE_CONFIG.paymentRequisites.purpose}</p>
+                  {/* Requisites - smooth expand below when selected */}
+                  <div
+                    className={`grid transition-all duration-300 ease-out overflow-hidden ${
+                      formData.paymentMethod === 'details'
+                        ? 'grid-rows-[1fr] opacity-100'
+                        : 'grid-rows-[0fr] opacity-0'
+                    }`}
+                  >
+                    <div className="min-h-0">
+                      <div className="mt-0 pt-4 pb-6 px-5 border-2 border-t-0 border-gray-900 rounded-b-2xl bg-gray-50/80">
+                        <div className="space-y-4 text-sm">
+                          <div>
+                            <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Отримувач</span>
+                            <p className="font-bold text-gray-900">{SITE_CONFIG.paymentRequisites.recipient}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">ЄДРПОУ</span>
+                            <p className="font-bold text-gray-900 font-mono">{SITE_CONFIG.paymentRequisites.edrpou}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Банк</span>
+                            <p className="font-bold text-gray-900">{SITE_CONFIG.paymentRequisites.bankName}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">IBAN</span>
+                            <p className="font-bold text-gray-900 font-mono break-all">{SITE_CONFIG.paymentRequisites.iban}</p>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(SITE_CONFIG.paymentRequisites.iban);
+                                toast.success("IBAN скопійовано");
+                              }}
+                              className="mt-2 flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold text-xs"
+                            >
+                              <Copy className="w-3.5 h-3.5" /> Копіювати IBAN
+                            </button>
+                          </div>
+                          <div>
+                            <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Призначення платежу</span>
+                            <p className="font-medium text-gray-700">{SITE_CONFIG.paymentRequisites.purpose}</p>
+                          </div>
+                        </div>
+                        <p className="mt-4 text-xs text-gray-500">
+                          Після оплати надішліть підтвердження (скрін або чек) у Telegram {SITE_CONFIG.socials.telegramHandle}
+                        </p>
                       </div>
                     </div>
-                    <p className="mt-6 text-xs text-gray-500">
-                      Після оплати надішліть нам підтвердження (скрін або чек) у Telegram {SITE_CONFIG.socials.telegramHandle}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setIsRequisitesOpen(false)}
-                      className="mt-6 w-full py-4 bg-gray-900 text-white font-black rounded-2xl hover:bg-gray-800 transition-all"
-                    >
-                      Зрозуміло
-                    </button>
                   </div>
                 </div>
-              )}
               </div>
             </section>
           </form>
