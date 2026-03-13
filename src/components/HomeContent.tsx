@@ -26,7 +26,7 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
   useEffect(() => {
     if (!activeCategoryId) return;
     const timeoutId = window.setTimeout(() => {
-      catalogRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }, 50);
     return () => window.clearTimeout(timeoutId);
   }, [activeCategoryId]);

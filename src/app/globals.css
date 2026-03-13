@@ -11,6 +11,7 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-feature-settings: "kern" 1, "liga" 1;
   }
 }
 
