@@ -5,7 +5,7 @@ import { SITE_CONFIG } from "@/constants/site";
 
 export default function AboutSection() {
   return (
-    <section className="w-full mb-24" id="about">
+    <section className="w-full" id="about">
       <div className="bg-white rounded-[3rem] p-10 lg:p-20 shadow-premium border border-gray-100/50 relative overflow-hidden">
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-50" />
@@ -42,7 +42,7 @@ export default function AboutSection() {
                 <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 group-hover:bg-orange-500 transition-colors duration-500">
                   <item.icon className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors duration-500" />
                 </div>
-                <h3 className="font-black text-[#1A1C1E] mb-3">{item.title}</h3>
+                <h3 className="text-lg font-black text-[#1A1C1E] mb-3">{item.title}</h3>
                 <p className="text-sm text-gray-400 font-medium leading-relaxed">{item.description}</p>
               </div>
             ))}

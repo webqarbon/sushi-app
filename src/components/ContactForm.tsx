@@ -28,10 +28,10 @@ export default function ContactForm() {
   }
 
   return (
-    <section className="w-full mb-24 grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch" id="consultation">
+    <section className="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch" id="consultation">
       {/* Text Info */}
       <div className="lg:col-span-12">
-           <div className="text-center mb-12">
+           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 text-orange-400 font-black text-[10px] uppercase tracking-[0.2em] mb-4">
               <span className="w-8 h-[2px] bg-orange-400"></span>
               Залишились питання?
@@ -46,7 +46,7 @@ export default function ContactForm() {
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-orange-50 rounded-full blur-3xl opacity-50" />
         
         <h3 className="text-2xl font-black text-[#1A1C1E] mb-6 relative z-10">Потрібна допомога у виборі?</h3>
-        <p className="text-gray-500 font-medium leading-relaxed mb-10 relative z-10">
+        <p className="text-base text-gray-500 font-medium leading-relaxed mb-10 relative z-10">
           Наші менеджери допоможуть підібрати ідеальний набір для вашої компанії, розкажуть про склад кожної страви та допоможуть оформити замовлення.
         </p>
 
@@ -80,8 +80,8 @@ export default function ContactForm() {
                 <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mb-8">
                     <CheckCircle2 className="w-12 h-12 text-green-500" />
                 </div>
-                <h3 className="text-3xl font-black text-[#1A1C1E] mb-4">Заявку прийнято!</h3>
-                <p className="text-gray-500 font-medium max-w-sm">Ми зателефонуємо вам протягом 15 хвилин для консультації.</p>
+                <h3 className="text-2xl font-black text-[#1A1C1E] mb-4">Заявку прийнято!</h3>
+                <p className="text-base text-gray-500 font-medium max-w-sm">Ми зателефонуємо вам протягом 15 хвилин для консультації.</p>
                 <button 
                   onClick={() => setIsSuccess(false)}
                   className="mt-10 text-orange-500 font-black uppercase text-xs tracking-widest hover:text-orange-600 transition-colors"

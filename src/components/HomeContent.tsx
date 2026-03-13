@@ -39,18 +39,18 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
   const showHeroAndSlider = !activeCategoryId;
 
   return (
-    <div className="flex flex-col gap-0 pb-32">
+    <div className="flex flex-col gap-0 pb-12">
 
       {/* Category Navigation is now handled globally in the Header */}
 
       {/* 2. Hero + Slider OR Catalog — animated switch */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-6">
 
         {/* HERO SECTION — visible only on home state */}
         <div
           className={`transition-all duration-500 ${
             showHeroAndSlider
-              ? "opacity-100 max-h-[1200px] mb-8"
+              ? "opacity-100 max-h-[1200px] mb-6"
               : "opacity-0 max-h-0 overflow-hidden pointer-events-none mb-0"
           }`}
         >
@@ -61,7 +61,7 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
         <div
           className={`transition-all duration-500 delay-100 ${
             showHeroAndSlider
-              ? "opacity-100 max-h-[2000px] mb-6 sm:mb-8"
+              ? "opacity-100 max-h-[2000px] mb-6"
               : "opacity-0 max-h-0 overflow-hidden pointer-events-none mb-0"
           }`}
         >
@@ -79,7 +79,7 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
           }`}
         >
           {!showHeroAndSlider && (
-            <div className="flex flex-col gap-10">
+            <div className="flex flex-col gap-8">
               {/* Back to home button */}
               <button
                 onClick={handleResetToHome}
@@ -102,7 +102,7 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
       </div>
 
       {/* 3. About & Info Sections — always visible */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-24 mt-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-12 mt-12">
         <AboutSection />
         <ContactForm />
         <FAQSection />

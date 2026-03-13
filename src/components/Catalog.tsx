@@ -37,7 +37,7 @@ export default function Catalog({ categories, products, activeCategoryId }: Cata
 
   if (!categories.length || !products.length) {
     return (
-      <div className="text-center py-12 text-gray-500 font-medium">
+      <div className="text-center py-12 text-base text-gray-500 font-medium">
         Каталог порожній.
       </div>
     );
@@ -63,7 +63,7 @@ export default function Catalog({ categories, products, activeCategoryId }: Cata
               <button
                 key={option.id}
                 onClick={() => setSortBy(option.id as SortType)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                   sortBy === option.id 
                     ? "bg-[#1A1C1E] text-white shadow-lg shadow-black/10 scale-105" 
                     : "text-gray-400 hover:text-gray-900 hover:bg-gray-50"
@@ -77,11 +77,11 @@ export default function Catalog({ categories, products, activeCategoryId }: Cata
         </div>
         
         {sortedProducts.length === 0 ? (
-          <p className="text-center text-gray-400 py-12 font-medium">У цій категорії поки немає товарів.</p>
+          <p className="text-center text-base text-gray-400 py-12 font-medium">У цій категорії поки немає товарів.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {sortedProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} variant="catalog" />
             ))}
           </div>
         )}

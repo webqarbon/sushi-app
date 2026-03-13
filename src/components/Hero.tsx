@@ -22,7 +22,7 @@ export default function Hero() {
   const slide = SLIDES[current];
 
   return (
-    <section className="relative group w-full mb-12">
+    <section className="relative group w-full mb-8">
       <div className="bg-white rounded-[2.5rem] overflow-hidden shadow-premium flex flex-col lg:flex-row items-center border border-white/50 min-h-[480px]">
         
         {/* Left Side: Images */}
