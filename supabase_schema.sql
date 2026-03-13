@@ -93,7 +93,9 @@ CREATE TABLE products (
   price NUMERIC NOT NULL,
   cost_price NUMERIC DEFAULT 0,
   image_url TEXT,
-  bonus_percent NUMERIC DEFAULT 5.0
+  bonus_percent NUMERIC DEFAULT 5.0,
+  average_rating NUMERIC DEFAULT 0,
+  reviews_count INTEGER DEFAULT 0
 );
 
 -- Products are public
@@ -108,8 +110,10 @@ CREATE TABLE orders (
   total_price NUMERIC NOT NULL,
   bonuses_used NUMERIC DEFAULT 0,
   payment_status TEXT CHECK (payment_status IN ('pending', 'awaiting_check', 'paid')) DEFAULT 'pending',
-  payment_method TEXT CHECK (payment_method IN ('mono', 'details')) NOT NULL,
+  payment_method TEXT CHECK (payment_method IN ('mono', 'cash', 'details')) NOT NULL,
   delivery_data JSONB NOT NULL,
+  status TEXT CHECK (status IN ('pending', 'confirmed', 'cooking', 'delivery', 'delivered', 'cancelled')) DEFAULT 'pending',
+  comment TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
