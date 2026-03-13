@@ -171,70 +171,133 @@ export default function AdminOrderList({ initialOrders }: { initialOrders: Order
                       </td>
                     </tr>
                     {isExpanded && (
-                      <tr>
-                        <td colSpan={6} className="px-6 py-4 bg-slate-50/50 border-b border-slate-100">
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                <User className="w-3.5 h-3.5" /> Клієнт
+                      <tr className="animate-in fade-in slide-in-from-top-2 duration-500">
+                        <td colSpan={6} className="px-6 py-8 bg-slate-50/80 border-b border-slate-100">
+                          <div className="max-w-5xl mx-auto">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                              {/* Client Section */}
+                              <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group/card transition-all hover:shadow-md">
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-orange-50/50 rounded-full blur-2xl -mr-8 -mt-8" />
+                                <div className="flex items-center gap-3 mb-4">
+                                  <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600">
+                                    <User className="w-4 h-4" />
+                                  </div>
+                                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Клієнт</span>
+                                </div>
+                                <div className="space-y-1">
+                                  <div className="font-black text-slate-900 text-base">{clientName}</div>
+                                  {phone && (
+                                    <a href={`tel:${phone}`} className="text-slate-500 font-bold hover:text-orange-500 transition-colors flex items-center gap-2">
+                                      {phone}
+                                    </a>
+                                  )}
+                                </div>
                               </div>
-                              <div className="font-black text-slate-900">{clientName}</div>
-                              {phone && <div className="text-slate-500 font-medium">{phone}</div>}
+
+                              {/* Delivery Section */}
+                              <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group/card transition-all hover:shadow-md">
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-blue-50/50 rounded-full blur-2xl -mr-8 -mt-8" />
+                                <div className="flex items-center gap-3 mb-4">
+                                  <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                                    <MapPin className="w-4 h-4" />
+                                  </div>
+                                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Доставка</span>
+                                </div>
+                                <div className="space-y-2 text-sm font-bold text-slate-700">
+                                  {order.delivery_data?.city ? (
+                                    <div className="flex flex-col">
+                                      <span className="text-[10px] text-slate-400 uppercase tracking-tighter">Місто</span>
+                                      <span>{order.delivery_data.city}</span>
+                                    </div>
+                                  ) : null}
+                                  {order.delivery_data?.branch ? (
+                                    <div className="flex flex-col">
+                                      <span className="text-[10px] text-slate-400 uppercase tracking-tighter">НП / Адреса</span>
+                                      <span className="leading-tight">{order.delivery_data.branch}</span>
+                                    </div>
+                                  ) : (
+                                    !order.delivery_data?.city && <div className="text-slate-400 italic">Дані відсутні</div>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Payment Section */}
+                              <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group/card transition-all hover:shadow-md">
+                                <div className="absolute top-0 right-0 w-16 h-16 bg-green-50/50 rounded-full blur-2xl -mr-8 -mt-8" />
+                                <div className="flex items-center gap-3 mb-4">
+                                  <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
+                                    <CreditCard className="w-4 h-4" />
+                                  </div>
+                                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Оплата</span>
+                                </div>
+                                <div className="flex flex-col">
+                                  <span className="text-[10px] text-slate-400 uppercase tracking-tighter">Метод</span>
+                                  <span className="font-bold text-slate-900">
+                                    {order.payment_method === "mono" ? "Монобанк" : 
+                                     order.payment_method === "cash" ? "Готівка" : 
+                                     order.payment_method === "details" ? "Оплата за реквізитами" : 
+                                     order.payment_method || "—"}
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                <MapPin className="w-3.5 h-3.5" /> Доставка
+
+                            {/* Products Table */}
+                            <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                              <div className="p-6 border-b border-slate-50 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white">
+                                    <ShoppingBag className="w-4 h-4" />
+                                  </div>
+                                  <span className="text-xs font-black uppercase tracking-widest text-slate-900">Товари в замовленні</span>
+                                </div>
+                                <span className="text-[10px] font-black bg-slate-50 text-slate-400 px-3 py-1 rounded-full uppercase tracking-tighter">
+                                  {items.length} позицій
+                                </span>
                               </div>
-                              <div className="font-medium text-slate-700">
-                                {order.delivery_data?.city && <div>Місто: {order.delivery_data.city}</div>}
-                                {order.delivery_data?.branch && <div>Відділення НП: {order.delivery_data.branch}</div>}
-                                {!order.delivery_data?.city && !order.delivery_data?.branch && <div className="text-slate-400">—</div>}
-                              </div>
-                            </div>
-                            <div className="space-y-3">
-                              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                <CreditCard className="w-3.5 h-3.5" /> Оплата
-                              </div>
-                              <div className="font-medium text-slate-700">
-                                {order.payment_method === "mono" ? "Монобанк" : 
-                                 order.payment_method === "cash" ? "Готівка" : 
-                                 order.payment_method === "details" ? "Оплата за реквізитами" : 
-                                 order.payment_method || "—"}
-                              </div>
-                            </div>
-                            <div className="md:col-span-2 lg:col-span-3 space-y-3">
-                              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                <ShoppingBag className="w-3.5 h-3.5" /> Товари
-                              </div>
-                              <div className="bg-white rounded-xl border border-slate-100 p-4 space-y-2">
+                              <div className="p-6 space-y-4">
                                 {items.map((item, idx) => (
-                                  <div key={idx} className="flex justify-between items-center">
-                                    <span className="font-medium text-slate-700">
-                                      {item.product?.name || "Товар"} × {item.quantity}
-                                    </span>
-                                    <span className="font-black text-slate-900">
+                                  <div key={idx} className="flex items-center gap-4 py-1">
+                                    <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 shrink-0">
+                                      <Package className="w-6 h-6" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="font-bold text-slate-900 truncate">
+                                        {item.product?.name || "Товар без назви"}
+                                      </div>
+                                      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                                        {item.quantity} шт × {SITE_CONFIG.currency}{item.product?.price || 0}
+                                      </div>
+                                    </div>
+                                    <div className="text-right font-black text-slate-900">
                                       {SITE_CONFIG.currency}{(item.product?.price || 0) * item.quantity}
-                                    </span>
+                                    </div>
                                   </div>
                                 ))}
-                                {order.bonuses_used ? (
-                                  <div className="flex justify-between items-center text-orange-500 pt-2 border-t border-slate-100">
-                                    <span>Бонуси</span>
-                                    <span>-{SITE_CONFIG.currency}{order.bonuses_used}</span>
+
+                                <div className="pt-6 border-t border-slate-100 space-y-3">
+                                  {order.bonuses_used ? (
+                                    <div className="flex justify-between items-center text-xs font-bold text-orange-500">
+                                      <span className="uppercase tracking-widest opacity-70 italic">Використано бонусів</span>
+                                      <span>-{SITE_CONFIG.currency}{order.bonuses_used}</span>
+                                    </div>
+                                  ) : null}
+                                  <div className="flex justify-between items-center pt-2">
+                                    <span className="text-sm font-black uppercase tracking-widest text-slate-900">Разом до сплати</span>
+                                    <span className="text-2xl font-black text-slate-900 tracking-tighter">
+                                      {SITE_CONFIG.currency}{order.total_price}
+                                    </span>
                                   </div>
-                                ) : null}
-                                <div className="flex justify-between items-center font-black text-slate-900 pt-2 border-t border-slate-200">
-                                  <span>Разом</span>
-                                  <span>{SITE_CONFIG.currency}{order.total_price}</span>
                                 </div>
                               </div>
                             </div>
+
                             {order.comment && (
-                              <div className="md:col-span-2 lg:col-span-3 space-y-3">
-                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                  <MessageSquare className="w-3.5 h-3.5" /> Коментар
+                              <div className="mt-8 bg-orange-50/50 rounded-2xl p-6 border border-orange-100/50 border-dashed">
+                                <div className="flex items-center gap-2 mb-2 text-[10px] font-black uppercase tracking-widest text-orange-600">
+                                  <MessageSquare className="w-3.5 h-3.5" /> Коментар від клієнта
                                 </div>
-                                <p className="text-slate-600 font-medium italic">{order.comment}</p>
+                                <p className="text-slate-700 font-bold leading-relaxed">{order.comment}</p>
                               </div>
                             )}
                           </div>
