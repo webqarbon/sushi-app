@@ -8,7 +8,7 @@ export async function uploadProductImage(file: File) {
   const admin = await requireAdmin();
   if ("error" in admin) throw new Error(admin.error);
 
-  const supabase = await createClient();
+  const supabase = await createClient(true);
   const fileExt = file.name.split('.').pop();
   const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
   const filePath = `products/${fileName}`;
@@ -30,7 +30,7 @@ export async function createProduct(formData: FormData) {
   const admin = await requireAdmin();
   if ("error" in admin) throw new Error(admin.error);
 
-  const supabase = await createClient();
+  const supabase = await createClient(true);
   
   const name = formData.get('name') as string;
   const price = parseFloat(formData.get('price') as string);
@@ -63,7 +63,7 @@ export async function updateProduct(formData: FormData) {
   const admin = await requireAdmin();
   if ("error" in admin) throw new Error(admin.error);
 
-  const supabase = await createClient();
+  const supabase = await createClient(true);
   
   const id = formData.get('id') as string;
   const name = formData.get('name') as string;
@@ -100,7 +100,7 @@ export async function deleteProduct(id: string) {
   const admin = await requireAdmin();
   if ("error" in admin) throw new Error(admin.error);
 
-  const supabase = await createClient();
+  const supabase = await createClient(true);
   const { error } = await supabase.from('products').delete().eq('id', id);
 
   if (error) {
