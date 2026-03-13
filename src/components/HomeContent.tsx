@@ -68,11 +68,11 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
           <ProductSlider products={products} />
         </div>
 
-        {/* CATALOG — visible when category selected */}
+        {/* CATALOG — visible when category selected; scroll-margin so header doesn't cover title/filters */}
         <div
           ref={catalogRef}
           id="catalog"
-          className={`transition-all duration-500 ${
+          className={`transition-all duration-500 scroll-mt-44 md:scroll-mt-48 ${
             !showHeroAndSlider
               ? "opacity-100"
               : "opacity-0 pointer-events-none absolute"

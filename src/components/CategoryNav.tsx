@@ -201,20 +201,20 @@ export default function CategoryNav({
     <div className="w-full relative bg-white/40 backdrop-blur-md border-b border-gray-100/50 pb-3 pt-1">
       <div className="max-w-7xl mx-auto relative px-4 sm:px-8 flex items-center">
         
-        {/* Left Scroll Button */}
+        {/* Left Scroll Button — only on mobile/tablet */}
         {canScrollLeft && (
           <button 
             onClick={() => handleScroll('left')}
-            className="absolute left-2 z-20 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-lg border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in duration-300"
+            className="absolute left-2 z-20 w-8 h-8 md:hidden flex items-center justify-center bg-white rounded-full shadow-lg border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in duration-300"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
         )}
 
-        {/* Categories Container */}
+        {/* Categories Container — no arrows on desktop, thin scrollbar instead */}
         <div 
           ref={scrollContainerRef}
-          className="w-full overflow-x-auto hide-scrollbar flex gap-2 sm:gap-3 py-1 scroll-smooth items-center"
+          className="w-full overflow-x-auto flex gap-2 sm:gap-3 py-1 scroll-smooth items-center category-nav-scroll"
         >
           {sortedCategories.map((cat) => {
             const Icon = iconMap[cat.slug] || Utensils;
@@ -247,19 +247,19 @@ export default function CategoryNav({
           })}
         </div>
 
-        {/* Right Scroll Button */}
+        {/* Right Scroll Button — only on mobile/tablet */}
         {canScrollRight && (
           <button 
             onClick={() => handleScroll('right')}
-            className="absolute right-2 z-20 w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-lg border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in duration-300"
+            className="absolute right-2 z-20 w-8 h-8 md:hidden flex items-center justify-center bg-white rounded-full shadow-lg border border-gray-100 hover:scale-110 active:scale-95 text-[#1A1C1E] transition-all animate-in fade-in duration-300"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
         )}
 
-        {/* Scroll Masks */}
-        {canScrollLeft && <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white via-white/40 to-transparent pointer-events-none z-10" />}
-        {canScrollRight && <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white via-white/40 to-transparent pointer-events-none z-10" />}
+        {/* Scroll Masks — only on mobile when arrows visible */}
+        {canScrollLeft && <div className="absolute left-0 top-0 bottom-0 w-8 md:w-0 md:opacity-0 md:pointer-events-none bg-gradient-to-r from-white via-white/40 to-transparent pointer-events-none z-10" />}
+        {canScrollRight && <div className="absolute right-0 top-0 bottom-0 w-8 md:w-0 md:opacity-0 md:pointer-events-none bg-gradient-to-l from-white via-white/40 to-transparent pointer-events-none z-10" />}
       </div>
     </div>
   );

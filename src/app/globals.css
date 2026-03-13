@@ -24,6 +24,38 @@
   scrollbar-width: none;
 }
 
+/* Category nav: hide scrollbar on mobile, thin scrollbar on desktop */
+.category-nav-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.category-nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .category-nav-scroll {
+    scrollbar-width: thin;
+    -ms-overflow-style: auto;
+  }
+
+  .category-nav-scroll::-webkit-scrollbar {
+    display: block;
+    height: 6px;
+  }
+
+  .category-nav-scroll::-webkit-scrollbar-track {
+    background: rgba(243, 244, 246, 0.5);
+    border-radius: 3px;
+  }
+
+  .category-nav-scroll::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+  }
+}
+
 /* Custom Visible Scrollbar for History and Lists */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;

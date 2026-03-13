@@ -85,7 +85,7 @@ export default function ProductSlider({ products }: ProductSliderProps) {
         </div>
 
         {/* Slider Area */}
-        <div className="relative py-5 sm:py-6 md:py-8 bg-gray-50/30">
+        <div className="relative pt-5 pb-8 sm:pt-6 sm:pb-10 md:pt-8 md:pb-12 bg-gray-50/30">
           <div
             ref={scrollRef}
             onScroll={checkScroll}
@@ -108,8 +108,8 @@ export default function ProductSlider({ products }: ProductSliderProps) {
           <div className={`absolute right-0 top-0 bottom-0 w-12 sm:w-16 bg-gradient-to-l from-white/50 to-transparent pointer-events-none transition-opacity duration-300 ${showRightArrow ? 'opacity-100' : 'opacity-0'}`} />
         </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-center px-4 sm:px-6 py-3 border-t border-gray-50">
+        {/* Footer — same bg as slider for seamless transition */}
+        <div className="flex items-center justify-center px-4 sm:px-6 py-3 bg-gray-50/30">
           <span className="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider">
             Відсортовано за рейтингом покупців
           </span>
