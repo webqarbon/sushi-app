@@ -94,12 +94,12 @@ export default function ProductSlider({ products }: ProductSliderProps) {
       <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="flex items-center justify-between px-4 sm:px-6 pt-6 pb-4 sm:pt-8 sm:pb-5 border-b border-gray-50">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-orange-400 font-black text-[10px] uppercase tracking-[0.15em] mb-1">
+            <div className="inline-flex items-center gap-1.5 text-orange-400 font-bold text-[10px] uppercase tracking-[0.15em] mb-1">
               <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-orange-400" />
               Топ вибір
             </div>
-            <h2 className="text-2xl font-black text-[#1A1C1E] tracking-tight leading-tight">
-              Найкращі продукти
+            <h2 className="text-2xl font-bold text-[#1A1C1E] tracking-tight leading-tight">
+              Найкращі товари
             </h2>
           </div>
 

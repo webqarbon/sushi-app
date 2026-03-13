@@ -72,7 +72,7 @@ export default function SearchBar({ onClose }: SearchBarProps) {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Пошук страв..."
+          placeholder="Пошук товарів..."
           autoFocus={!!onClose}
           className="w-full bg-white border border-slate-100 rounded-xl py-3 pl-12 pr-10 text-sm font-medium focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all placeholder:text-slate-400"
         />

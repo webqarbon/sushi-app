@@ -210,7 +210,7 @@ export default function ReviewPopup({ productId, productName, onClose }: ReviewP
             </div>
             <textarea
               className="w-full px-8 py-6 bg-gray-50/50 rounded-3xl border border-gray-100 focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-orange-500/50 transition-all font-medium text-gray-700 min-h-[160px] resize-none"
-              placeholder="Що вам сподобалось у цій страві?"
+              placeholder="Що вам сподобалось у цьому товарі?"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               required

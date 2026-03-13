@@ -32,11 +32,11 @@ export default function ContactForm() {
       {/* Text Info */}
       <div className="lg:col-span-12">
            <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 text-orange-400 font-black text-[10px] uppercase tracking-[0.2em] mb-4">
+            <div className="inline-flex items-center gap-2 text-orange-400 font-bold text-[10px] uppercase tracking-[0.2em] mb-4">
               <span className="w-8 h-[2px] bg-orange-400"></span>
               Залишились питання?
             </div>
-            <h2 className="text-4xl lg:text-5xl font-black text-[#1A1C1E] tracking-tight">
+            <h2 className="text-4xl lg:text-5xl font-bold text-[#1A1C1E] tracking-tight">
                 Безкоштовна консультація
             </h2>
           </div>
@@ -45,9 +45,9 @@ export default function ContactForm() {
       <div className="lg:col-span-5 flex flex-col justify-center bg-white rounded-[2.5rem] p-10 lg:p-14 shadow-premium border border-gray-100/50 relative overflow-hidden">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-orange-50 rounded-full blur-3xl opacity-50" />
         
-        <h3 className="text-2xl font-black text-[#1A1C1E] mb-6 relative z-10">Потрібна допомога у виборі?</h3>
+        <h3 className="text-2xl font-bold text-[#1A1C1E] mb-6 relative z-10">Потрібна допомога у виборі?</h3>
         <p className="text-base text-gray-500 font-medium leading-relaxed mb-10 relative z-10">
-          Наші менеджери допоможуть підібрати ідеальний набір для вашої компанії, розкажуть про склад кожної страви та допоможуть оформити замовлення.
+          Наші менеджери допоможуть підібрати ідеальний набір для вашої компанії, розкажуть про склад кожного товару та допоможуть оформити замовлення.
         </p>
 
             <div className="space-y-6 relative z-10">
@@ -56,8 +56,8 @@ export default function ContactForm() {
                         <Phone className="w-5 h-5 text-gray-400 group-hover:text-orange-500" />
                     </div>
                     <div>
-                       <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Телефон</div>
-                       <a href={`tel:${SITE_CONFIG.contacts.phoneRaw}`} className="font-black text-[#1A1C1E] hover:text-orange-500 transition-colors">{SITE_CONFIG.contacts.phoneDisplay}</a>
+                       <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Телефон</div>
+                       <a href={`tel:${SITE_CONFIG.contacts.phoneRaw}`} className="font-bold text-[#1A1C1E] hover:text-orange-500 transition-colors">{SITE_CONFIG.contacts.phoneDisplay}</a>
                     </div>
                 </div>
                 <div className="flex items-center gap-4 group">
@@ -65,8 +65,8 @@ export default function ContactForm() {
                         <MessageSquare className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
                     </div>
                     <div>
-                       <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Telegram</div>
-                       <div className="font-black text-[#1A1C1E]">{SITE_CONFIG.socials.telegramHandle}</div>
+                       <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Telegram</div>
+                       <div className="font-bold text-[#1A1C1E]">{SITE_CONFIG.socials.telegramHandle}</div>
                     </div>
                 </div>
             </div>
@@ -134,14 +134,14 @@ export default function ContactForm() {
 
                 <button 
                     disabled={isPending}
-                    className="w-full h-16 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-200 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-orange-500/20 active:scale-95 flex items-center justify-center gap-3 group"
+                    className="w-full min-h-[4rem] py-4 px-6 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-200 text-white rounded-2xl font-bold uppercase tracking-widest transition-all shadow-xl shadow-orange-500/20 active:scale-95 flex items-center justify-center gap-3 group"
                 >
                     {isPending ? (
                       <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                       <>
-                        Замовити консультацію
-                        <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        <span className="text-sm sm:text-base">Замовити консультацію</span>
+                        <Send className="w-4 h-4 shrink-0 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                       </>
                     )}
                 </button>

@@ -3,7 +3,7 @@
 @theme inline {
   --color-background: #F3F5F9;
   --color-foreground: #1A1C1E;
-  --font-sans: var(--font-outfit), Arial, sans-serif;
+  --font-sans: var(--font-manrope), sans-serif;
 }
 
 @layer base {

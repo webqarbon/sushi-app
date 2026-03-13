@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
-const outfit = Outfit({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+const manrope = Manrope({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
-  variable: "--font-outfit",
+  variable: "--font-manrope",
 });
 
 export const metadata: Metadata = {
   title: "FROZEN | Заморожені продукти преміум якості",
-  description: "Швидка доставка смачних заморожених страв. Отримуйте до 10% бонусів з кожної покупки!",
+  description: "Швидка доставка якісних заморожених продуктів. Отримуйте до 10% бонусів з кожної покупки!",
 };
 
 export default function RootLayout({
@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="uk" className="scroll-smooth">
-      <body className={`${outfit.variable} font-sans antialiased min-h-screen flex flex-col bg-[#F3F5F9] text-gray-900`}>
+    <html lang="uk" className="scroll-smooth" suppressHydrationWarning>
+      <body className={`${manrope.variable} font-sans antialiased min-h-screen flex flex-col bg-[#F3F5F9] text-gray-900`}>
         {children}
         <Toaster 
           position="top-center"
@@ -30,7 +30,7 @@ export default function RootLayout({
             style: {
               background: '#1A1C1E',
               color: '#fff',
-              fontFamily: 'var(--font-outfit), sans-serif',
+              fontFamily: 'var(--font-manrope), sans-serif',
               fontWeight: '700',
               fontSize: '14px',
               borderRadius: '1.5rem',

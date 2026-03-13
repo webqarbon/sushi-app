@@ -60,7 +60,7 @@ export default function ProductCard({ product, compact = false, variant }: { pro
             }`}
           >
             <Star className={`${mode !== "full" ? "w-2.5 h-2.5" : "w-3.5 h-3.5"} ${(product.average_rating || 0) > 0 ? "fill-orange-400 text-orange-400" : "text-gray-300"} group-hover/rating:scale-110 transition-transform`} />
-            <span className={mode !== "full" ? "text-[10px] font-black" : "text-[11px] font-black"}>
+            <span className={mode !== "full" ? "text-[10px] font-bold" : "text-[11px] font-bold"}>
               {(product.average_rating || 0) > 0 ? (product.average_rating as number).toFixed(1) : "—"}
             </span>
             <span className={`font-bold text-gray-400 border-l border-gray-200 ${mode !== "full" ? "text-[10px] pl-1.5" : "text-[10px] pl-2"}`}>
@@ -69,7 +69,7 @@ export default function ProductCard({ product, compact = false, variant }: { pro
           </div>
 
           {/* Bonus Badge */}
-          <div className={`absolute bg-orange-400 text-white rounded-full font-black uppercase shadow-xl shadow-orange-400/20 backdrop-blur-sm ${
+          <div className={`absolute bg-orange-400 text-white rounded-full font-bold uppercase shadow-xl shadow-orange-400/20 backdrop-blur-sm ${
             mode === "compact" ? "top-2 right-2 px-2.5 py-1 text-[9px] tracking-wider" :
             mode === "catalog" ? "top-2 right-2 px-2.5 py-1 text-[9px] tracking-wider" : "top-5 right-5 px-5 py-2 text-[10px] tracking-widest"
           }`}>
@@ -82,20 +82,20 @@ export default function ProductCard({ product, compact = false, variant }: { pro
           mode === "compact" ? "p-3 sm:p-4" : mode === "catalog" ? "p-4" : "p-7"
         }`}>
           {/* Characteristics */}
-          <div className={`text-gray-400 font-black uppercase opacity-70 ${
+          <div className={`text-gray-400 font-bold uppercase opacity-70 ${
             mode === "compact" ? "text-[10px] tracking-wider mb-1.5" : mode === "catalog" ? "text-[10px] tracking-wider mb-2" : "text-[10px] tracking-widest mb-4"
           }`}>
             {weightInfo}
           </div>
 
-          <h3 className={`font-black text-[#1A1C1E] leading-[1.2] group-hover:text-orange-500 transition-colors duration-300 ${
+          <h3 className={`font-bold text-[#1A1C1E] leading-[1.2] group-hover:text-orange-500 transition-colors duration-300 line-clamp-2 min-h-[2.4em] flex items-center justify-center ${
             mode === "compact" ? "text-base sm:text-lg mb-2 px-1" : mode === "catalog" ? "text-base sm:text-lg mb-2 px-1" : "text-[22px] mb-4 px-2"
           }`}>
             {product.name}
           </h3>
           
           <p className={`text-gray-400 font-medium line-clamp-2 leading-relaxed opacity-80 ${
-            mode === "compact" ? "text-xs mb-4 px-1 min-h-[32px]" : mode === "catalog" ? "text-xs mb-3 px-1 min-h-[28px]" : "text-sm mb-8 px-3 min-h-[40px]"
+            mode === "compact" ? "text-xs mb-4 px-1 min-h-[3.2em]" : mode === "catalog" ? "text-xs mb-3 px-1 min-h-[3.2em]" : "text-sm mb-8 px-3 min-h-[3.2em]"
           }`}>
             {product.description}
           </p>
@@ -105,7 +105,7 @@ export default function ProductCard({ product, compact = false, variant }: { pro
             mode === "compact" ? "p-1.5 pl-4" : mode === "catalog" ? "p-2 pl-4" : "rounded-[1.75rem] p-2 pl-7"
           }`}>
             <div className="flex flex-col items-start">
-              <span className={`font-black text-[#1A1C1E] tracking-tight ${
+              <span className={`font-bold text-[#1A1C1E] tracking-tight ${
                 mode === "full" ? "text-2xl" : "text-lg"
               }`}>{product.price.toFixed(0)} <span className={`opacity-70 ${mode === "full" ? "text-lg" : "text-sm"}`}>₴</span></span>
             </div>

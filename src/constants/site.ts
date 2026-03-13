@@ -3,7 +3,7 @@ export const SITE_CONFIG = {
   name: process.env.NEXT_PUBLIC_SITE_NAME || "FROZEN MARKET",
   shortName: process.env.NEXT_PUBLIC_SITE_SHORT_NAME || "FROZEN",
   tagline: process.env.NEXT_PUBLIC_SITE_TAGLINE || "Market",
-  description: process.env.NEXT_PUBLIC_SITE_DESCRIPTION || "Преміальні заморожені продукти з доставкою до ваших дверей. Смак, якість та зручність у кожній страві.",
+  description: process.env.NEXT_PUBLIC_SITE_DESCRIPTION || "Преміальні заморожені продукти з доставкою до ваших дверей. Смак, якість та зручність у кожному продукті.",
   contacts: {
     phone: process.env.NEXT_PUBLIC_CONTACT_PHONE || "+380 95 372 75 99",
     phoneDisplay: process.env.NEXT_PUBLIC_CONTACT_PHONE_DISPLAY || "(095) 372 75 99",

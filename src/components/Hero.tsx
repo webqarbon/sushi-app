@@ -64,7 +64,7 @@ export default function Hero() {
 
         {/* Right Side: Content */}
         <div className="w-full lg:w-2/5 p-10 lg:p-16 flex flex-col justify-center text-left">
-          <div className={`mb-6 flex items-center gap-2 font-black text-[10px] uppercase tracking-[0.2em] transition-colors duration-500 ${
+          <div className={`mb-6 flex items-center gap-2 font-bold text-[10px] uppercase tracking-[0.2em] transition-colors duration-500 ${
             slide.color === 'orange' ? 'text-orange-400' : 
             slide.color === 'blue' ? 'text-blue-400' : 'text-emerald-400'
           }`}>
@@ -77,7 +77,7 @@ export default function Hero() {
               {slide.badge}
             </div>
           </div>
-          <h2 className="text-4xl lg:text-5xl font-black text-[#1A1C1E] leading-[1.1] mb-6 tracking-tight animate-in slide-in-from-bottom-2 duration-500">
+          <h2 className="text-4xl lg:text-5xl font-bold text-[#1A1C1E] leading-[1.1] mb-6 tracking-tight animate-in slide-in-from-bottom-2 duration-500">
             {slide.title}
           </h2>
           <p className="text-lg text-gray-500 font-medium leading-relaxed mb-10 opacity-80 animate-in slide-in-from-bottom-4 duration-700">
@@ -86,7 +86,7 @@ export default function Hero() {
           
           <Link 
             href={slide.link}
-            className={`w-full sm:w-fit inline-flex items-center justify-center px-12 h-16 text-xs font-black text-white rounded-[1.25rem] shadow-xl transition-all active:scale-95 uppercase tracking-widest gap-4 group/btn ${
+            className={`w-full sm:w-fit inline-flex items-center justify-center px-12 h-16 text-xs font-bold text-white rounded-[1.25rem] shadow-xl transition-all active:scale-95 uppercase tracking-widest gap-4 group/btn ${
               slide.color === 'orange' ? 'bg-orange-500 hover:bg-orange-600 shadow-orange-500/20' : 
               slide.color === 'blue' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20' : 
               'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20'

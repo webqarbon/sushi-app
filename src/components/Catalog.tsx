@@ -49,24 +49,24 @@ export default function Catalog({ categories, products, activeCategoryId }: Cata
     <div className="flex flex-col gap-12">
       <div key={targetCategory.id}>
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 bg-white/50 p-6 rounded-[2.5rem] border border-gray-100/50">
-          <h2 className="text-2xl lg:text-3xl font-black tracking-tight text-[#1A1C1E] uppercase">
+          <h2 className="text-2xl lg:text-3xl font-bold tracking-tight text-[#1A1C1E] uppercase">
             {targetCategory.name}
           </h2>
 
-          <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl shadow-sm border border-gray-50 overflow-x-auto max-w-full">
+          <div className="grid grid-cols-2 sm:flex items-center gap-2 bg-gray-50/50 sm:bg-white p-1.5 rounded-[1.5rem] sm:rounded-2xl border border-gray-100/50 sm:border-gray-50 w-full sm:w-auto">
             {[
-              { id: 'popular', label: 'Популярні', icon: Flame },
-              { id: 'price_asc', label: 'Найдешевші', icon: ArrowUpIcon },
+              { id: 'popular', label: 'Топ', icon: Flame },
+              { id: 'price_asc', label: 'Дешеві', icon: ArrowUpIcon },
               { id: 'price_desc', label: 'Дорогі', icon: ArrowDownIcon },
               { id: 'rating', label: 'Рейтинг', icon: Star },
             ].map((option) => (
               <button
                 key={option.id}
                 onClick={() => setSortBy(option.id as SortType)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${
                   sortBy === option.id 
-                    ? "bg-[#1A1C1E] text-white shadow-lg shadow-black/10 scale-105" 
-                    : "text-gray-400 hover:text-gray-900 hover:bg-gray-50"
+                    ? "bg-[#1A1C1E] text-white shadow-md shadow-black/5" 
+                    : "bg-white text-gray-400 hover:text-gray-900 border border-gray-100/20"
                 }`}
               >
                 <option.icon className={`w-3 h-3 ${sortBy === option.id ? "text-orange-400" : ""}`} />
@@ -79,7 +79,7 @@ export default function Catalog({ categories, products, activeCategoryId }: Cata
         {sortedProducts.length === 0 ? (
           <p className="text-center text-base text-gray-400 py-12 font-medium">У цій категорії поки немає товарів.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
             {sortedProducts.map(product => (
               <ProductCard key={product.id} product={product} variant="catalog" />
             ))}
