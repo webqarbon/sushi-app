@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useCartStore } from "@/store/cart";
-import { ArrowLeft, Info, Truck, CreditCard, Gift, Star } from "lucide-react";
+import { ArrowLeft, Info, Truck, CreditCard, Gift, Star, X, Copy } from "lucide-react";
 import Link from "next/link";
+import { SITE_CONFIG } from "@/constants/site";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
@@ -27,11 +28,11 @@ export default function CheckoutPage() {
     paymentMethod: "mono",
   });
 
-  // Nova Poshta State (getCities returns Ref, Description)
+  // Nova Poshta State (searchSettlements returns Addresses with Ref, Present, DeliveryCity)
   interface NPCity {
     Ref: string;
-    Description?: string;
     Present?: string;
+    Description?: string;
     DeliveryCity?: string;
   }
   interface NPBranch {
@@ -46,10 +47,11 @@ export default function CheckoutPage() {
   const [branchSearchTerm, setBranchSearchTerm] = useState("");
   const [isCityLoading, setIsCityLoading] = useState(false);
   const [isBranchLoading, setIsBranchLoading] = useState(false);
+  const [isRequisitesOpen, setIsRequisitesOpen] = useState(false);
   const cityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const searchCities = (query: string) => {
-    if (!query) {
+    if (!query || query.trim().length < 2) {
       setCities([]);
       setIsCityLoading(false);
       return;
@@ -60,23 +62,30 @@ export default function CheckoutPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         modelName: "Address",
-        calledMethod: "getCities",
+        calledMethod: "searchSettlements",
         methodProperties: {
-          FindByString: query,
-          Limit: 50,
-          Page: 1
+          CityName: query.trim(),
+          Limit: 50
         }
       })
     })
     .then(res => res.json())
     .then(data => {
-      if (data.data && Array.isArray(data.data)) {
-        setCities(data.data);
-      } else {
+      if (data.error) {
         setCities([]);
+        return;
       }
+      // searchSettlements returns data.data = [{ Addresses: [...] }, ...]
+      const raw = data.data || [];
+      const addresses = Array.isArray(raw)
+        ? raw.flatMap((item: { Addresses?: NPCity[] }) => item.Addresses || [])
+        : [];
+      setCities(addresses);
     })
-    .catch(err => console.error("Error searching cities", err))
+    .catch(err => {
+      console.error("Error searching cities", err);
+      setCities([]);
+    })
     .finally(() => setIsCityLoading(false));
   };
 
@@ -122,8 +131,9 @@ export default function CheckoutPage() {
   };
 
   const handleCitySelect = (city: NPCity) => {
+    // Ref = settlement ref; DeliveryCity = parent city ref (for villages). getWarehouses needs settlement/city ref.
     const ref = city.Ref;
-    const displayName = city.Description ?? city.Present ?? "";
+    const displayName = city.Present ?? city.Description ?? "";
     setFormData(prev => ({ 
       ...prev, 
       cityRef: ref, 
@@ -420,7 +430,7 @@ export default function CheckoutPage() {
                           onClick={() => handleCitySelect(city)}
                           className="px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm font-medium text-gray-800 border-b border-gray-100 last:border-b-0"
                         >
-                          {city.Description ?? city.Present}
+                          {city.Present ?? city.Description}
                         </li>
                       )))}
                     </ul>
@@ -587,10 +597,71 @@ export default function CheckoutPage() {
                     value="details" 
                     className="w-5 h-5 text-gray-900 focus:ring-gray-900" 
                     checked={formData.paymentMethod === 'details'}
-                    onChange={() => setFormData({...formData, paymentMethod: 'details'})}
+                    onChange={() => {
+                      setFormData(prev => ({ ...prev, paymentMethod: 'details' }));
+                      setIsRequisitesOpen(true);
+                    }}
                   />
                   <span className="ml-4 font-bold text-gray-900 text-lg">Оплата за реквізитами</span>
                 </label>
+
+              {/* Requisites Popup */}
+              {isRequisitesOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                  <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative animate-in zoom-in-95 duration-200">
+                    <button
+                      type="button"
+                      onClick={() => setIsRequisitesOpen(false)}
+                      className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-900 rounded-xl hover:bg-gray-100 transition-all"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                    <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight mb-6">Реквізити для оплати</h3>
+                    <div className="space-y-4 text-sm">
+                      <div>
+                        <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Отримувач</span>
+                        <p className="font-bold text-gray-900">{SITE_CONFIG.paymentRequisites.recipient}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">ЄДРПОУ</span>
+                        <p className="font-bold text-gray-900 font-mono">{SITE_CONFIG.paymentRequisites.edrpou}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Банк</span>
+                        <p className="font-bold text-gray-900">{SITE_CONFIG.paymentRequisites.bankName}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">IBAN</span>
+                        <p className="font-bold text-gray-900 font-mono break-all">{SITE_CONFIG.paymentRequisites.iban}</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(SITE_CONFIG.paymentRequisites.iban);
+                            toast.success("IBAN скопійовано");
+                          }}
+                          className="mt-2 flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold text-xs"
+                        >
+                          <Copy className="w-3.5 h-3.5" /> Копіювати IBAN
+                        </button>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 font-bold uppercase text-[10px] tracking-wider block mb-1">Призначення платежу</span>
+                        <p className="font-medium text-gray-700">{SITE_CONFIG.paymentRequisites.purpose}</p>
+                      </div>
+                    </div>
+                    <p className="mt-6 text-xs text-gray-500">
+                      Після оплати надішліть нам підтвердження (скрін або чек) у Telegram {SITE_CONFIG.socials.telegramHandle}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setIsRequisitesOpen(false)}
+                      className="mt-6 w-full py-4 bg-gray-900 text-white font-black rounded-2xl hover:bg-gray-800 transition-all"
+                    >
+                      Зрозуміло
+                    </button>
+                  </div>
+                </div>
+              )}
               </div>
             </section>
           </form>

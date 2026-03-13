@@ -61,7 +61,7 @@ export default function HomeContent({ categories, products }: HomeContentProps) 
         <div
           className={`transition-all duration-500 delay-100 ${
             showHeroAndSlider
-              ? "opacity-100 max-h-[2000px] mb-12"
+              ? "opacity-100 max-h-[2000px] mb-6 sm:mb-8"
               : "opacity-0 max-h-0 overflow-hidden pointer-events-none mb-0"
           }`}
         >

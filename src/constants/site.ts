@@ -23,5 +23,12 @@ export const SITE_CONFIG = {
     title: "Frozen Admin",
     subtitle: "Management Tool",
     defaultName: "Admin"
+  },
+  paymentRequisites: {
+    bankName: "АТ «Універсальний банк»",
+    iban: "UA123456789012345678901234567",
+    recipient: "ТОВ «FROZEN MARKET»",
+    edrpou: "12345678",
+    purpose: "Оплата замовлення на FROZEN MARKET",
   }
 };
