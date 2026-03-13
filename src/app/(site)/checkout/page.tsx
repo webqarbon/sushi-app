@@ -135,20 +135,19 @@ export default function CheckoutPage() {
   };
 
   const handleCitySelect = (city: NPCity) => {
-    // DeliveryCity = parent city ref (villages/districts). getWarehouses needs it for settlements without direct branches.
-    const refForWarehouses = city.DeliveryCity || city.Ref;
+    const ref = city.Ref;
     const displayName = city.Present ?? city.Description ?? "";
     setFormData(prev => ({ 
       ...prev, 
-      cityRef: refForWarehouses, 
+      cityRef: ref, 
       cityName: displayName,
-      settlementRef: refForWarehouses,
+      settlementRef: ref,
       branchRef: "",
       branchName: ""
     }));
     setCitySearchTerm(displayName);
     setIsCityDropdownOpen(false);
-    loadBranches(refForWarehouses);
+    loadBranches(ref);
   };
 
   const handleBranchSelect = (branch: NPBranch) => {
