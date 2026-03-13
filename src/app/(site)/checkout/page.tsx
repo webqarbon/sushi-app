@@ -27,11 +27,12 @@ export default function CheckoutPage() {
     paymentMethod: "mono",
   });
 
-  // Nova Poshta State
+  // Nova Poshta State (getCities returns Ref, Description)
   interface NPCity {
     Ref: string;
-    DeliveryCity: string;
-    Present: string;
+    Description?: string;
+    Present?: string;
+    DeliveryCity?: string;
   }
   interface NPBranch {
     Ref: string;
@@ -59,9 +60,9 @@ export default function CheckoutPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         modelName: "Address",
-        calledMethod: "searchSettlements",
+        calledMethod: "getCities",
         methodProperties: {
-          CityName: query,
+          FindByString: query,
           Limit: 50,
           Page: 1
         }
@@ -69,8 +70,8 @@ export default function CheckoutPage() {
     })
     .then(res => res.json())
     .then(data => {
-      if (data.data && data.data[0]?.Addresses) {
-        setCities(data.data[0].Addresses);
+      if (data.data && Array.isArray(data.data)) {
+        setCities(data.data);
       } else {
         setCities([]);
       }
@@ -89,7 +90,8 @@ export default function CheckoutPage() {
         modelName: "Address",
         calledMethod: "getWarehouses",
         methodProperties: {
-          SettlementRef: cityRef,
+          CityRef: cityRef,
+          Page: 1,
           Limit: 500,
         }
       })
@@ -120,16 +122,17 @@ export default function CheckoutPage() {
   };
 
   const handleCitySelect = (city: NPCity) => {
-    const ref = city.DeliveryCity || city.Ref;
+    const ref = city.Ref;
+    const displayName = city.Description ?? city.Present ?? "";
     setFormData(prev => ({ 
       ...prev, 
-      cityRef: city.Ref, 
-      cityName: city.Present,
+      cityRef: ref, 
+      cityName: displayName,
       settlementRef: ref,
       branchRef: "",
       branchName: ""
     }));
-    setCitySearchTerm(city.Present);
+    setCitySearchTerm(displayName);
     setIsCityDropdownOpen(false);
     loadBranches(ref);
   };
@@ -218,7 +221,13 @@ export default function CheckoutPage() {
     if (Number.isNaN(val)) val = 0;
     if (val > maxBonusesAllowed) val = maxBonusesAllowed;
     if (val < 0) val = 0;
+    val = Math.round(val * 100) / 100;
     setFormData(prev => ({ ...prev, bonusesUsed: val }));
+  };
+
+  const setBonusAmount = (val: number) => {
+    const rounded = Math.round(Math.min(val, maxBonusesAllowed) * 100) / 100;
+    setFormData(prev => ({ ...prev, bonusesUsed: rounded }));
   };
 
   const potentialBonuses = items.reduce((acc, item) => {
@@ -407,11 +416,11 @@ export default function CheckoutPage() {
                       ) : (
                         cities.map((city, idx) => (
                         <li 
-                          key={idx}
+                          key={city.Ref || idx}
                           onClick={() => handleCitySelect(city)}
                           className="px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm font-medium text-gray-800 border-b border-gray-100 last:border-b-0"
                         >
-                          {city.Present}
+                          {city.Description ?? city.Present}
                         </li>
                       )))}
                     </ul>
@@ -504,25 +513,27 @@ export default function CheckoutPage() {
                       min={0}
                       max={maxBonusesAllowed}
                       step={0.01}
-                      value={formData.bonusesUsed || ""}
+                      value={formData.bonusesUsed}
                       onChange={handleBonusChange}
-                      className="w-full bg-white border border-blue-200 rounded-2xl pl-10 pr-5 py-4 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-black text-blue-900 shadow-inner"
+                      disabled={maxBonusesAllowed <= 0}
+                      className="w-full bg-white border border-blue-200 rounded-2xl pl-10 pr-5 py-4 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-black text-blue-900 shadow-inner disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder="0"
                     />
                   </div>
 
                   <div className="flex flex-wrap gap-3">
                     {[25, 50].map((percent) => {
-                      const amountFromPercent = (subtotal * percent) / 100;
-                      const val = Math.min(amountFromPercent, maxBonusesAllowed);
+                      const amountFromBonuses = (userBonusBalance * percent) / 100;
+                      const val = Math.round(Math.min(amountFromBonuses, maxBonusesAllowed) * 100) / 100;
                       const isActive = formData.bonusesUsed > 0 && Math.abs(formData.bonusesUsed - val) < 0.01;
                       return (
                       <button
                         key={percent}
                         type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, bonusesUsed: val }))}
-                        className={`px-6 py-3 border-2 transition-all text-xs font-black uppercase tracking-widest rounded-2xl shadow-sm ${
-                            isActive ? "bg-blue-600 border-blue-600 text-white" : "bg-white border-blue-100 text-blue-600 hover:border-blue-300"
+                        disabled={maxBonusesAllowed <= 0}
+                        onClick={() => setBonusAmount(val)}
+                        className={`px-6 py-3 border-2 transition-all text-xs font-black uppercase tracking-widest rounded-2xl shadow-sm disabled:opacity-50 disabled:cursor-not-allowed ${
+                            isActive ? "bg-blue-600 border-blue-600 text-white" : "bg-white border-blue-100 text-blue-600 hover:border-blue-300 hover:border-blue-400"
                         }`}
                       >
                         {percent}%
@@ -530,11 +541,21 @@ export default function CheckoutPage() {
                     );})}
                     <button
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, bonusesUsed: maxBonusesAllowed }))}
-                      className="px-6 py-3 bg-blue-900 text-white font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-black transition-all shadow-md active:scale-95"
+                      disabled={maxBonusesAllowed <= 0}
+                      onClick={() => setBonusAmount(maxBonusesAllowed)}
+                      className="px-6 py-3 bg-blue-900 text-white font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-black transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-900"
                     >
-                      Максимум (50%)
+                      Максимум
                     </button>
+                    {formData.bonusesUsed > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, bonusesUsed: 0 }))}
+                        className="px-6 py-3 border-2 border-gray-200 text-gray-500 font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-gray-50 transition-all"
+                      >
+                        Скинути
+                      </button>
+                    )}
                   </div>
                   
                   {formData.bonusesUsed > 0 && (
@@ -556,7 +577,7 @@ export default function CheckoutPage() {
                     checked={formData.paymentMethod === 'mono'}
                     onChange={() => setFormData({...formData, paymentMethod: 'mono'})}
                   />
-                  <span className="ml-4 font-bold text-gray-900 text-lg">Plata by Mono (онлайн карткою)</span>
+                  <span className="ml-4 font-bold text-gray-900 text-lg">Monobank Pay</span>
                 </label>
                 
                 <label className={`relative flex items-center p-5 border-2 rounded-2xl cursor-pointer transition-all ${formData.paymentMethod === 'details' ? 'border-gray-900 bg-gray-50' : 'border-gray-200 hover:border-gray-300'}`}>
@@ -568,7 +589,7 @@ export default function CheckoutPage() {
                     checked={formData.paymentMethod === 'details'}
                     onChange={() => setFormData({...formData, paymentMethod: 'details'})}
                   />
-                  <span className="ml-4 font-bold text-gray-900 text-lg">Оплата за реквізитами (ручна перевірка)</span>
+                  <span className="ml-4 font-bold text-gray-900 text-lg">Оплата за реквізитами</span>
                 </label>
               </div>
             </section>
