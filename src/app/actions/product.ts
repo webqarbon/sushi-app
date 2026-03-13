@@ -5,25 +5,38 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/utils/auth";
 
 export async function uploadProductImage(file: File) {
-  const admin = await requireAdmin();
-  if ("error" in admin) throw new Error(admin.error);
+  try {
+    const admin = await requireAdmin();
+    if ("error" in admin) throw new Error(admin.error);
 
-  const supabase = await createClient(true);
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-  const filePath = `products/${fileName}`;
+    const supabase = await createClient(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `products/${fileName}`;
 
-  const { error } = await supabase.storage
-    .from('product-images')
-    .upload(filePath, file);
+    console.log(`Uploading file: ${fileName}, size: ${file.size} bytes`);
 
-  if (error) throw new Error(error.message);
+    const { error } = await supabase.storage
+      .from('product-images')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
 
-  const { data: { publicUrl } } = supabase.storage
-    .from('product-images')
-    .getPublicUrl(filePath);
+    if (error) {
+      console.error('Supabase storage upload error:', error);
+      throw new Error(error.message);
+    }
 
-  return publicUrl;
+    const { data: { publicUrl } } = supabase.storage
+      .from('product-images')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  } catch (err: any) {
+    console.error('Critical upload error:', err);
+    throw new Error(err.message || 'Помилка при завантаженні файлу');
+  }
 }
 
 export async function createProduct(formData: FormData) {
