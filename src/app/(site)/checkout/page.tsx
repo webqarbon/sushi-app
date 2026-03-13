@@ -92,6 +92,7 @@ export default function CheckoutPage() {
   const loadBranches = (cityRef: string) => {
     if (!cityRef) return;
     setIsBranchLoading(true);
+    setBranches([]); // Clear previous branches
     fetch("/api/novaposhta", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -99,7 +100,7 @@ export default function CheckoutPage() {
         modelName: "Address",
         calledMethod: "getWarehouses",
         methodProperties: {
-          CityRef: cityRef,
+          SettlementRef: cityRef,
           Page: 1,
           Limit: 500,
         }
@@ -113,7 +114,10 @@ export default function CheckoutPage() {
         setBranches([]);
       }
     })
-    .catch(err => console.error("Error loading branches", err))
+    .catch(err => {
+      console.error("Error loading branches", err);
+      setBranches([]);
+    })
     .finally(() => setIsBranchLoading(false));
   };
 
@@ -121,6 +125,7 @@ export default function CheckoutPage() {
     const val = e.target.value;
     setCitySearchTerm(val);
     setFormData(prev => ({ ...prev, cityRef: "", cityName: "", settlementRef: "", branchRef: "", branchName: "" }));
+    setBranches([]); // Clear branches when city search changes
     setIsCityDropdownOpen(true);
     
     if (cityTimeoutRef.current) clearTimeout(cityTimeoutRef.current);
@@ -446,6 +451,7 @@ export default function CheckoutPage() {
                     onClick={() => {
                       const ref = formData.settlementRef || formData.cityRef;
                       if (ref) {
+                        // Always try to load if branches are empty
                         if (branches.length === 0) loadBranches(ref);
                         setIsBranchDropdownOpen(!isBranchDropdownOpen);
                       }
