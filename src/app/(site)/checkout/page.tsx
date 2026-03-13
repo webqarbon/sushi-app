@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useCartStore } from "@/store/cart";
 import { ArrowLeft, Info, Truck, CreditCard, Gift, Star } from "lucide-react";
 import Link from "next/link";
@@ -20,6 +20,7 @@ export default function CheckoutPage() {
     phone: "",
     cityRef: "",
     cityName: "",
+    settlementRef: "",
     branchRef: "",
     branchName: "",
     bonusesUsed: 0,
@@ -42,11 +43,18 @@ export default function CheckoutPage() {
   const [isBranchDropdownOpen, setIsBranchDropdownOpen] = useState(false);
   const [citySearchTerm, setCitySearchTerm] = useState("");
   const [branchSearchTerm, setBranchSearchTerm] = useState("");
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [isCityLoading, setIsCityLoading] = useState(false);
+  const [isBranchLoading, setIsBranchLoading] = useState(false);
+  const cityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const branchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const searchCities = (query: string) => {
-    if (!query) return setCities([]);
-    
+    if (!query) {
+      setCities([]);
+      setIsCityLoading(false);
+      return;
+    }
+    setIsCityLoading(true);
     fetch("/api/novaposhta", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -68,10 +76,12 @@ export default function CheckoutPage() {
         setCities([]);
       }
     })
-    .catch(err => console.error("Error searching cities", err));
+    .catch(err => console.error("Error searching cities", err))
+    .finally(() => setIsCityLoading(false));
   };
 
   const loadBranches = (cityRef: string, query: string = "") => {
+    setIsBranchLoading(true);
     fetch("/api/novaposhta", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -89,45 +99,91 @@ export default function CheckoutPage() {
     .then(data => {
       if (data.data) {
         setBranches(data.data);
+      } else {
+        setBranches([]);
       }
     })
-    .catch(err => console.error("Error loading branches", err));
+    .catch(err => console.error("Error loading branches", err))
+    .finally(() => setIsBranchLoading(false));
   };
 
   const handleCitySearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setCitySearchTerm(val);
-    setFormData({ ...formData, cityRef: "", cityName: "", branchRef: "", branchName: "" }); // Reset on manual type
+    setFormData(prev => ({ ...prev, cityRef: "", cityName: "", settlementRef: "", branchRef: "", branchName: "" }));
     setIsCityDropdownOpen(true);
     
-    if (typingTimeout) clearTimeout(typingTimeout);
-    const timeout = setTimeout(() => {
+    if (cityTimeoutRef.current) clearTimeout(cityTimeoutRef.current);
+    cityTimeoutRef.current = setTimeout(() => {
       searchCities(val);
-    }, 400); // 400ms delay is usually optimal for NP API
-    setTypingTimeout(timeout);
+      cityTimeoutRef.current = null;
+    }, 250);
   };
 
   const handleCitySelect = (city: NPCity) => {
-    setFormData({ 
-      ...formData, 
+    const settlementRef = city.DeliveryCity || city.Ref;
+    setFormData(prev => ({ 
+      ...prev, 
       cityRef: city.Ref, 
       cityName: city.Present,
+      settlementRef,
       branchRef: "",
       branchName: ""
-    });
+    }));
     setCitySearchTerm(city.Present);
     setIsCityDropdownOpen(false);
-    loadBranches(city.DeliveryCity);
+    loadBranches(settlementRef);
   };
 
   const handleBranchSelect = (branch: NPBranch) => {
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       branchRef: branch.Ref,
       branchName: branch.Description
-    });
+    }));
+    setBranchSearchTerm("");
     setIsBranchDropdownOpen(false);
   };
+
+  const handleBranchSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setBranchSearchTerm(val);
+    const ref = formData.settlementRef || formData.cityRef;
+    if (!ref) return;
+    if (branchTimeoutRef.current) clearTimeout(branchTimeoutRef.current);
+    branchTimeoutRef.current = setTimeout(() => {
+      loadBranches(ref, val);
+      branchTimeoutRef.current = null;
+    }, 280);
+  };
+
+  const sortedBranches = useMemo(() => {
+    if (!branchSearchTerm.trim()) return branches;
+    const q = branchSearchTerm.trim().toLowerCase();
+    const numMatch = q.match(/^\d+$/);
+    return [...branches].sort((a, b) => {
+      const descA = a.Description;
+      const descB = b.Description;
+      const numA = descA.match(/№\s*(\d+)/)?.[1] ?? "";
+      const numB = descB.match(/№\s*(\d+)/)?.[1] ?? "";
+      if (numMatch) {
+        const exactA = numA === q ? 1 : numA.startsWith(q) ? 2 : descA.toLowerCase().includes(q) ? 3 : 4;
+        const exactB = numB === q ? 1 : numB.startsWith(q) ? 2 : descB.toLowerCase().includes(q) ? 3 : 4;
+        return exactA - exactB;
+      }
+      const idxA = descA.toLowerCase().indexOf(q);
+      const idxB = descB.toLowerCase().indexOf(q);
+      if (idxA === -1 && idxB === -1) return 0;
+      if (idxA === -1) return 1;
+      if (idxB === -1) return -1;
+      return idxA - idxB;
+    });
+  }, [branches, branchSearchTerm]);
+
+  useEffect(() => () => {
+    if (cityTimeoutRef.current) clearTimeout(cityTimeoutRef.current);
+    if (branchTimeoutRef.current) clearTimeout(branchTimeoutRef.current);
+  }, []);
 
   // Derived calculations
   const subtotal = items.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
@@ -336,19 +392,27 @@ export default function CheckoutPage() {
                 {/* City Selection */}
                 <div className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Місто</label>
-                  <input 
-                    required 
-                    type="text"
-                    placeholder="Почніть вводити місто..."
-                    value={citySearchTerm}
-                    onChange={handleCitySearchChange}
-                    onFocus={() => { if(cities.length > 0) setIsCityDropdownOpen(true) }}
-                    onBlur={() => setTimeout(() => setIsCityDropdownOpen(false), 200)}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium"
-                  />
-                  {isCityDropdownOpen && cities.length > 0 && (
+                  <div className="relative">
+                    <input 
+                      required 
+                      type="text"
+                      placeholder="Почніть вводити місто..."
+                      value={citySearchTerm}
+                      onChange={handleCitySearchChange}
+                      onFocus={() => { if (cities.length > 0 || citySearchTerm) setIsCityDropdownOpen(true) }}
+                      onBlur={() => setTimeout(() => setIsCityDropdownOpen(false), 200)}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium"
+                    />
+                    {isCityLoading && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                    )}
+                  </div>
+                  {isCityDropdownOpen && (
                     <ul className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
-                      {cities.map((city, idx) => (
+                      {isCityLoading && cities.length === 0 ? (
+                        <li className="px-4 py-4 text-sm text-gray-500 text-center">Завантаження...</li>
+                      ) : (
+                        cities.map((city, idx) => (
                         <li 
                           key={idx}
                           onClick={() => handleCitySelect(city)}
@@ -356,7 +420,7 @@ export default function CheckoutPage() {
                         >
                           {city.Present}
                         </li>
-                      ))}
+                      )))}
                     </ul>
                   )}
                 </div>
@@ -367,39 +431,49 @@ export default function CheckoutPage() {
                   <button
                     type="button"
                     disabled={!formData.cityRef}
-                    onClick={() => setIsBranchDropdownOpen(!isBranchDropdownOpen)}
-                    className={`w-full text-left bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium truncate ${!formData.cityRef && 'opacity-50 cursor-not-allowed'}`}
+                    onClick={() => {
+                      if (formData.settlementRef || formData.cityRef) {
+                        if (branches.length === 0 && !branchSearchTerm) {
+                          loadBranches(formData.settlementRef || formData.cityRef);
+                        }
+                        setIsBranchDropdownOpen(!isBranchDropdownOpen);
+                      }
+                    }}
+                    className={`w-full text-left bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-medium truncate ${!formData.cityRef && "opacity-50 cursor-not-allowed"}`}
                   >
                     {formData.branchName || "Оберіть відділення..."}
                   </button>
                   
-                  {isBranchDropdownOpen && formData.cityRef && (
+                  {isBranchDropdownOpen && (formData.cityRef || formData.settlementRef) && (
                     <div className="absolute z-40 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-2xl max-h-72 overflow-hidden flex flex-col">
-                      <div className="p-2 border-b border-gray-100">
+                      <div className="p-2 border-b border-gray-100 relative">
                         <input
                           autoFocus
                           type="text"
-                          placeholder="Пошук відділення..."
+                          placeholder="Введіть номер або адресу..."
                           value={branchSearchTerm}
-                          onChange={(e) => {
-                            setBranchSearchTerm(e.target.value);
-                            loadBranches(formData.cityRef, e.target.value);
-                          }}
-                          className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-blue-500"
+                          onChange={handleBranchSearchChange}
+                          className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 pr-9 text-sm focus:outline-none focus:ring-2 focus:border-blue-500"
                         />
+                        {isBranchLoading && (
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        )}
                       </div>
                       <ul className="overflow-y-auto overflow-x-hidden p-0 m-0">
-                        {branches.map(branch => (
-                          <li 
-                            key={branch.Ref}
-                            onClick={() => handleBranchSelect(branch)}
-                            className="px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm font-medium text-gray-800 border-b border-gray-100 last:border-b-0 break-words"
-                          >
-                            {branch.Description}
-                          </li>
-                        ))}
-                        {branches.length === 0 && (
-                          <li className="px-4 py-3 text-sm text-gray-500 text-center">Відділень не знайдено</li>
+                        {isBranchLoading && branches.length === 0 ? (
+                          <li className="px-4 py-6 text-sm text-gray-500 text-center">Завантаження...</li>
+                        ) : sortedBranches.length === 0 ? (
+                          <li className="px-4 py-6 text-sm text-gray-500 text-center">Відділень не знайдено</li>
+                        ) : (
+                          sortedBranches.map(branch => (
+                            <li 
+                              key={branch.Ref}
+                              onClick={() => handleBranchSelect(branch)}
+                              className="px-4 py-3 hover:bg-gray-50 cursor-pointer text-sm font-medium text-gray-800 border-b border-gray-100 last:border-b-0 break-words"
+                            >
+                              {branch.Description}
+                            </li>
+                          ))
                         )}
                       </ul>
                     </div>
