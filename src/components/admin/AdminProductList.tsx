@@ -58,7 +58,9 @@ export default function AdminProductList({
     if (!file) return;
     setIsUploading(true);
     try {
-      const url = await uploadProductImage(file);
+      const formData = new FormData();
+      formData.append('file', file);
+      const url = await uploadProductImage(formData);
       setImageUrl(url);
       if (editingProduct) {
         setEditingProduct({ ...editingProduct, image_url: url });
@@ -330,9 +332,10 @@ export default function AdminProductList({
 
               <button 
                 type="submit"
-                className="w-full py-5 bg-[#1A1C1E] text-white rounded-xl font-black text-sm shadow-2xl hover:scale-[1.01] active:scale-95 transition-all uppercase tracking-tighter mt-4"
+                disabled={isUploading}
+                className="w-full py-5 bg-[#1A1C1E] text-white rounded-xl font-black text-sm shadow-2xl hover:scale-[1.01] active:scale-95 transition-all uppercase tracking-tighter mt-4 disabled:opacity-50 disabled:pointer-events-none"
               >
-                {editingProduct ? 'Оновити дані' : 'Створити товар'}
+                {isUploading ? 'Зачекайте, фото завантажується...' : (editingProduct ? 'Оновити дані' : 'Створити товар')}
               </button>
             </form>
           </div>

@@ -1,30 +1,43 @@
 'use server';
 
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/utils/auth";
 
-export async function uploadProductImage(file: File) {
+export async function uploadProductImage(formData: FormData) {
   try {
-    const admin = await requireAdmin();
-    if ("error" in admin) throw new Error(admin.error);
+    const adminCheck = await requireAdmin();
+    if ("error" in adminCheck) {
+      console.error('Admin check failed for upload:', adminCheck.error);
+      throw new Error(adminCheck.error);
+    }
 
-    const supabase = await createClient(true);
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const file = formData.get('file') as File;
+    if (!file) throw new Error("Файл не знайдено");
+
+    // Use a direct client for Service Role to ensure complete RLS bypass for storage
+    const supabase = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+    
+    const fileExt = file.name ? file.name.split('.').pop() : 'jpg';
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
     const filePath = `products/${fileName}`;
 
-    console.log(`Uploading file: ${fileName}, size: ${file.size} bytes`);
+    console.log(`[STORAGE] Uploading: ${fileName}, size: ${file.size} bytes`);
 
     const { error } = await supabase.storage
       .from('product-images')
       .upload(filePath, file, {
         cacheControl: '3600',
-        upsert: false
+        upsert: false,
+        contentType: file.type // Pass explicit content type
       });
 
     if (error) {
-      console.error('Supabase storage upload error:', error);
+      console.error('[STORAGE] Upload error:', error);
       throw new Error(error.message);
     }
 
@@ -32,6 +45,7 @@ export async function uploadProductImage(file: File) {
       .from('product-images')
       .getPublicUrl(filePath);
 
+    console.log(`[STORAGE] Success: ${publicUrl}`);
     return publicUrl;
   } catch (err: any) {
     console.error('Critical upload error:', err);
